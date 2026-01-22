@@ -1,12 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, PlayCircle, BarChart3 } from "lucide-react";
+import { useAuthContext } from "../context/AuthContext";
 
 export default function LandingPage() {
+  const { user, loading } = useAuthContext();
+  const router = useRouter();
+  const [showDemo, setShowDemo] = useState(false);
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router]);
+
+  // Don't render landing page if user is authenticated (will redirect)
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-slate-600">Loading...</div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return null; // Will redirect to dashboard
+  }
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       
@@ -102,7 +127,10 @@ export default function LandingPage() {
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
-              <button className="h-14 px-8 rounded-full bg-white/40 hover:bg-white/60 backdrop-blur-xl border border-white/60 text-slate-700 font-bold text-lg shadow-sm transition-all hover:-translate-y-1 flex items-center gap-2 group">
+              <button 
+                onClick={() => setShowDemo(true)}
+                className="h-14 px-8 rounded-full bg-white/40 hover:bg-white/60 backdrop-blur-xl border border-white/60 text-slate-700 font-bold text-lg shadow-sm transition-all hover:-translate-y-1 flex items-center gap-2 group"
+              >
                 <PlayCircle size={20} className="text-slate-500 group-hover:text-[#2F6BFF] transition-colors" /> 
                 Watch Demo
               </button>
@@ -189,6 +217,45 @@ export default function LandingPage() {
 
         </div>
       </main>
+
+      {/* Demo Video Modal */}
+      <AnimatePresence>
+        {showDemo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            onClick={() => setShowDemo(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full aspect-video overflow-hidden"
+            >
+              <button
+                onClick={() => setShowDemo(false)}
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-600 hover:text-slate-900 flex items-center justify-center shadow-lg transition-all"
+                aria-label="Close demo"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#2F6BFF] to-purple-600">
+                <div className="text-center text-white p-8">
+                  <PlayCircle size={64} className="mx-auto mb-4 opacity-80" />
+                  <h3 className="text-2xl font-bold mb-2">Demo Video</h3>
+                  <p className="text-white/80 mb-6">Demo video will be available soon</p>
+                  <p className="text-sm text-white/60">In the meantime, try signing up to explore the platform!</p>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
