@@ -151,6 +151,12 @@ This log should be **updated whenever a major decision is made**.
   * Environment variables must be configured in Vercel
   * Client can access live preview URL to test and provide feedback
   * Deployment happens after core authentication implementation is complete
+* **Deployment Strategy:**
+  * **Phase 1**: Deploy with email/password authentication first
+  * **Phase 2**: Add Google OAuth integration
+  * **Phase 3**: Add Apple OAuth integration
+  * This phased approach ensures stability and allows incremental testing
+  * See `Docs/deployment-flow.md` for detailed deployment steps
 
 ---
 
