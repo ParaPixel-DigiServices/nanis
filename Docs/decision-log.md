@@ -103,9 +103,60 @@ This log should be **updated whenever a major decision is made**.
 
 ---
 
+### **D-011: Signup Side Effects via Edge Function**
+
+* **Decision:** Signup side effects (profile + organization + membership creation) are handled via a Supabase Edge Function called immediately after user signup
+* **Reason:** 
+  * Atomic operations ensure data consistency
+  * Service role access bypasses RLS for organization creation (no INSERT policy exists)
+  * Idempotent design handles duplicate retries safely
+  * Keeps frontend logic simple and secure
+* **Impact:** 
+  * Requires Edge Function deployment and database webhook configuration
+  * All signup-related data creation happens server-side
+  * Frontend only handles authentication UI, not data creation
+
+---
+
+### **D-017: Frontend Authentication via useAuth Hook and Context**
+
+* **Decision:** Frontend authentication state is managed through a `useAuth` React hook wrapped in an `AuthContext` provider, providing app-wide access to user, profile, organization, and session data
+* **Reason:**
+  * Centralized authentication state management
+  * RLS-compatible data fetching (uses authenticated user's session)
+  * Automatic session refresh and auth state change handling
+  * Clean separation of concerns (no routing/redirect logic in hook)
+  * Context pattern enables easy access throughout component tree
+* **Impact:**
+  * All components can access auth state via `useAuthContext()` hook
+  * Single source of truth for authentication data
+  * Automatic refetching on session changes
+  * Works seamlessly with Day-1 RLS policies (users can only access their own data)
+  * Requires `AuthProvider` wrapper in app root
+
+---
+
+### **D-018: Vercel Deployment with OAuth for Client Preview**
+
+* **Decision:** Deploy the application to Vercel after authentication completion, with Google and Apple sign-in enabled, so the client can track progress via a live preview
+* **Reason:**
+  * Enables real-time progress tracking and feedback
+  * Provides live preview environment for client review
+  * OAuth providers (Google, Apple) offer better user experience than email/password
+  * Vercel provides seamless Next.js deployment and preview URLs
+  * Allows client to test authentication flow and see actual implementation
+* **Impact:**
+  * Requires Vercel project setup and deployment configuration
+  * Requires Supabase OAuth provider configuration (Google, Apple)
+  * Environment variables must be configured in Vercel
+  * Client can access live preview URL to test and provide feedback
+  * Deployment happens after core authentication implementation is complete
+
+---
+
 ## **Delivery & Process Decisions**
 
-### **D-011: Documentation-First Development**
+### **D-012: Documentation-First Development**
 
 * **Decision:** Complete core documentation before writing code
 * **Reason:** Prevent scope drift, context loss, and architectural mistakes
@@ -113,7 +164,7 @@ This log should be **updated whenever a major decision is made**.
 
 ---
 
-### **D-012: Phased 12-Week Roadmap**
+### **D-013: Phased 12-Week Roadmap**
 
 * **Decision:** Deliver in 4 phases over 12 weeks
 * **Reason:** Manage complexity while delivering usable milestones
@@ -121,7 +172,7 @@ This log should be **updated whenever a major decision is made**.
 
 ---
 
-### **D-013: AI-Assisted Development (Cursor Pro)**
+### **D-014: AI-Assisted Development (Cursor Pro)**
 
 * **Decision:** Use Cursor Pro as the primary AI development assistant
 * **Reason:** Strong repo-level context and multi-file understanding
@@ -131,7 +182,7 @@ This log should be **updated whenever a major decision is made**.
 
 ## **Commercial & Legal Decisions**
 
-### **D-014: Code Ownership**
+### **D-015: Code Ownership**
 
 * **Decision:** Full source code ownership transferred to client
 * **Reason:** Client requirement and trust building
@@ -139,7 +190,7 @@ This log should be **updated whenever a major decision is made**.
 
 ---
 
-### **D-015: Pricing & Payment Structure**
+### **D-016: Pricing & Payment Structure**
 
 * **Decision:** Total project cost set at ₹2.4 Lakhs with 30/30/40 payment split
 * **Reason:** Balanced risk and commitment for both parties
