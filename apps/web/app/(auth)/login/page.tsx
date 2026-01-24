@@ -51,6 +51,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setError("");
+    setLoading(true);
     try {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -61,9 +62,13 @@ export default function LoginPage() {
 
       if (oauthError) {
         setError("Failed to sign in with Google. Please try again.");
+        setLoading(false);
       }
+      // Note: If successful, user will be redirected to Google, then back to /dashboard
+      // The AuthContext will automatically handle the session refresh on return
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
+      setLoading(false);
     }
   };
 
