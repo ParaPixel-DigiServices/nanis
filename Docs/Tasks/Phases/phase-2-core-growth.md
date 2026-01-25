@@ -11,7 +11,7 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] `contacts` table scoped to org.
+  - [x] `contacts` table scoped to org.
   - [ ] RLS policies prevent cross-org access.
 
 ### TASK: P2-CRM-002 — Contacts list + detail UI
@@ -42,8 +42,8 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Depends on:** P2-CRM-001
 - **Acceptance Criteria:**
   - [ ] Upload CSV, map columns to standard fields.
-  - [ ] Import creates contacts under current org.
-  - [ ] Import report shows successes/failures.
+  - [ ] Import creates contacts under current org. (API/service implemented; requires DB tables + UI wiring)
+  - [ ] Import report shows successes/failures. (API returns summary; UI pending)
 
 ### TASK: P2-CRM-005 — Custom fields framework (schema + UI)
 
@@ -127,8 +127,8 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] `campaigns` table with status workflow: draft → scheduled → sending → sent/failed.
-  - [ ] Audience selector references segments or explicit contact lists.
+  - [x] `campaigns` table with status workflow: draft → scheduled → sending → sent/failed.
+  - [ ] Audience selector references segments or explicit contact lists. (code exists for recipients/target rules; DB tables + UI pending)
 
 ### TASK: P2-CAMP-002 — Campaign creation wizard (MVP)
 

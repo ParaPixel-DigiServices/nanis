@@ -6,6 +6,7 @@ Quick entry points:
 - Project overview: [Overview/project-overview.md](./Overview/project-overview.md)
 - Architecture: [Overview/architecture-overview.md](./Overview/architecture-overview.md)
 - Database overview: [Database/database-overview.md](./Database/database-overview.md)
+- Contacts/Campaigns implementation notes: [implementation-complete.md](./implementation-complete.md)
 - SQL scripts: [../database/](../database/)
 
 ## Folder structure

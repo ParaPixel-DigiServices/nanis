@@ -8,13 +8,13 @@ This folder is meant to be shared with developers so they can:
 
 ## 0) Required reading (in order)
 
-- Docs/Overview/project-overview.md
-- Docs/Overview/architecture-overview.md
-- Docs/Database/database-overview.md
-- Docs/Overview/techstack-locked.md
-- Docs/Overview/roadmap-delivery.md
-- Docs/Overview/decision-log.md
-- Docs/Overview/feature-roadmap.md
+- [Overview/project-overview.md](./Overview/project-overview.md)
+- [Overview/architecture-overview.md](./Overview/architecture-overview.md)
+- [Database/database-overview.md](./Database/database-overview.md)
+- [Overview/techstack-locked.md](./Overview/techstack-locked.md)
+- [Overview/roadmap-delivery.md](./Overview/roadmap-delivery.md)
+- [Overview/decision-log.md](./Overview/decision-log.md)
+- [Overview/feature-roadmap.md](./Overview/feature-roadmap.md)
 
 ## 1) How to use these task files
 
@@ -48,20 +48,20 @@ Use one of:
 
 ## 2) Task breakdown files
 
-- Docs/Tasks/Onboarding/developer-onboarding.md (start here for new devs)
-- Docs/Tasks/Templates/task-template.md (copy/paste format)
-- Docs/Tasks/Planning/atomic-breakdowns.md (deep breakdown into atomic tasks)
-- Docs/Tasks/Planning/schedule-12-week.md (suggested weekly plan + milestones)
-- Docs/Tasks/Phases/phase-1-foundation.md (Weeks 1–3)
-- Docs/Tasks/Phases/phase-2-core-growth.md (Weeks 4–6)
-- Docs/Tasks/Phases/phase-3-builders-comms.md (Weeks 7–9)
-- Docs/Tasks/Phases/phase-4-automation-monetization.md (Weeks 10–12)
+- [Tasks/Onboarding/developer-onboarding.md](./Tasks/Onboarding/developer-onboarding.md) (start here for new devs)
+- [Tasks/Templates/task-template.md](./Tasks/Templates/task-template.md) (copy/paste format)
+- [Tasks/Planning/atomic-breakdowns.md](./Tasks/Planning/atomic-breakdowns.md) (deep breakdown into atomic tasks)
+- [Tasks/Planning/schedule-12-week.md](./Tasks/Planning/schedule-12-week.md) (suggested weekly plan + milestones)
+- [Tasks/Phases/phase-1-foundation.md](./Tasks/Phases/phase-1-foundation.md) (Weeks 1–3)
+- [Tasks/Phases/phase-2-core-growth.md](./Tasks/Phases/phase-2-core-growth.md) (Weeks 4–6)
+- [Tasks/Phases/phase-3-builders-comms.md](./Tasks/Phases/phase-3-builders-comms.md) (Weeks 7–9)
+- [Tasks/Phases/phase-4-automation-monetization.md](./Tasks/Phases/phase-4-automation-monetization.md) (Weeks 10–12)
 
 ## 3) Suggested staffing (3 developers)
 
-- Docs/Tasks/Dev/dev-frontend.md (Developer A)
-- Docs/Tasks/Dev/dev-backend.md (Developer B)
-- Docs/Tasks/Dev/dev-integrations.md (Developer C)
+- [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) (Developer A)
+- [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) (Developer B)
+- [Tasks/Dev/dev-integrations.md](./Tasks/Dev/dev-integrations.md) (Developer C)
 
 ## 4) Recommended weekly cadence
 

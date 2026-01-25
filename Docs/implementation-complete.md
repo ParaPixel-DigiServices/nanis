@@ -5,7 +5,25 @@
 This document provides a comprehensive overview of all implemented features in the Contacts and Campaigns modules. It covers the complete implementation from contact import and list functionality to campaign scheduling and automation.
 
 **Last Updated:** January 24, 2026  
-**Status:** Production-Ready Implementation
+**Status:** API/Service Implementation Present (DB/RLS/UI prerequisites pending)
+
+> Note: This repo contains substantial Contacts/Campaigns/Tags **service + controller** code under `apps/api/src/modules/**` and **Next.js API routes** under `apps/web/app/api/**`.
+> However, some database tables referenced by the code (e.g. tags + campaign recipients/targeting) are not present in the current `database/` SQL scripts or `migrations/` folder, and RLS policies for these domain tables are not yet captured in the repo.
+> Treat this document as “what the code intends/implements”, not an end-to-end production readiness guarantee.
+
+### **Reality Check (Repo Evidence)**
+
+**Implemented in code (server modules + API routes):**
+
+- Contacts: list + import modules exist in `apps/api/src/modules/contacts/**` and are exposed via `apps/web/app/api/contacts/**`.
+- Tags: tags module exists in `apps/api/src/modules/tags/**` and is exposed via `apps/web/app/api/tags/**`.
+- Campaigns: campaigns module (create/list/get + recipients generation + scheduler/runner) exists in `apps/api/src/modules/campaigns/**` and is exposed via `apps/web/app/api/campaigns/**`.
+
+**Known repo gaps (must be addressed before calling this “production-ready”):**
+
+- Database: `contact_tags`, `contact_tag_assignments`, `campaign_recipients`, `campaign_target_rules` tables are referenced by code but are not currently defined in `database/` scripts or `migrations/`.
+- RLS: tenant-scoped RLS policies for contacts/campaigns/tags domain tables are not present in repo SQL.
+- UI: contacts/campaigns/tags UI pages are not present (current web app is primarily auth + dashboard).
 
 ---
 
@@ -24,9 +42,11 @@ This document provides a comprehensive overview of all implemented features in t
 ### **1.1 Contact Import System**
 
 #### **Overview**
+
 A production-grade contact import system that supports multiple data sources and handles normalization, deduplication, and custom field management.
 
 #### **Supported Import Sources**
+
 - `excel_copy_paste` — Excel data pasted directly
 - `csv_upload` — CSV file upload
 - `xlsx_upload` — XLSX file upload
@@ -35,6 +55,7 @@ A production-grade contact import system that supports multiple data sources and
 #### **Import Pipeline**
 
 **1. Normalization (`import.normalizer.ts`)**
+
 - **Field Detection:** Auto-detects standard fields using aliases:
   - `first_name`: `["first_name", "firstname", "first name", "fname", "f_name"]`
   - `last_name`: `["last_name", "lastname", "last name", "lname", "l_name"]`
@@ -52,6 +73,7 @@ A production-grade contact import system that supports multiple data sources and
   - Unknown columns mapped to `custom_fields`
 
 **2. Deduplication (`import.deduplicator.ts`)**
+
 - **Primary Key:** `(organization_id, email)` — case-insensitive
 - **Logic:**
   - Queries existing contacts by email (case-insensitive) for the organization
@@ -62,12 +84,14 @@ A production-grade contact import system that supports multiple data sources and
   - Bulk query (not one-by-one) for efficiency
 
 **3. Contact Restoration**
+
 - If duplicate email exists and contact is soft-deleted:
   - Restore contact (`is_active = true`, `deleted_at = null`)
   - Update contact fields with new data
   - Track as `restored` in import result
 
 **4. Bulk Insert (`import.repository.ts`)**
+
 - **Batch Size:** 500 contacts per batch
 - **Conflict Handling:**
   - Handles unique constraint violations gracefully
@@ -79,13 +103,14 @@ A production-grade contact import system that supports multiple data sources and
   - Handles partial failures gracefully
 
 **5. Import Result**
+
 ```typescript
 {
-  total: number;           // Total rows processed
-  created: number;          // New contacts created
-  skipped: number;         // Duplicates skipped
-  restored: number;         // Soft-deleted contacts restored
-  invalid: number;          // Contacts that failed validation
+  total: number; // Total rows processed
+  created: number; // New contacts created
+  skipped: number; // Duplicates skipped
+  restored: number; // Soft-deleted contacts restored
+  invalid: number; // Contacts that failed validation
   errors: Array<{
     rowIndex: number;
     reason: string;
@@ -94,6 +119,7 @@ A production-grade contact import system that supports multiple data sources and
 ```
 
 #### **API Endpoint**
+
 ```
 POST /api/contacts/import
 Content-Type: application/json
@@ -105,6 +131,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "total": 100,
@@ -124,46 +151,55 @@ Content-Type: application/json
 ### **1.2 Contact List & Filtering**
 
 #### **Overview**
+
 A comprehensive contact list system with advanced filtering, search, pagination, and custom field support.
 
 #### **Query Parameters**
 
 **Basic Parameters:**
+
 - `page?: number` — Page number (default: 1)
 - `limit?: number` — Items per page (default: 50, max: 100)
 - `search?: string` — Search across email, first_name, last_name, mobile
 - `include_custom_fields?: boolean` — Include custom fields in response
 
 **Tag Filtering:**
+
 - `include_tags?: string[]` — Filter contacts that have ALL of these tags (AND logic)
 - `exclude_tags?: string[]` — Filter contacts that have NONE of these tags
 
 **Country Filtering:**
+
 - `exclude_countries?: string[]` — Filter contacts that are NOT from these countries (lowercase ISO codes)
 
 #### **Filtering Logic**
 
 **1. Tag Filtering (include_tags)**
+
 - For each tag in `include_tags`, fetch contacts that have it
 - Find intersection of all tag sets (contacts must have ALL tags)
 - Applied before main query for efficiency
 
 **2. Tag Filtering (exclude_tags)**
+
 - Fetch contacts that have ANY of the exclude_tags
 - Remove them from the result set
 - Works with include_tags (applies include first, then excludes)
 
 **3. Country Exclusion**
+
 - Applied at database level using Supabase `.not("country", "in", ...)`
 - Country codes normalized to lowercase
 - Efficient indexed query
 
 **4. Search**
+
 - Case-insensitive partial match
 - Searches across: `email`, `first_name`, `last_name`, `mobile`
 - Uses PostgreSQL `ILIKE` operator
 
 #### **Response Format**
+
 ```typescript
 {
   contacts: Array<{
@@ -173,7 +209,7 @@ A comprehensive contact list system with advanced filtering, search, pagination,
     first_name: string | null;
     last_name: string | null;
     mobile: string | null;
-    country: string | null;        // ISO country code (lowercase)
+    country: string | null; // ISO country code (lowercase)
     source: string;
     is_active: boolean;
     is_subscribed: boolean;
@@ -189,11 +225,12 @@ A comprehensive contact list system with advanced filtering, search, pagination,
     limit: number;
     total: number;
     total_pages: number;
-  };
+  }
 }
 ```
 
 #### **API Endpoint**
+
 ```
 GET /api/contacts?page=1&limit=50&search=john&include_tags[]=tag1&include_tags[]=tag2&exclude_countries=us,gb
 ```
@@ -203,23 +240,27 @@ GET /api/contacts?page=1&limit=50&search=john&include_tags[]=tag1&include_tags[]
 ### **1.3 Contact Tags System**
 
 #### **Overview**
+
 A complete tag management system for organizing and filtering contacts.
 
 #### **Features**
 
 **1. Tag Creation**
+
 - Create tags with name and optional color
 - Tags are scoped by `organization_id`
 - Unique constraint: `(organization_id, name)`
 - Validation: name length 1-100 characters
 
 **2. Tag Assignment**
+
 - Assign multiple tags to a contact
 - Bulk assignment support
 - Duplicate assignments are skipped (unique constraint: `(contact_id, tag_id)`)
 - Returns counts: `assigned_count`, `skipped_count`, `total_tags`
 
 **3. Tag Listing**
+
 - Paginated tag list
 - Optional search by tag name
 - Scoped by `organization_id`
@@ -227,6 +268,7 @@ A complete tag management system for organizing and filtering contacts.
 #### **API Endpoints**
 
 **Create Tag:**
+
 ```
 POST /api/tags
 {
@@ -236,11 +278,13 @@ POST /api/tags
 ```
 
 **List Tags:**
+
 ```
 GET /api/tags?page=1&limit=50&search=vip
 ```
 
 **Assign Tags:**
+
 ```
 POST /api/tags/assign
 {
@@ -250,6 +294,7 @@ POST /api/tags/assign
 ```
 
 **Response:**
+
 ```json
 {
   "contact_id": "contact-uuid",
@@ -266,9 +311,11 @@ POST /api/tags/assign
 ### **2.1 Campaign Management**
 
 #### **Overview**
+
 Complete campaign lifecycle management with scheduling, recipient generation, and status tracking.
 
 #### **Campaign Status Flow**
+
 ```
 draft → scheduled → sending → sent
          ↓
@@ -278,6 +325,7 @@ draft → scheduled → sending → sent
 #### **Campaign Creation**
 
 **Payload:**
+
 ```typescript
 {
   name: string;                    // Required, 1-255 characters
@@ -287,6 +335,7 @@ draft → scheduled → sending → sent
 ```
 
 **Validation:**
+
 - Campaign name required and within length limits
 - If `scheduled_at` provided:
   - Must be valid ISO timestamp
@@ -295,6 +344,7 @@ draft → scheduled → sending → sent
 - If `status = "scheduled"`, `scheduled_at` is required
 
 **Response:**
+
 ```typescript
 {
   id: string;
@@ -312,6 +362,7 @@ draft → scheduled → sending → sent
 #### **API Endpoints**
 
 **Create Campaign:**
+
 ```
 POST /api/campaigns
 {
@@ -321,11 +372,13 @@ POST /api/campaigns
 ```
 
 **List Campaigns:**
+
 ```
 GET /api/campaigns?page=1&limit=50&status=scheduled
 ```
 
 **Get Campaign:**
+
 ```
 GET /api/campaigns/:id
 ```
@@ -335,6 +388,7 @@ GET /api/campaigns/:id
 ### **2.2 Campaign Recipient Generation**
 
 #### **Overview**
+
 Automated recipient generation system that applies sophisticated filtering rules based on campaign target rules.
 
 #### **Recipient Generation Logic**
@@ -356,11 +410,13 @@ Campaigns can have optional target rules that define inclusion/exclusion criteri
 **2. Eligible Contact Criteria**
 
 Base criteria (always applied):
+
 - `organization_id` matches
 - `is_active = true` (unless `exclude_inactive = false`)
 - `is_subscribed = true` (unless `exclude_unsubscribed = false`)
 
 Additional filters (if specified in target rules):
+
 - Country exclusion: `country NOT IN (exclude_countries)`
 - Bounce exclusion: Exclude contacts that have `status = "bounced"` in any campaign
 - Tag inclusion: Contacts must have ALL tags in `include_tags`
@@ -377,20 +433,23 @@ Additional filters (if specified in target rules):
 ```
 
 **4. Generation Result**
+
 ```typescript
 {
-  total_recipients: number;    // Total recipients for campaign
-  added_count: number;         // New recipients added
-  skipped_count: number;       // Recipients already existed
+  total_recipients: number; // Total recipients for campaign
+  added_count: number; // New recipients added
+  skipped_count: number; // Recipients already existed
 }
 ```
 
 #### **API Endpoint**
+
 ```
 POST /api/campaigns/:id/recipients
 ```
 
 **Response:**
+
 ```json
 {
   "total_recipients": 150,
@@ -404,16 +463,19 @@ POST /api/campaigns/:id/recipients
 ### **2.3 Campaign Scheduling**
 
 #### **Overview**
+
 Automated campaign scheduling system that detects ready campaigns and prepares them for sending.
 
 #### **Scheduling Model**
 
 **Immediate Send:**
+
 - `scheduled_at = null`
 - Campaign can be sent immediately
 - Status can be `"draft"` or other non-scheduled statuses
 
 **Scheduled Send:**
+
 - `scheduled_at = "2026-01-25T10:00:00Z"` (ISO timestamp)
 - Status automatically set to `"scheduled"`
 - Campaign will be processed when `scheduled_at <= now()`
@@ -423,11 +485,13 @@ Automated campaign scheduling system that detects ready campaigns and prepares t
 **Function: `processScheduledCampaigns(organizationId?)`**
 
 **Logic:**
+
 1. Find campaigns where `status = "scheduled"` AND `scheduled_at <= now()`
 2. Update status to `"sending"`
 3. Return processing results
 
 **Response:**
+
 ```typescript
 {
   processed_count: number;
@@ -450,6 +514,7 @@ Automated campaign scheduling system that detects ready campaigns and prepares t
 ### **2.4 Campaign Runner Service**
 
 #### **Overview**
+
 Background automation service that orchestrates scheduled campaign execution, recipient generation, and status updates.
 
 #### **Runner Service (`runner.service.ts`)**
@@ -470,17 +535,20 @@ Background automation service that orchestrates scheduled campaign execution, re
 ```
 
 **Idempotency Guarantees:**
+
 - ✅ If recipients already exist, generation is skipped
 - ✅ If status is already `"sending"`, update is skipped
 - ✅ Errors in one campaign don't stop processing of others
 - ✅ Safe to run multiple times concurrently
 
 **System User:**
+
 - Uses `SYSTEM_USER_ID` environment variable
 - Should be a real user in `profiles` table
 - Should have appropriate permissions in `organization_members`
 
 **Response:**
+
 ```typescript
 {
   processed_count: number;
@@ -501,11 +569,13 @@ Background automation service that orchestrates scheduled campaign execution, re
 ```
 
 #### **API Endpoint**
+
 ```
 POST /api/campaigns/run-automation?organization_id=org-id
 ```
 
 **Usage:**
+
 - **Cron Jobs:** Call every minute
 - **Supabase Edge Functions:** Schedule via Supabase cron
 - **Manual Testing:** Call on-demand
@@ -515,22 +585,27 @@ POST /api/campaigns/run-automation?organization_id=org-id
 ### **2.5 Bounce Tracking**
 
 #### **Overview**
+
 Comprehensive bounce tracking system that marks recipients as bounced and excludes them from future campaigns.
 
 #### **Bounce Marking**
 
 **Single Recipient:**
+
 ```typescript
-markRecipientBounced(campaignId, contactId, context)
+markRecipientBounced(campaignId, contactId, context);
 ```
+
 - Updates `status = "bounced"`
 - Sets `bounced_at = current timestamp`
 - Returns updated recipient
 
 **Bulk Bounce Marking:**
+
 ```typescript
-bulkMarkRecipientsBounced(campaignId, contactIds, context)
+bulkMarkRecipientsBounced(campaignId, contactIds, context);
 ```
+
 - Marks multiple recipients as bounced
 - Processes in batches of 500
 - Returns count of successfully updated recipients
@@ -538,11 +613,13 @@ bulkMarkRecipientsBounced(campaignId, contactIds, context)
 #### **Bounce Exclusion in Recipient Generation**
 
 When `campaign_target_rules.exclude_bounced = true`:
+
 - Queries all contacts that have `status = "bounced"` in any campaign
 - Excludes them from eligible contacts list
 - Applied before recipient insertion
 
 #### **Cross-Campaign Bounce Tracking**
+
 - Bounces are tracked across ALL campaigns
 - If a contact bounces in any campaign, they can be excluded from future campaigns
 - Efficient query using indexed `status = "bounced"` filter
@@ -554,6 +631,7 @@ When `campaign_target_rules.exclude_bounced = true`:
 ### **3.1 Contacts Tables**
 
 #### **`contacts` Table**
+
 ```sql
 CREATE TABLE contacts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -570,8 +648,8 @@ CREATE TABLE contacts (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
-    
-    CONSTRAINT contacts_email_or_mobile_check 
+
+    CONSTRAINT contacts_email_or_mobile_check
         CHECK (email IS NOT NULL OR mobile IS NOT NULL)
 );
 
@@ -584,12 +662,13 @@ CREATE INDEX idx_contacts_country ON contacts(organization_id, country) WHERE co
 CREATE INDEX idx_contacts_country_filter ON contacts(country) WHERE country IS NOT NULL;
 
 -- Unique constraint: case-insensitive email per organization (active only)
-CREATE UNIQUE INDEX idx_contacts_org_email_unique 
-    ON contacts(organization_id, LOWER(email)) 
+CREATE UNIQUE INDEX idx_contacts_org_email_unique
+    ON contacts(organization_id, LOWER(email))
     WHERE email IS NOT NULL AND is_active = true;
 ```
 
 #### **`contact_tags` Table**
+
 ```sql
 CREATE TABLE contact_tags (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -598,12 +677,13 @@ CREATE TABLE contact_tags (
     color TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
-    
+
     UNIQUE(organization_id, name)
 );
 ```
 
 #### **`contact_tag_assignments` Table**
+
 ```sql
 CREATE TABLE contact_tag_assignments (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -612,12 +692,13 @@ CREATE TABLE contact_tag_assignments (
     organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     assigned_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     assigned_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
-    
+
     UNIQUE(contact_id, tag_id)
 );
 ```
 
 #### **`contact_custom_field_definitions` Table**
+
 ```sql
 CREATE TABLE contact_custom_field_definitions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -625,12 +706,13 @@ CREATE TABLE contact_custom_field_definitions (
     field_name TEXT NOT NULL,
     field_type TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     UNIQUE(organization_id, field_name)
 );
 ```
 
 #### **`contact_custom_field_values` Table**
+
 ```sql
 CREATE TABLE contact_custom_field_values (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -642,7 +724,7 @@ CREATE TABLE contact_custom_field_values (
     value_boolean BOOLEAN,
     value_date DATE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     UNIQUE(contact_id, field_definition_id)
 );
 ```
@@ -652,6 +734,7 @@ CREATE TABLE contact_custom_field_values (
 ### **3.2 Campaigns Tables**
 
 #### **`campaigns` Table**
+
 ```sql
 CREATE TABLE campaigns (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -667,11 +750,12 @@ CREATE TABLE campaigns (
 -- Indexes
 CREATE INDEX idx_campaigns_organization_id ON campaigns(organization_id);
 CREATE INDEX idx_campaigns_status ON campaigns(organization_id, status);
-CREATE INDEX idx_campaigns_scheduled_at ON campaigns(status, scheduled_at) 
+CREATE INDEX idx_campaigns_scheduled_at ON campaigns(status, scheduled_at)
     WHERE status = 'scheduled' AND scheduled_at IS NOT NULL;
 ```
 
 #### **`campaign_target_rules` Table**
+
 ```sql
 CREATE TABLE campaign_target_rules (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -685,12 +769,13 @@ CREATE TABLE campaign_target_rules (
     exclude_inactive BOOLEAN NULL DEFAULT true,
     exclude_bounced BOOLEAN NULL DEFAULT false,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     UNIQUE(campaign_id)
 );
 ```
 
 #### **`campaign_recipients` Table**
+
 ```sql
 CREATE TABLE campaign_recipients (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -704,14 +789,14 @@ CREATE TABLE campaign_recipients (
     clicked_at TIMESTAMPTZ NULL,
     bounced_at TIMESTAMPTZ NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    
+
     UNIQUE(campaign_id, contact_id)
 );
 
 -- Indexes
 CREATE INDEX idx_campaign_recipients_campaign_id ON campaign_recipients(campaign_id);
 CREATE INDEX idx_campaign_recipients_contact_id ON campaign_recipients(contact_id);
-CREATE INDEX idx_campaign_recipients_status ON campaign_recipients(organization_id, status) 
+CREATE INDEX idx_campaign_recipients_status ON campaign_recipients(organization_id, status)
     WHERE status = 'bounced';
 ```
 
@@ -722,6 +807,7 @@ CREATE INDEX idx_campaign_recipients_status ON campaign_recipients(organization_
 ### **4.1 Contacts API**
 
 #### **Import Contacts**
+
 ```
 POST /api/contacts/import
 Authorization: Bearer <token>
@@ -737,12 +823,14 @@ Content-Type: application/json
 ```
 
 #### **List Contacts**
+
 ```
 GET /api/contacts?page=1&limit=50&search=john&include_tags[]=tag1&exclude_countries=us,gb
 Authorization: Bearer <token>
 ```
 
 #### **Get Contact** (if implemented)
+
 ```
 GET /api/contacts/:id
 Authorization: Bearer <token>
@@ -753,6 +841,7 @@ Authorization: Bearer <token>
 ### **4.2 Tags API**
 
 #### **Create Tag**
+
 ```
 POST /api/tags
 Authorization: Bearer <token>
@@ -763,12 +852,14 @@ Authorization: Bearer <token>
 ```
 
 #### **List Tags**
+
 ```
 GET /api/tags?page=1&limit=50&search=vip
 Authorization: Bearer <token>
 ```
 
 #### **Assign Tags**
+
 ```
 POST /api/tags/assign
 Authorization: Bearer <token>
@@ -783,6 +874,7 @@ Authorization: Bearer <token>
 ### **4.3 Campaigns API**
 
 #### **Create Campaign**
+
 ```
 POST /api/campaigns
 Authorization: Bearer <token>
@@ -793,24 +885,28 @@ Authorization: Bearer <token>
 ```
 
 #### **List Campaigns**
+
 ```
 GET /api/campaigns?page=1&limit=50&status=scheduled
 Authorization: Bearer <token>
 ```
 
 #### **Get Campaign**
+
 ```
 GET /api/campaigns/:id
 Authorization: Bearer <token>
 ```
 
 #### **Generate Recipients**
+
 ```
 POST /api/campaigns/:id/recipients
 Authorization: Bearer <token>
 ```
 
 #### **Run Campaign Automation** (Background Service)
+
 ```
 POST /api/campaigns/run-automation?organization_id=org-id
 Authorization: Bearer <token> (optional for system calls)
@@ -837,6 +933,7 @@ Supabase (Database + RLS)
 **Responsibilities:**
 
 **Controller Layer:**
+
 - Parse request/query parameters
 - Authenticate user and get organization context
 - Call service layer
@@ -844,6 +941,7 @@ Supabase (Database + RLS)
 - Return JSON responses
 
 **Service Layer:**
+
 - Validate business rules
 - Enforce organization context
 - Orchestrate repository calls
@@ -851,6 +949,7 @@ Supabase (Database + RLS)
 - Throw errors for invalid operations
 
 **Repository Layer:**
+
 - Direct database interactions
 - All queries scoped by `organization_id`
 - Handle database errors
@@ -859,22 +958,25 @@ Supabase (Database + RLS)
 ### **5.2 Multi-Tenancy**
 
 **Organization Scoping:**
+
 - All queries include `organization_id` filter
 - `organization_id` always from auth context, never from client input
 - RLS policies enforce organization boundaries
 - Cross-organization data access prevented
 
 **Context Pattern:**
+
 ```typescript
 interface Context {
-  organization_id: string;  // From auth, not client
-  user_id: string;          // From auth, not client
+  organization_id: string; // From auth, not client
+  user_id: string; // From auth, not client
 }
 ```
 
 ### **5.3 Error Handling**
 
 **Error Types:**
+
 - `unauthorized` — Missing or invalid authentication
 - `forbidden` — User not member of organization
 - `validation_error` — Invalid input data
@@ -882,6 +984,7 @@ interface Context {
 - `internal_server_error` — Unexpected errors
 
 **Error Response Format:**
+
 ```json
 {
   "error": "validation_error",
@@ -892,12 +995,14 @@ interface Context {
 ### **5.4 Type Safety**
 
 **Type Definitions:**
+
 - Entity types (aligned with database schema)
 - DTO types (for API responses)
 - Payload types (for API requests, NO `organization_id`)
 - Context types (for internal operations)
 
 **Example:**
+
 ```typescript
 // Entity (database)
 interface Campaign {
@@ -914,19 +1019,21 @@ interface CreateCampaignPayload {
 
 // Context (internal)
 interface CampaignContext {
-  organization_id: string;  // Enforced from auth
-  user_id: string;          // Enforced from auth
+  organization_id: string; // Enforced from auth
+  user_id: string; // Enforced from auth
 }
 ```
 
 ### **5.5 Pagination**
 
 **Offset-Based Pagination:**
+
 - `page`: Page number (1-based)
 - `limit`: Items per page (1-100, default: 50)
 - Returns: `total`, `total_pages`, `page`, `limit`
 
 **Example:**
+
 ```typescript
 {
   pagination: {
@@ -941,12 +1048,14 @@ interface CampaignContext {
 ### **5.6 Bulk Operations**
 
 **Batching Strategy:**
+
 - Batch size: 500 items
 - Handles partial failures gracefully
 - Continues processing on errors
 - Returns success count
 
 **Example:**
+
 ```typescript
 // Insert 1500 contacts in batches of 500
 // If batch 2 fails, batches 1 and 3 still succeed
@@ -960,6 +1069,7 @@ interface CampaignContext {
 ### **6.1 Contact Management**
 
 ✅ **Import System:**
+
 - Multi-source import (Excel, CSV, XLSX, Mailchimp)
 - Automatic field detection and normalization
 - Email deduplication (case-insensitive)
@@ -968,6 +1078,7 @@ interface CampaignContext {
 - Bulk insert with error handling
 
 ✅ **List & Filtering:**
+
 - Paginated contact list
 - Full-text search (email, name, mobile)
 - Tag filtering (include/exclude)
@@ -976,6 +1087,7 @@ interface CampaignContext {
 - Efficient database queries
 
 ✅ **Tag Management:**
+
 - Create and list tags
 - Assign tags to contacts
 - Bulk tag assignment
@@ -984,12 +1096,14 @@ interface CampaignContext {
 ### **6.2 Campaign Management**
 
 ✅ **Campaign Lifecycle:**
+
 - Create campaigns (draft/scheduled)
 - List campaigns with filters
 - Get campaign details with recipient count
 - Campaign scheduling support
 
 ✅ **Recipient Generation:**
+
 - Automatic recipient generation
 - Sophisticated filtering rules:
   - Country exclusion
@@ -1001,6 +1115,7 @@ interface CampaignContext {
 - Duplicate handling
 
 ✅ **Scheduling & Automation:**
+
 - Scheduled campaign support (`scheduled_at`)
 - Background runner service
 - Automatic recipient generation
@@ -1009,6 +1124,7 @@ interface CampaignContext {
 - Cron/Edge Function compatible
 
 ✅ **Bounce Tracking:**
+
 - Mark recipients as bounced
 - Bulk bounce marking
 - Cross-campaign bounce exclusion
@@ -1026,12 +1142,12 @@ interface CampaignContext {
 ALTER TABLE contacts
 ADD COLUMN IF NOT EXISTS country TEXT;
 
-CREATE INDEX IF NOT EXISTS idx_contacts_country 
-    ON contacts(organization_id, country) 
+CREATE INDEX IF NOT EXISTS idx_contacts_country
+    ON contacts(organization_id, country)
     WHERE country IS NOT NULL;
 
-CREATE INDEX IF NOT EXISTS idx_contacts_country_filter 
-    ON contacts(country) 
+CREATE INDEX IF NOT EXISTS idx_contacts_country_filter
+    ON contacts(country)
     WHERE country IS NOT NULL;
 ```
 
@@ -1043,8 +1159,8 @@ CREATE INDEX IF NOT EXISTS idx_contacts_country_filter
 ALTER TABLE campaigns
 ADD COLUMN IF NOT EXISTS scheduled_at TIMESTAMPTZ NULL;
 
-CREATE INDEX IF NOT EXISTS idx_campaigns_scheduled_at 
-    ON campaigns(status, scheduled_at) 
+CREATE INDEX IF NOT EXISTS idx_campaigns_scheduled_at
+    ON campaigns(status, scheduled_at)
     WHERE status = 'scheduled' AND scheduled_at IS NOT NULL;
 ```
 
@@ -1078,36 +1194,43 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ### **9.1 Indexing Strategy**
 
 **Contacts:**
+
 - `(organization_id, is_active)` — For active contact queries
 - `(organization_id, country)` — For country filtering
 - `LOWER(email)` — For case-insensitive email uniqueness
 - `(organization_id, LOWER(email))` — For deduplication
 
 **Campaigns:**
+
 - `(status, scheduled_at)` — For scheduler queries
 - `(organization_id, status)` — For campaign filtering
 
 **Campaign Recipients:**
+
 - `(organization_id, status)` — For bounce queries
 - `(campaign_id, contact_id)` — Unique constraint
 
 **Tags:**
+
 - `(organization_id, name)` — Unique constraint
 - `(contact_id, tag_id)` — Unique constraint
 
 ### **9.2 Query Optimization**
 
 **Tag Filtering:**
+
 - Applied before main query (reduces dataset)
 - Uses Set operations for intersection/exclusion
 - Efficient for large contact lists
 
 **Country Filtering:**
+
 - Applied at database level (indexed)
 - Uses `.not("country", "in", ...)` for exclusion
 - Normalized to lowercase for consistency
 
 **Bounce Exclusion:**
+
 - Single query to fetch all bounced contact IDs
 - Filtered in memory after main query
 - Efficient for large datasets
@@ -1115,6 +1238,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ### **9.3 Bulk Operations**
 
 **Batch Size:** 500 items per batch
+
 - Balances performance and memory usage
 - Handles partial failures gracefully
 - Continues processing on errors
@@ -1150,6 +1274,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ### **11.1 Error Tracking**
 
 All errors are:
+
 - Logged with context
 - Returned in structured format
 - Include campaign/contact IDs for debugging
@@ -1157,6 +1282,7 @@ All errors are:
 ### **11.2 Idempotency**
 
 All operations are idempotent:
+
 - Safe to retry
 - Safe for concurrent execution
 - Status checks prevent duplicate operations
@@ -1164,6 +1290,7 @@ All operations are idempotent:
 ### **11.3 Monitoring Points**
 
 **Key Metrics to Monitor:**
+
 - Campaign automation execution time
 - Recipient generation counts
 - Import success/failure rates
@@ -1306,18 +1433,21 @@ migrations/
 This implementation provides a complete, production-ready foundation for:
 
 ✅ **Contact Management:**
+
 - Multi-source import with normalization
 - Advanced filtering and search
 - Tag management
 - Custom fields support
 
 ✅ **Campaign Management:**
+
 - Campaign lifecycle management
 - Sophisticated recipient generation
 - Automated scheduling
 - Bounce tracking
 
 ✅ **Architecture:**
+
 - Layered, maintainable codebase
 - Multi-tenant security
 - Type-safe implementation
