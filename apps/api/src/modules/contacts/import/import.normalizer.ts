@@ -13,6 +13,7 @@ const FIELD_ALIASES = {
   full_name: ["full_name", "fullname", "full name", "name"],
   email: ["email", "mail", "e-mail", "e_mail"],
   mobile: ["mobile", "phone", "number", "phone_number", "phone number", "phoneNumber"],
+  country: ["country", "country_code", "country code", "countrycode", "iso_country", "iso_country_code"],
 } as const;
 
 /**
@@ -76,6 +77,14 @@ export function normalizeRow(
   if (mobile !== undefined) {
     normalized.mobile = mobile;
     const columnName = findColumnName(row, FIELD_ALIASES.mobile);
+    if (columnName) mappedColumns.add(columnName);
+  }
+
+  // Normalize country (lowercase)
+  const country = detectAndNormalizeCountry(row, FIELD_ALIASES.country);
+  if (country !== undefined) {
+    normalized.country = country;
+    const columnName = findColumnName(row, FIELD_ALIASES.country);
     if (columnName) mappedColumns.add(columnName);
   }
 
@@ -235,6 +244,33 @@ function normalizeValue(value: string): string | undefined {
  * Normalizes email: lowercase, trim, empty string -> undefined
  */
 function normalizeEmail(value: string): string | undefined {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  if (!trimmed) return undefined;
+  return trimmed.toLowerCase();
+}
+
+/**
+ * Detects and normalizes country (with lowercase)
+ */
+function detectAndNormalizeCountry(
+  row: Record<string, string>,
+  aliases: readonly string[]
+): string | undefined {
+  for (const alias of aliases) {
+    const value = findValueByAlias(row, alias);
+    if (value !== undefined) {
+      return normalizeCountry(value);
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Normalizes country: lowercase, trim, empty string -> undefined
+ * Stores as lowercase ISO country code for consistent filtering
+ */
+function normalizeCountry(value: string): string | undefined {
   if (!value) return undefined;
   const trimmed = value.trim();
   if (!trimmed) return undefined;

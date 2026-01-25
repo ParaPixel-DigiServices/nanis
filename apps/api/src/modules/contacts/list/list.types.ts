@@ -8,6 +8,9 @@ export interface ListContactsQuery {
   limit?: number;
   search?: string;
   include_custom_fields?: boolean;
+  include_tags?: string[]; // Filter contacts that have ALL of these tags
+  exclude_tags?: string[]; // Filter contacts that have NONE of these tags
+  exclude_countries?: string[]; // Filter contacts that are NOT from these countries (lowercase ISO codes)
 }
 
 export interface ContactListItem {
@@ -17,6 +20,7 @@ export interface ContactListItem {
   first_name: string | null;
   last_name: string | null;
   mobile: string | null;
+  country: string | null; // ISO country code (lowercase)
   source: string;
   is_active: boolean;
   is_subscribed: boolean;

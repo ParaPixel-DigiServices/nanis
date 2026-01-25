@@ -40,6 +40,9 @@ export async function handleListContacts(
       limit?: string;
       search?: string;
       include_custom_fields?: string;
+      include_tags?: string | string[];
+      exclude_tags?: string | string[];
+      exclude_countries?: string | string[];
     };
     headers: {
       authorization?: string;
@@ -102,6 +105,57 @@ export async function handleListContacts(
       request.query.include_custom_fields === "true" ||
       request.query.include_custom_fields === "1";
 
+    // Parse tag filters
+    // Support both array format (?include_tags[]=id1&include_tags[]=id2) and comma-separated (?include_tags=id1,id2)
+    let include_tags: string[] | undefined;
+    if (request.query.include_tags) {
+      if (Array.isArray(request.query.include_tags)) {
+        include_tags = request.query.include_tags.filter((id) => id && id.trim());
+      } else {
+        include_tags = request.query.include_tags
+          .split(",")
+          .map((id) => id.trim())
+          .filter((id) => id);
+      }
+      if (include_tags.length === 0) {
+        include_tags = undefined;
+      }
+    }
+
+    let exclude_tags: string[] | undefined;
+    if (request.query.exclude_tags) {
+      if (Array.isArray(request.query.exclude_tags)) {
+        exclude_tags = request.query.exclude_tags.filter((id) => id && id.trim());
+      } else {
+        exclude_tags = request.query.exclude_tags
+          .split(",")
+          .map((id) => id.trim())
+          .filter((id) => id);
+      }
+      if (exclude_tags.length === 0) {
+        exclude_tags = undefined;
+      }
+    }
+
+    // Parse country exclusion filter
+    // Support both array format (?exclude_countries[]=us&exclude_countries[]=gb) and comma-separated (?exclude_countries=us,gb)
+    let exclude_countries: string[] | undefined;
+    if (request.query.exclude_countries) {
+      if (Array.isArray(request.query.exclude_countries)) {
+        exclude_countries = request.query.exclude_countries
+          .map((c) => c.trim().toLowerCase())
+          .filter((c) => c);
+      } else {
+        exclude_countries = request.query.exclude_countries
+          .split(",")
+          .map((c) => c.trim().toLowerCase())
+          .filter((c) => c);
+      }
+      if (exclude_countries.length === 0) {
+        exclude_countries = undefined;
+      }
+    }
+
     // Validate pagination parameters
     if (page !== undefined && (isNaN(page) || page < 1)) {
       return {
@@ -130,6 +184,9 @@ export async function handleListContacts(
       limit,
       search,
       include_custom_fields,
+      include_tags,
+      exclude_tags,
+      exclude_countries,
     };
 
     // Step 5: Call ListService

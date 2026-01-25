@@ -21,6 +21,7 @@ export interface NormalizedContact {
   last_name?: string;
   email?: string;
   mobile?: string;
+  country?: string; // ISO country code (lowercase, normalized)
   custom_fields: Record<string, string>;
   source: string;
 }
@@ -93,6 +94,7 @@ export interface ContactInsertData {
   first_name: string | null;
   last_name: string | null;
   mobile: string | null;
+  country: string | null; // ISO country code (lowercase, normalized)
   source: ImportSource;
   is_active: boolean;
   is_subscribed: boolean;
