@@ -848,6 +848,6 @@ This plan provides a comprehensive guide for implementing the contacts table wit
 * `Docs/Contacts/contacts-schema-mvp.md` - MVP schema design
 * `Docs/Contacts/contacts-schema-mvp-evaluation.md` - Schema evaluation
 * `Docs/Database/rls.md` - RLS strategy documentation
-* `schema-auth-tables.sql` - Reference implementation for auth tables
+* `database/schema-auth-tables.sql` - Reference implementation for auth tables
 
 ---

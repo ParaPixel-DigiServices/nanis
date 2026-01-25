@@ -389,7 +389,7 @@ Potential improvements for future iterations:
 
 * **Decision Log:** `Docs/Overview/decision-log.md` - D-011
 * **RLS Policies:** `Docs/Database/rls.md` - Day-1 minimal RLS strategy
-* **Database Schema:** `schema-auth-tables.sql` - Table definitions
+* **Database Schema:** `database/schema-auth-tables.sql` - Table definitions
 * **Edge Function Code:** `apps/api/on-signup-create-org.ts`
 
 ---

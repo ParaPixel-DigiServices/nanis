@@ -174,7 +174,7 @@ The policies ensure that:
 ## **9. Implementation File**
 
 The Day-1 minimal RLS policies are defined in:
-* **File:** `rls-day1-minimal.sql`
+* **File:** `database/rls-day1-minimal.sql`
 * **Location:** Project root directory
 
 To apply these policies, run the SQL file in the Supabase SQL Editor.

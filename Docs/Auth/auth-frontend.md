@@ -730,7 +730,7 @@ console.log({ user, session, loading });
 
 * **RLS Policies:** `Docs/Database/rls.md` - Day-1 minimal RLS strategy
 * **Signup Flow:** `Docs/Auth/signup-flow.md` - How profiles and organizations are created
-* **Database Schema:** `schema-auth-tables.sql` - Table definitions
+* **Database Schema:** `database/schema-auth-tables.sql` - Table definitions
 * **Hook Implementation:** `apps/web/hooks/useAuth.ts` - Source code
 * **Shared Client:** `apps/web/lib/supabase.ts` - Singleton Supabase client
 * **Auth Context:** `apps/web/context/AuthContext.tsx` - React context provider
