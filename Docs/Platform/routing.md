@@ -467,9 +467,9 @@ Potential improvements:
 
 ## **14. Related Documentation**
 
-* **Auth Context:** `Docs/auth-frontend.md` - Authentication state management
-* **RLS Policies:** `Docs/rls.md` - Database-level security
-* **Signup Flow:** `Docs/signup-flow.md` - User registration process
+* **Auth Context:** `Docs/Auth/auth-frontend.md` - Authentication state management
+* **RLS Policies:** `Docs/Database/rls.md` - Database-level security
+* **Signup Flow:** `Docs/Auth/signup-flow.md` - User registration process
 
 ---
 

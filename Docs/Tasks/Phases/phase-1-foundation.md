@@ -11,9 +11,9 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** None
 - **Acceptance Criteria:**
-  - [ ] Next.js + TypeScript app boots locally.
-  - [ ] Tailwind configured; baseline layout renders.
-  - [ ] ESLint/formatting conventions documented.
+  - [x] Next.js + TypeScript app boots locally.
+  - [x] Tailwind configured; baseline layout renders.
+  - [x] ESLint/formatting conventions documented.
 
 ### TASK: P1-SETUP-002 — Environment configuration + secrets strategy
 
@@ -45,7 +45,7 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Acceptance Criteria:**
   - [ ] Supabase project created.
   - [ ] Local workflow documented (migrations, seed, resetting).
-  - [ ] Service-role key usage restricted to server contexts.
+  - [x] Service-role key usage restricted to server contexts.
 
 ### TASK: P1-DB-002 — Define core tables (orgs, members, profiles)
 
@@ -54,9 +54,9 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-DB-001
 - **Acceptance Criteria:**
-  - [ ] Tables exist for: `profiles`, `organizations`, `organization_members`.
-  - [ ] Foreign keys and tenant boundaries are present.
-  - [ ] Created/updated timestamps included.
+  - [x] Tables exist for: `profiles`, `organizations`, `organization_members`.
+  - [x] Foreign keys and tenant boundaries are present.
+  - [x] Created/updated timestamps included.
 
 ### TASK: P1-DB-003 — Add RLS policies for multi-tenancy
 
@@ -65,8 +65,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-DB-002
 - **Acceptance Criteria:**
-  - [ ] RLS enabled for tenant-owned tables.
-  - [ ] Policies enforce: user can only access orgs they belong to.
+  - [x] RLS enabled for tenant-owned tables.
+  - [x] Policies enforce: user can only access orgs they belong to.
   - [ ] Policies reviewed for least privilege.
 
 ### TASK: P1-DB-004 — Seed script for dev org + admin user
@@ -88,7 +88,7 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Depends on:** P1-SETUP-001, P1-DB-001
 - **Acceptance Criteria:**
   - [ ] Users can sign up, log in, and request password reset.
-  - [ ] Error states handled (invalid password, existing email, etc.).
+  - [x] Error states handled (invalid password, existing email, etc.).
 
 ### TASK: P1-AUTH-002 — Session handling + protected routes
 
@@ -97,8 +97,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-AUTH-001
 - **Acceptance Criteria:**
-  - [ ] Unauthed users redirected to login.
-  - [ ] Authed users land on dashboard.
+  - [x] Unauthed users redirected to login.
+  - [x] Authed users land on dashboard.
   - [ ] Logout clears session.
 
 ### TASK: P1-AUTH-003 — Create org/workspace onboarding flow
@@ -120,8 +120,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-DB-002
 - **Acceptance Criteria:**
-  - [ ] Roles documented (e.g., Owner/Admin/Member).
-  - [ ] Permission checks implemented server-side (Edge Function helpers or DB functions).
+  - [x] Roles documented (e.g., Owner/Admin/Member).
+  - [x] Permission checks implemented server-side (Edge Function helpers or DB functions).
 
 ### TASK: P1-RBAC-002 — Invite team member (email invite stub)
 
@@ -180,5 +180,5 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 
 - [ ] Auth works end-to-end.
 - [ ] Multi-tenant org boundary is enforced with RLS.
-- [ ] App shell exists with protected routes.
+- [x] App shell exists with protected routes.
 - [ ] Team basics exist (roles + members list).

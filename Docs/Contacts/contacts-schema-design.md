@@ -474,8 +474,8 @@ This schema provides a flexible, scalable foundation for contact management with
 
 ## **19. Related Documents**
 
-* `Docs/database-overview.md` - High-level database model
-* `Docs/project-overview.md` - Contacts module requirements
-* `schema-auth-tables.sql` - Reference implementation for auth tables
+* `Docs/Database/database-overview.md` - High-level database model
+* `Docs/Overview/project-overview.md` - Contacts module requirements
+* `database/schema-auth-tables.sql` - Reference implementation for auth tables
 
 ---

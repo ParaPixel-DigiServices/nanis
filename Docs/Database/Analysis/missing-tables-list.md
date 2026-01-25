@@ -8,7 +8,7 @@
 ### **Missing Field in Existing Table:**
 
 **`contacts` table - Missing `deleted_at` field**
-- **Current Status:** Table exists in `schema-contacts.sql` but missing `deleted_at` column
+- **Current Status:** Table exists in `database/schema-contacts.sql` but missing `deleted_at` column
 - **Referenced In:** 
   - `apps/api/src/modules/contacts/import/import.deduplicator.ts` (lines 59, 79, 82)
   - `apps/api/src/modules/contacts/import/import.repository.ts` (line 134)

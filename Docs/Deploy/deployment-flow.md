@@ -239,7 +239,7 @@ If issues arise during deployment:
 
 ## **Reference: Decision Log**
 
-See **D-018: Vercel Deployment with OAuth for Client Preview** in `Docs/decision-log.md` for the original decision and reasoning.
+See **D-018: Vercel Deployment with OAuth for Client Preview** in `Docs/Overview/decision-log.md` for the original decision and reasoning.
 
 ---
 

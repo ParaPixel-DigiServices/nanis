@@ -641,8 +641,8 @@ After these fixes, the schema is ready for MVP implementation and will scale to 
 
 ## **13. Related Documents**
 
-* `Docs/contacts-schema-mvp.md` - Original MVP schema design
-* `Docs/contacts-schema-design.md` - Full schema design
-* `Docs/contacts-schema-analysis.md` - Detailed analysis and improvements
+* `Docs/Contacts/contacts-schema-mvp.md` - Original MVP schema design
+* `Docs/Contacts/contacts-schema-design.md` - Full schema design
+* `Docs/Contacts/contacts-schema-analysis.md` - Detailed analysis and improvements
 
 ---

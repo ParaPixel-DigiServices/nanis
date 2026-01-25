@@ -466,9 +466,9 @@ This minimal schema provides:
 
 ## **18. Related Documents**
 
-* `Docs/contacts-schema-design.md` - Full schema design with all features
-* `Docs/contacts-schema-analysis.md` - Analysis and improvements
-* `Docs/database-overview.md` - High-level database model
-* `schema-auth-tables.sql` - Reference implementation for auth tables
+* `Docs/Contacts/contacts-schema-design.md` - Full schema design with all features
+* `Docs/Contacts/contacts-schema-analysis.md` - Analysis and improvements
+* `Docs/Database/database-overview.md` - High-level database model
+* `database/schema-auth-tables.sql` - Reference implementation for auth tables
 
 ---

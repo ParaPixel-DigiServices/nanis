@@ -296,9 +296,9 @@ User lands on dashboard, authenticated
 
 ## **Reference: Decision Log**
 
-See **D-018: Vercel Deployment with OAuth for Client Preview** in `Docs/decision-log.md` for the original decision and deployment strategy.
+See **D-018: Vercel Deployment with OAuth for Client Preview** in `Docs/Overview/decision-log.md` for the original decision and deployment strategy.
 
-See **Phase 2: Google OAuth Integration** in `Docs/deployment-flow.md` for deployment-specific steps.
+See **Phase 2: Google OAuth Integration** in `Docs/Deploy/deployment-flow.md` for deployment-specific steps.
 
 ---
 

@@ -1871,9 +1871,9 @@ This upgraded architecture provides:
 
 ## **16. Related Documents**
 
-* `Docs/contacts-service-architecture.md` - Service layer architecture
-* `Docs/contacts-table-implementation-plan.md` - Table design and data rules
-* `Docs/contacts-schema-mvp.md` - MVP schema design
-* `Docs/architecture-overview.md` - High-level system architecture
+* `Docs/Contacts/contacts-service-architecture.md` - Service layer architecture
+* `Docs/Contacts/contacts-table-implementation-plan.md` - Table design and data rules
+* `Docs/Contacts/contacts-schema-mvp.md` - MVP schema design
+* `Docs/Overview/architecture-overview.md` - High-level system architecture
 
 ---
