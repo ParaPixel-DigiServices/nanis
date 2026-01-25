@@ -728,8 +728,8 @@ console.log({ user, session, loading });
 
 ## **17. Related Documentation**
 
-* **RLS Policies:** `Docs/rls.md` - Day-1 minimal RLS strategy
-* **Signup Flow:** `Docs/signup-flow.md` - How profiles and organizations are created
+* **RLS Policies:** `Docs/Database/rls.md` - Day-1 minimal RLS strategy
+* **Signup Flow:** `Docs/Auth/signup-flow.md` - How profiles and organizations are created
 * **Database Schema:** `schema-auth-tables.sql` - Table definitions
 * **Hook Implementation:** `apps/web/hooks/useAuth.ts` - Source code
 * **Shared Client:** `apps/web/lib/supabase.ts` - Singleton Supabase client

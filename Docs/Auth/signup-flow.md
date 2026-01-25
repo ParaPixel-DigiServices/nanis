@@ -24,7 +24,7 @@ All operations are handled server-side via a Supabase Edge Function to ensure se
 
 **Decision:** Signup side effects are handled via a Supabase Edge Function called immediately after user signup.
 
-**Reference:** See `Docs/decision-log.md` - **D-011: Signup Side Effects via Edge Function**
+**Reference:** See `Docs/Overview/decision-log.md` - **D-011: Signup Side Effects via Edge Function**
 
 **Key Benefits:**
 * Atomic operations ensure data consistency
@@ -387,8 +387,8 @@ Potential improvements for future iterations:
 
 ## **13. Related Documentation**
 
-* **Decision Log:** `Docs/decision-log.md` - D-011
-* **RLS Policies:** `Docs/rls.md` - Day-1 minimal RLS strategy
+* **Decision Log:** `Docs/Overview/decision-log.md` - D-011
+* **RLS Policies:** `Docs/Database/rls.md` - Day-1 minimal RLS strategy
 * **Database Schema:** `schema-auth-tables.sql` - Table definitions
 * **Edge Function Code:** `apps/api/on-signup-create-org.ts`
 

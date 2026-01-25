@@ -8,12 +8,12 @@ Nanis is an all-in-one Campaign, Communication, and Growth Management SaaS platf
 
 ## 2) Required reading (before coding)
 
-1. Docs/project-overview.md
-2. Docs/architecture-overview.md
-3. Docs/database-overview.md
-4. Docs/techstack-locked.md
-5. Docs/roadmap-delivery.md
-6. Docs/Tasks/phase-1-foundation.md (then the other phases)
+1. Docs/Overview/project-overview.md
+2. Docs/Overview/architecture-overview.md
+3. Docs/Database/database-overview.md
+4. Docs/Overview/techstack-locked.md
+5. Docs/Overview/roadmap-delivery.md
+6. Docs/Tasks/Phases/phase-1-foundation.md (then the other phases)
 
 ## 3) Non-negotiables
 
@@ -24,7 +24,7 @@ Nanis is an all-in-one Campaign, Communication, and Growth Management SaaS platf
 ## 4) How work is organized
 
 - Work is phased (Weeks 1–12). Each phase file contains tasks.
-- For large tasks, use Docs/Tasks/atomic-breakdowns.md to pick smaller units.
+- For large tasks, use Docs/Tasks/Planning/atomic-breakdowns.md to pick smaller units.
 - Use task IDs in branch names and PR titles.
 
 ## 5) Definition of Done (DoD) for a task

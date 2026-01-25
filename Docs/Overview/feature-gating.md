@@ -548,8 +548,8 @@ This strategy provides a flexible, maintainable approach to managing feature ava
 
 ## **12. Related Documents**
 
-* `Docs/project-overview.md` - Complete list of planned features
-* `Docs/feature-roadmap.md` - Feature development roadmap
-* `Docs/architecture-overview.md` - System architecture
+* `Docs/Overview/project-overview.md` - Complete list of planned features
+* `Docs/Overview/feature-roadmap.md` - Feature development roadmap
+* `Docs/Overview/architecture-overview.md` - System architecture
 
 ---

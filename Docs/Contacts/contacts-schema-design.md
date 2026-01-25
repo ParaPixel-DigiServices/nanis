@@ -1,45 +1,43 @@
-# **CONTACTS SCHEMA — PHASE-1 MVP DESIGN**
+# **CONTACTS DATABASE SCHEMA DESIGN**
 
 ---
 
 ## **1. Purpose of This Document**
 
-This document defines the **Phase-1 MVP database schema** for the Contacts & CRM module, focusing on core functionality:
+This document defines the **conceptual database schema design** for the Contacts & CRM module of the SaaS platform.
 
-* Manual contact creation
+The schema supports:
+
+* Single contact creation
 * CSV import
 * Excel copy-paste import
 * Mailchimp import
 * Custom fields per organization
+* Import history and status tracking
 * Multi-tenant organization-based model
-
-**Excluded from MVP:**
-* Automation support (events, automation states)
-* Segmentation (segment memberships)
-* Tags (normalized tag system)
-* Analytics and engagement tracking
-* Contact activities and history
-* Email preferences (granular)
-
-These features will be added in later phases as the platform matures.
+* Scalability to millions of contacts
+* Source tracking for each contact
+* Separation of raw imported data from normalized contacts
 
 ---
 
 ## **2. Design Principles**
 
-* **Minimal but extensible**: Core tables only, designed for future additions
-* **Multi-tenant isolation**: All contacts scoped to organization
-* **Import tracking**: Complete audit trail for all imports
-* **Custom fields**: Flexible EAV pattern for organization-specific fields
-* **Scalability**: Indexed for efficient queries, ready for growth
+* **Multi-tenant isolation**: All contacts are scoped to an organization
+* **Normalized contact data**: Core contact fields stored in main table
+* **Flexible custom fields**: Dynamic field definitions per organization
+* **Import tracking**: Complete audit trail of all imports
+* **Raw data preservation**: Original import data stored separately for debugging and reprocessing
+* **Source attribution**: Every contact tracks its origin (manual, CSV, Excel, Mailchimp)
+* **Scalability**: Indexed for efficient queries on large datasets
 
 ---
 
-## **3. MVP Tables Overview**
+## **3. Core Tables Overview**
 
-The Phase-1 MVP schema consists of **6 core tables**:
+The contacts schema consists of the following tables:
 
-1. **`contacts`** - Normalized contact records (simplified)
+1. **`contacts`** - Normalized contact records
 2. **`contact_custom_field_definitions`** - Custom field definitions per organization
 3. **`contact_custom_field_values`** - Values for custom fields per contact
 4. **`import_jobs`** - Import operation tracking
@@ -66,9 +64,12 @@ Stores normalized contact records with core standard fields. This is the primary
 * **`source_import_record_id`** (UUID, nullable, Foreign Key → `import_records.id`)
 * **`is_active`** (BOOLEAN, default: true)
 * **`is_subscribed`** (BOOLEAN, default: true)
+* **`tags`** (TEXT[], array of tags)
 * **`created_at`** (TIMESTAMPTZ)
 * **`updated_at`** (TIMESTAMPTZ)
 * **`created_by`** (UUID, nullable, Foreign Key → `profiles.id`)
+* **`last_contacted_at`** (TIMESTAMPTZ, nullable)
+* **`last_campaign_sent_at`** (TIMESTAMPTZ, nullable)
 
 ### **4.3 Relationships**
 
@@ -76,6 +77,7 @@ Stores normalized contact records with core standard fields. This is the primary
 * **Many-to-One** with `import_jobs` (tracks which import job created this contact)
 * **Many-to-One** with `import_records` (links to raw import data)
 * **One-to-Many** with `contact_custom_field_values` (custom field values)
+* **One-to-Many** with campaigns, automations, segments (via foreign keys in those modules)
 
 ### **4.4 Indexes**
 
@@ -85,19 +87,6 @@ Stores normalized contact records with core standard fields. This is the primary
 * `organization_id` + `created_at` (for chronological queries)
 * `organization_id` + `is_active` (for active contact queries)
 * `source_import_job_id` (for import job lookups)
-
-### **4.5 MVP Simplifications**
-
-**Removed for MVP:**
-* `tags` (TEXT[]) - Will be added in Phase 2 with normalized tag system
-* `last_contacted_at` - Will be tracked via activities table in Phase 2
-* `last_campaign_sent_at` - Will be tracked via campaign interactions in Phase 2
-
-**Kept for MVP:**
-* Core contact fields (email, name, mobile)
-* Source tracking (manual, csv, excel, mailchimp)
-* Basic subscription status
-* Active/inactive flag
 
 ---
 
@@ -299,15 +288,9 @@ import_records (1) ──< (many) import_errors
 
 ---
 
-## **11. MVP Use Cases**
+## **11. Import Flow Data Model**
 
-### **11.1 Manual Contact Creation**
-
-1. User creates contact via UI → Create `contacts` record directly
-2. `source: manual`, `source_import_job_id: null`, `source_import_record_id: null`
-3. Custom field values stored in `contact_custom_field_values`
-
-### **11.2 CSV/Excel Import**
+### **11.1 CSV/Excel Import Flow**
 
 1. User uploads file → Create `import_jobs` record with `status: pending`
 2. Parse file → Create `import_records` for each row with `raw_data` JSONB
@@ -321,30 +304,59 @@ import_records (1) ──< (many) import_errors
    - Create `import_errors` if validation fails
 4. Update `import_jobs` with final counts and `status: completed`
 
-### **11.3 Mailchimp Import**
+### **11.2 Mailchimp Import Flow**
 
 1. User initiates Mailchimp sync → Create `import_jobs` with `import_type: mailchimp`
 2. Fetch contacts from Mailchimp API → Create `import_records` for each contact
 3. Process each record (same as CSV/Excel flow)
 4. Update `import_jobs` with final counts
 
-### **11.4 Custom Fields**
+### **11.3 Manual Contact Creation**
 
-1. Organization defines custom fields in `contact_custom_field_definitions`
-2. When creating/updating contact, store values in `contact_custom_field_values`
-3. During imports, map import columns to custom fields via `column_mapping` in `import_jobs`
+1. User creates contact via UI → Create `contacts` record directly
+2. `source: manual`, `source_import_job_id: null`, `source_import_record_id: null`
+3. Custom field values stored in `contact_custom_field_values`
 
 ---
 
-## **12. Deduplication Strategy (MVP)**
+## **12. Custom Fields Data Model**
 
-### **12.1 Deduplication Rules**
+### **12.1 Field Definition**
+
+Organizations define custom fields in `contact_custom_field_definitions`:
+- Each field has a type (text, number, date, boolean, select, multiselect)
+- Fields are scoped to organization
+- Fields can be required or optional
+- Select/multiselect fields have options stored in JSONB
+
+### **12.2 Field Values**
+
+Contact-specific values stored in `contact_custom_field_values`:
+- One row per contact-field combination
+- Value stored in appropriate column based on field type:
+  - `value_text` for text/select fields
+  - `value_number` for number fields
+  - `value_date` for date fields
+  - `value_boolean` for boolean fields
+  - `value_json` for multiselect or complex data
+
+### **12.3 Import Mapping**
+
+During imports, custom fields can be mapped:
+- `column_mapping` in `import_jobs` includes custom field mappings
+- Import processor creates `contact_custom_field_values` records for mapped fields
+
+---
+
+## **13. Deduplication Strategy**
+
+### **13.1 Deduplication Rules**
 
 Contacts are deduplicated based on:
 - **Primary key**: `organization_id` + `email` (unique composite index)
 - **Secondary check**: `organization_id` + `mobile` (if email not provided)
 
-### **12.2 Import Deduplication**
+### **13.2 Import Deduplication**
 
 During imports:
 1. Check if contact with same `email` + `organization_id` exists
@@ -354,32 +366,11 @@ During imports:
    - Option C: Create duplicate (if explicitly allowed)
 3. Decision stored in `import_jobs.settings.deduplication_strategy`
 
----
+### **13.3 Duplicate Tracking**
 
-## **13. Future Extensibility**
-
-The MVP schema is designed to be extended in future phases:
-
-### **13.1 Phase 2 Additions (Planned)**
-
-* **Tags System**: `contact_tags` and `contact_tag_assignments` tables
-* **Activities**: `contact_activities` table for tracking contact interactions
-* **Events**: `contact_events` table for automation triggers
-* **Segments**: `contact_segment_memberships` table for campaign targeting
-
-### **13.2 Phase 3 Additions (Planned)**
-
-* **Engagement Tracking**: Fields or tables for email engagement metrics
-* **Email Preferences**: Granular preference management
-* **Contact History**: Audit trail for contact changes
-* **Relationships**: Contact-to-contact relationships (B2B support)
-
-### **13.3 Schema Design for Extensibility**
-
-* **No breaking changes required**: Future tables link to existing `contacts` table via `contact_id`
-* **Indexes can be added**: Current indexes don't block future additions
-* **JSONB fields**: `settings` and `column_mapping` in `import_jobs` allow flexible configuration
-* **Source tracking**: `source` field in `contacts` can be extended with new import types
+- `import_jobs.duplicate_records` tracks count of duplicates
+- `import_records.status: skipped` for duplicate rows
+- `import_errors` can record duplicate detection with `error_type: duplicate`
 
 ---
 
@@ -391,30 +382,47 @@ The MVP schema is designed to be extended in future phases:
 * Separate indexes for different query patterns
 * Partial indexes for active contacts (`is_active = true`)
 
-### **14.2 Query Optimization**
+### **14.2 Partitioning Strategy (Future)**
+
+For very large organizations (millions of contacts):
+* Partition `contacts` table by `organization_id` (if needed)
+* Partition `import_records` by `import_job_id` or date range
+* Archive old `import_records` to separate tables after processing
+
+### **14.3 Query Optimization**
 
 * Use pagination for contact lists
-* Filter by `organization_id` first in all queries
-* Consider materialized views for common aggregations (future)
-
-### **14.3 Import Processing**
-
-* Process imports in batches (configurable batch size)
-* Use async processing for large imports (future enhancement)
-* Archive old `import_records` after retention period (future)
+* Materialized views for common aggregations (contact counts, segment sizes)
+* Denormalize frequently accessed data (e.g., contact name in campaign sends)
 
 ---
 
-## **15. Security & Multi-Tenancy**
+## **15. Data Retention & Archival**
 
-### **15.1 Row Level Security (RLS)**
+### **15.1 Import Records Retention**
+
+* `import_records` can be archived after import completion
+* Keep raw data for audit purposes (configurable retention period)
+* Archive old records to separate `import_records_archive` table
+
+### **15.2 Soft Deletes**
+
+* `contacts.is_active` flag for soft deletion
+* Preserve contact history even when "deleted"
+* Support hard delete after retention period (if required by regulations)
+
+---
+
+## **16. Security & Multi-Tenancy**
+
+### **16.1 Row Level Security (RLS)**
 
 All tables enforce RLS:
 * `contacts`: Users can only access contacts in their organization
 * `contact_custom_field_definitions`: Scoped to organization
 * `import_jobs`, `import_records`, `import_errors`: Scoped to organization
 
-### **15.2 Data Isolation**
+### **16.2 Data Isolation**
 
 * All queries filtered by `organization_id`
 * Foreign key constraints ensure data integrity
@@ -422,53 +430,52 @@ All tables enforce RLS:
 
 ---
 
-## **16. MVP Limitations & Workarounds**
+## **17. Example Use Cases**
 
-### **16.1 No Tags System**
+### **17.1 Single Contact Creation**
 
-**Limitation:** Cannot tag contacts for organization
-**Workaround:** Use custom fields with `field_type: select` or `multiselect` as temporary solution
-**Future:** Normalized tag system in Phase 2
+```
+1. INSERT into contacts (organization_id, email, first_name, last_name, source: 'manual')
+2. INSERT into contact_custom_field_values for each custom field value
+```
 
-### **16.2 No Activity Tracking**
+### **17.2 CSV Import**
 
-**Limitation:** Cannot track when contacts were last contacted
-**Workaround:** Use `updated_at` field as proxy (less accurate)
-**Future:** `contact_activities` table in Phase 2
+```
+1. INSERT into import_jobs (organization_id, import_type: 'csv', status: 'pending')
+2. Parse CSV → INSERT into import_records (raw_data JSONB)
+3. For each import_record:
+   - Validate and map columns
+   - Check duplicates
+   - INSERT into contacts
+   - UPDATE import_records (status, contact_id)
+   - INSERT into import_errors if failed
+4. UPDATE import_jobs (status, counts)
+```
 
-### **16.3 No Segmentation**
+### **17.3 Query Contacts with Custom Fields**
 
-**Limitation:** Cannot create segments for campaign targeting
-**Workaround:** Filter contacts manually using custom fields and standard fields
-**Future:** Segment system in Phase 2
-
-### **16.4 No Engagement Metrics**
-
-**Limitation:** Cannot track email opens, clicks, etc.
-**Workaround:** N/A - requires campaign system integration
-**Future:** Engagement tracking in Phase 3
-
----
-
-## **17. Status**
-
-✅ **Phase-1 MVP schema is complete and ready for implementation.**
-
-This minimal schema provides:
-* Core contact management
-* Full import support (CSV, Excel, Mailchimp)
-* Custom fields per organization
-* Complete import audit trail
-* Multi-tenant isolation
-* Foundation for future enhancements
+```
+1. SELECT from contacts WHERE organization_id = ?
+2. JOIN contact_custom_field_values ON contact_id
+3. JOIN contact_custom_field_definitions ON field_definition_id
+4. Filter/sort by custom field values
+```
 
 ---
 
-## **18. Related Documents**
+## **18. Status**
 
-* `Docs/contacts-schema-design.md` - Full schema design with all features
-* `Docs/contacts-schema-analysis.md` - Analysis and improvements
-* `Docs/database-overview.md` - High-level database model
+✅ **Contacts database schema design is complete and ready for implementation.**
+
+This schema provides a flexible, scalable foundation for contact management with comprehensive import tracking and custom field support.
+
+---
+
+## **19. Related Documents**
+
+* `Docs/Database/database-overview.md` - High-level database model
+* `Docs/Overview/project-overview.md` - Contacts module requirements
 * `schema-auth-tables.sql` - Reference implementation for auth tables
 
 ---

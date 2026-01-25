@@ -156,7 +156,7 @@ This log should be **updated whenever a major decision is made**.
   * **Phase 2**: Add Google OAuth integration
   * **Phase 3**: Add Apple OAuth integration
   * This phased approach ensures stability and allows incremental testing
-  * See `Docs/deployment-flow.md` for detailed deployment steps
+  * See `Docs/Deploy/deployment-flow.md` for detailed deployment steps
 
 ---
 

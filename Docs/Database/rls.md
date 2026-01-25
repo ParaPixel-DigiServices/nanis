@@ -192,7 +192,7 @@ As the application matures, consider adding:
 5. **Helper Functions** — Reusable permission check functions for complex scenarios
 6. **Cross-Organization Visibility** — Policies for viewing profiles of members in shared organizations
 
-See `Docs/rls-advanced.md` for examples of more comprehensive RLS strategies.
+See `Docs/Database/rls-advanced.md` for examples of more comprehensive RLS strategies.
 
 ---
 

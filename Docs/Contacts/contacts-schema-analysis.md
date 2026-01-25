@@ -597,8 +597,8 @@ The current design is solid for basic contact management but needs additions for
 
 ## **12. Related Documents**
 
-* `Docs/contacts-schema-design.md` - Original schema design
-* `Docs/database-overview.md` - High-level database model
-* `Docs/project-overview.md` - Feature requirements
+* `Docs/Contacts/contacts-schema-design.md` - Original schema design
+* `Docs/Database/database-overview.md` - High-level database model
+* `Docs/Overview/project-overview.md` - Feature requirements
 
 ---
