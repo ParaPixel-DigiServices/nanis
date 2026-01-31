@@ -22,8 +22,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-SETUP-001
 - **Acceptance Criteria:**
-  - [ ] `.env.example` created for required vars (Supabase URL/keys, SES placeholders, Razorpay placeholders).
-  - [ ] Document which keys are client-safe vs server-only.
+  - [x] `.env.example` created for required vars (Supabase URL/keys, SES placeholders, Razorpay placeholders).
+  - [x] Document which keys are client-safe vs server-only.
 
 ### TASK: P1-SETUP-003 — CI baseline (lint/typecheck/build)
 
@@ -44,8 +44,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Depends on:** None
 - **Acceptance Criteria:**
   - [ ] Supabase project created.
-  - [ ] Local workflow documented (migrations, seed, resetting).
-  - [ ] Service-role key usage restricted to server contexts.
+  - [x] Local workflow documented (migrations, seed, resetting) — see backend/README.md and backend/migrations/README.md.
+  - [x] Service-role key usage restricted to server contexts — documented in backend/README.md; use only in FastAPI.
 
 ### TASK: P1-DB-002 — Define core tables (orgs, members, profiles)
 

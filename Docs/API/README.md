@@ -8,16 +8,25 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 
 ## Base URL and Auth
 
-- **Base URL:** TBD (e.g. same origin `/api/*` when using Next.js API routes, or Supabase client for direct DB access where allowed).
-- **Auth:** All endpoints that need a user require the Supabase session. Document per endpoint if different (e.g. `Authorization: Bearer <access_token>` or cookie-based).
+- **Base URL:** Backend runs as FastAPI (e.g. `http://localhost:8000` locally). Frontend calls `http://localhost:8000/api/v1/...` in dev; production TBD (e.g. same host or separate API host).
+- **Auth:** Endpoints that need a user require `Authorization: Bearer <supabase_access_token>`. Backend validates the Supabase JWT. Document per endpoint if different.
 
 ---
 
 ## Endpoints
 
-_No endpoints documented yet. Backend will add entries below as APIs are implemented._
+### Health
 
-### Format for each endpoint
+#### `GET /api/v1/health`
+
+- **Description:** Health check for deployment and load balancers.
+- **Auth:** Not required
+- **Request:** None
+- **Response:** `200` — `{ "status": "ok" }`
+
+---
+
+### Format for new endpoints
 
 ```markdown
 #### `METHOD /path` (optional: task ID)
@@ -31,21 +40,8 @@ _No endpoints documented yet. Backend will add entries below as APIs are impleme
 
 ---
 
-## Example (to be replaced by real endpoints)
-
-#### `GET /api/health` (example)
-
-- **Description:** Health check for deployment.
-- **Auth:** Not required
-- **Request:** None
-- **Response:** `200` — `{ "ok": true }`
-
----
-
 ## Changelog
 
-Keep a short log here when you change the contract so Frontend can scan for updates.
-
-| Date       | Change |
-| ---------- | ------ |
-| (none yet) | —      |
+| Date       | Change                                              |
+| ---------- | --------------------------------------------------- |
+| 2026-01-31 | Backend setup: FastAPI; `GET /api/v1/health` added. |
