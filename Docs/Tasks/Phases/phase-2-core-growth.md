@@ -173,8 +173,8 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P1
 - **Depends on:** P2-SES-002
 - **Acceptance Criteria:**
-  - [ ] Scheduled campaigns transition to sending at correct time.
-  - [ ] Retries for transient failures.
+  - [x] Scheduled campaigns transition to sending at correct time (`POST .../internal/process-scheduled-campaigns`; call via cron every 1–5 min).
+  - [x] Retries for transient failures (one retry per campaign; Docs/Integrations/ses-setup.md §8).
 
 ### TASK: P2-SES-004 — Delivery events + tracking pixels (baseline)
 
@@ -183,8 +183,8 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P1
 - **Depends on:** P2-SES-002
 - **Acceptance Criteria:**
-  - [ ] Track opens/clicks at least at campaign level.
-  - [ ] Store events for analytics.
+  - [x] Track opens/clicks at campaign level (pixel + link wrap; `GET .../track/open`, `.../track/click`).
+  - [x] Store events for analytics (`email_events` table + `campaign_recipients.opened_at`/`clicked_at`).
 
 ## Epic P2-E: Basic Analytics
 
@@ -195,8 +195,8 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P1
 - **Depends on:** P2-SES-004
 - **Acceptance Criteria:**
-  - [ ] Aggregate query for open/click rates.
-  - [ ] Data scoped to org.
+  - [x] Aggregate query for open/click rates (`GET .../campaigns/{id}/analytics`).
+  - [x] Data scoped to org (campaign_recipients per campaign/org).
 
 ### TASK: P2-AN-002 — Campaign analytics UI (charts)
 

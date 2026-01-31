@@ -11,6 +11,7 @@ SQL migrations for Supabase (Postgres). Apply in order:
 7. **007_templates.sql** — P2-TPL-001: `templates` (admin_provided vs user_created) + RLS.
 8. **008_campaigns.sql** — P2-CAMP-001: `campaigns`, `campaign_target_rules`, `campaign_recipients` + RLS.
 9. **009_storage_buckets.sql** — P2-ASSET-001: RLS policies on `storage.objects` for bucket `org-assets` (path = `{organization_id}/...`). Create bucket `org-assets` in Dashboard first; see `Docs/Platform/storage-buckets.md`.
+10. **010_email_events.sql** — P2-SES-004: `email_events` table (open/click) for analytics; RLS for org read.
 
 Apply via:
 

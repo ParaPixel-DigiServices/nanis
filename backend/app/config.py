@@ -33,6 +33,12 @@ class Settings(BaseSettings):
     aws_secret_access_key: str = ""
     aws_region: str = "us-east-1"
     ses_from_email: str = ""
+    # Cron/scheduler: secret for POST /internal/process-scheduled-campaigns (P2-SES-003)
+    cron_secret: str = ""
+    # P2-SES-004: tracking pixel/click — secret for signing tokens; base URL for track links in emails
+    tracking_secret: str = ""
+    # e.g. https://api.yourdomain.com (no trailing slash)
+    tracking_base_url: str = ""
     # razorpay_key_id: str | None = None
     # razorpay_key_secret: str | None = None
     # razorpay_webhook_secret: str | None = None

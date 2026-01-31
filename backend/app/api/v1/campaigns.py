@@ -320,3 +320,40 @@ def send_campaign(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail=str(e),
         )
+
+
+# ---------------------------------------------------------------------------
+# P2-AN-001: Campaign analytics (open/click aggregates)
+# ---------------------------------------------------------------------------
+
+@router.get("/organizations/{organization_id}/campaigns/{campaign_id}/analytics")
+def get_campaign_analytics(
+    organization_id: UUID,
+    campaign_id: UUID,
+    user_id: str = Depends(require_current_user),
+):
+    """P2-AN-001: Per-campaign aggregates — sent, opens, clicks, open_rate, click_rate (org-scoped)."""
+    ensure_org_member(organization_id, user_id)
+    client = get_supabase_client()
+    r = (
+        client.table("campaign_recipients")
+        .select("id, sent_at, opened_at, clicked_at")
+        .eq("campaign_id", str(campaign_id))
+        .eq("organization_id", str(organization_id))
+        .execute()
+    )
+    rows = r.data or []
+    sent_count = sum(1 for x in rows if x.get("sent_at"))
+    open_count = sum(1 for x in rows if x.get("opened_at"))
+    click_count = sum(1 for x in rows if x.get("clicked_at"))
+    open_rate = (open_count / sent_count) if sent_count else 0.0
+    click_rate = (click_count / sent_count) if sent_count else 0.0
+    return {
+        "campaign_id": str(campaign_id),
+        "organization_id": str(organization_id),
+        "sent_count": sent_count,
+        "open_count": open_count,
+        "click_count": click_count,
+        "open_rate": round(open_rate, 4),
+        "click_rate": round(click_rate, 4),
+    }

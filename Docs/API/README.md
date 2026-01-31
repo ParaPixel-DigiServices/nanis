@@ -245,7 +245,50 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 - **Description:** Prepare recipients if needed, then send campaign emails via SES. Template variables: `{{first_name}}`, `{{last_name}}`, `{{email}}`, `{{country}}`.
 - **Auth:** Required
 - **Request:** Query: `dry_run` (default false; if true only prepare, no send), `rate_per_sec` (default 1, max 14; messages per second).
-- **Response:** `200` — `{ "sent": number, "failed": number, "errors": [ { "contact_id", "reason" }, ... ] }` or if dry*run: `{ "dry_run": true, "recipients_count": number }`. **503** if SES not configured (AWS*\* / SES_FROM_EMAIL missing).
+- **Response:** `200` — `{ "sent": number, "failed": number, "errors": [ ... ] }` or if dry_run: `{ "dry_run": true, "recipients_count": number }`. **503** if SES not configured.
+
+---
+
+### Internal (cron) — P2-SES-003
+
+These endpoints are for cron/scheduler only. **Not for frontend.** Use header `X-Cron-Secret` (set `CRON_SECRET` in backend `.env`).
+
+#### `POST /api/v1/internal/process-scheduled-campaigns` (P2-SES-003)
+
+- **Description:** Process campaigns with status=scheduled and scheduled_at <= now(); send each via SES (one retry on failure).
+- **Auth:** Header `X-Cron-Secret: <CRON_SECRET>`. **503** if CRON_SECRET not set; **401** if header missing or wrong.
+- **Request:** Query: `max_campaigns` (default 5, max 20), `rate_per_sec` (default 1).
+- **Response:** `200` — `{ "processed": [ { "campaign_id", "organization_id", "status": "sent"|"failed", "result"? } ] }`
+
+Call this URL every 1–5 minutes from a cron job. See Docs/Integrations/ses-setup.md §8.
+
+---
+
+### Track (P2-SES-004) — open/click (public, no auth)
+
+These URLs are embedded in emails; no Bearer token. Token in query is signed with TRACKING_SECRET.
+
+#### `GET /api/v1/track/open?r=<token>` (P2-SES-004)
+
+- **Description:** Record open event; return 1x1 transparent GIF. Called when email client loads the tracking pixel.
+- **Auth:** None (token in `r`).
+- **Response:** `200` — image/gif (1x1 pixel). Updates `campaign_recipients.opened_at` and inserts `email_events` (event_type=open).
+
+#### `GET /api/v1/track/click?r=<token>&url=<encoded_url>` (P2-SES-004)
+
+- **Description:** Record click event; redirect to original URL.
+- **Auth:** None (token in `r`, original URL in `url`).
+- **Response:** `302` redirect to decoded `url`. Updates `campaign_recipients.clicked_at` and inserts `email_events` (event_type=click, link_url).
+
+---
+
+### Campaign analytics (P2-AN-001)
+
+#### `GET /api/v1/organizations/{organization_id}/campaigns/{campaign_id}/analytics` (P2-AN-001)
+
+- **Description:** Per-campaign aggregates — sent, opens, clicks, open_rate, click_rate (org-scoped).
+- **Auth:** Required
+- **Response:** `200` — `{ "campaign_id", "organization_id", "sent_count", "open_count", "click_count", "open_rate", "click_rate" }`
 
 ---
 
@@ -265,11 +308,13 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 
 ## Changelog
 
-| Date       | Change                                                                                   |
-| ---------- | ---------------------------------------------------------------------------------------- |
-| 2026-01-31 | Backend setup: FastAPI; `GET /api/v1/health` added.                                      |
-| 2026-01-31 | P1-DASH-002: activity GET/POST; P1-RBAC-002: invites GET/POST. JWT auth.                 |
-| 2026-01-31 | JWT: support both HS256 and ES256 (Supabase). Backend CI (P1-SETUP-003).                 |
-| 2026-01-31 | P2: Contacts, tags, templates, campaigns APIs. P2-ASSET-001 storage doc + migration.     |
-| 2026-01-31 | P2-CRM-004: CSV import endpoint `POST .../contacts/import` (multipart, mapping, report). |
-| 2026-01-31 | P2-SES-002: Send campaign batch (prepare + send via SES, rate limit, template vars).     |
+| Date       | Change                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------- |
+| 2026-01-31 | Backend setup: FastAPI; `GET /api/v1/health` added.                                           |
+| 2026-01-31 | P1-DASH-002: activity GET/POST; P1-RBAC-002: invites GET/POST. JWT auth.                      |
+| 2026-01-31 | JWT: support both HS256 and ES256 (Supabase). Backend CI (P1-SETUP-003).                      |
+| 2026-01-31 | P2: Contacts, tags, templates, campaigns APIs. P2-ASSET-001 storage doc + migration.          |
+| 2026-01-31 | P2-CRM-004: CSV import endpoint `POST .../contacts/import` (multipart, mapping, report).      |
+| 2026-01-31 | P2-SES-002: Send campaign batch (prepare + send via SES, rate limit, template vars).          |
+| 2026-01-31 | P2-SES-003: Scheduling worker — POST .../internal/process-scheduled-campaigns (cron).         |
+| 2026-01-31 | P2-SES-004: Track open/click (pixel + link wrap); email_events; P2-AN-001 campaign analytics. |

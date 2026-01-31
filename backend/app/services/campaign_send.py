@@ -8,6 +8,7 @@ from uuid import UUID
 from app.config import get_settings
 from app.ses_client import send_email
 from app.supabase_client import get_supabase_client
+from app.tracking import create_tracking_token, wrap_links_for_tracking
 
 # Default: 1 send per second (SES sandbox). Increase after production access.
 DEFAULT_RATE_PER_SEC = 1.0
@@ -281,11 +282,24 @@ def send_campaign_batch(
             "email": email,
             "country": contact.get("country") or "",
         }
+        body_final = _render_vars(body_html, ctx)
+        settings = get_settings()
+        if (settings.tracking_base_url or "").strip() and (settings.tracking_secret or "").strip():
+            try:
+                token = create_tracking_token(str(rec["id"]))
+                base = (settings.tracking_base_url or "").strip().rstrip("/")
+                open_url = f"{base}/api/v1/track/open?r={token}"
+                click_base = f"{base}/api/v1/track/click?r={token}&url="
+                body_final = wrap_links_for_tracking(body_final, click_base)
+                body_final = body_final + \
+                    f'<img src="{open_url}" width="1" height="1" alt="" />'
+            except Exception:
+                pass
         try:
             send_email(
                 to_address=email,
                 subject=_render_vars(subject, ctx),
-                body_html=_render_vars(body_html, ctx),
+                body_html=body_final,
             )
             client.table("campaign_recipients").update(
                 {"status": "sent", "sent_at": now_iso}
@@ -305,3 +319,64 @@ def send_campaign_batch(
     }).eq("id", camp_id).eq("organization_id", org_id).execute()
 
     return {"sent": sent, "failed": failed, "errors": errors[:100]}
+
+
+# ---------------------------------------------------------------------------
+# P2-SES-003: Scheduling worker — process campaigns due now
+# ---------------------------------------------------------------------------
+
+def process_scheduled_campaigns(
+    max_campaigns: int = 5,
+    rate_per_sec: float = DEFAULT_RATE_PER_SEC,
+) -> list[dict]:
+    """
+    Find campaigns with status='scheduled' and scheduled_at <= now(), send each (with one retry on failure).
+    Returns list of { campaign_id, organization_id, status, result?, error? }.
+    """
+    client = get_supabase_client()
+    now_iso = datetime.now(timezone.utc).isoformat()
+    r = (
+        client.table("campaigns")
+        .select("id, organization_id, name")
+        .eq("status", "scheduled")
+        .lte("scheduled_at", now_iso)
+        .order("scheduled_at", desc=False)
+        .limit(max_campaigns)
+        .execute()
+    )
+    campaigns = r.data or []
+    results: list[dict] = []
+    for camp in campaigns:
+        camp_id = camp["id"]
+        org_id = camp["organization_id"]
+        try:
+            result = send_campaign_batch(
+                UUID(camp_id), UUID(org_id), rate_per_sec=rate_per_sec
+            )
+            results.append({
+                "campaign_id": camp_id,
+                "organization_id": org_id,
+                "status": "sent",
+                "result": result,
+            })
+        except Exception:
+            # One retry for transient failures
+            try:
+                time.sleep(2)
+                result = send_campaign_batch(
+                    UUID(camp_id), UUID(org_id), rate_per_sec=rate_per_sec
+                )
+                results.append({
+                    "campaign_id": camp_id,
+                    "organization_id": org_id,
+                    "status": "sent",
+                    "result": result,
+                })
+            except Exception as e2:
+                results.append({
+                    "campaign_id": camp_id,
+                    "organization_id": org_id,
+                    "status": "failed",
+                    "error": str(e2)[:500],
+                })
+    return results

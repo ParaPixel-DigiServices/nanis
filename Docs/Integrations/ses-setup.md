@@ -156,3 +156,28 @@ The backend sends campaign emails in a single request with configurable rate lim
 - **Flow:** Resolve recipients from target_rules → insert into `campaign_recipients` (pending) → for each pending, render template ({{first_name}}, {{email}}, etc.), call SES `send_email`, update recipient to `sent`, sleep `1/rate_per_sec` between sends.
 - **Template:** Campaign uses `template_id`; subject from campaign or template; body from template `content_html`. Variables: `{{first_name}}`, `{{last_name}}`, `{{email}}`, `{{country}}`.
 - **Production:** For large lists, use a job queue (e.g. Celery, Supabase Edge + queue) so the HTTP request does not block; this MVP runs synchronously with rate limiting.
+
+---
+
+## 8. Scheduling worker (P2-SES-003)
+
+Scheduled campaigns (status `scheduled`, `scheduled_at` in the past) are sent by calling an internal endpoint on a schedule.
+
+- **Endpoint:** `POST /api/v1/internal/process-scheduled-campaigns`
+- **Auth:** Header `X-Cron-Secret: <CRON_SECRET>` (set `CRON_SECRET` in backend `.env`). If not set, the endpoint returns 503.
+- **Query:** `max_campaigns` (default 5, max 20), `rate_per_sec` (default 1).
+- **Behaviour:** Finds campaigns with `status='scheduled'` and `scheduled_at <= now()`, sends each (one retry on transient failure), returns `{ "processed": [ { campaign_id, organization_id, status, result? } ] }`.
+
+**Cron setup:** Call this endpoint every 1–5 minutes, e.g.:
+
+- **System cron:** `*/5 * * * * curl -X POST -H "X-Cron-Secret: YOUR_SECRET" "https://your-api/api/v1/internal/process-scheduled-campaigns"`
+- **GitHub Actions:** scheduled workflow that POSTs with the secret (store in repo secrets).
+- **Hosting cron:** Many hosts (Render, Railway, etc.) let you define a cron job that hits a URL; use the same URL and header.
+
+---
+
+## 9. Tracking (P2-SES-004) — open/click
+
+- **TRACKING_SECRET:** Set in backend `.env`; used to sign tokens in track URLs (so they can’t be forged).
+- **TRACKING_BASE_URL:** Base URL for track links in emails (e.g. `https://api.yourdomain.com`). If set, the backend injects a 1×1 pixel (`/api/v1/track/open?r=<token>`) and wraps links (`/api/v1/track/click?r=<token>&url=<original>`). When the recipient opens the email or clicks a link, the backend records the event in `campaign_recipients` (opened_at, clicked_at) and `email_events`.
+- **Analytics:** Use `GET .../campaigns/{id}/analytics` for per-campaign sent/open/click counts and rates (P2-AN-001).
