@@ -78,4 +78,4 @@ mypy app
 
 ## API contract
 
-Backend documents all endpoints in **Docs/API/README.md**. Update it when you add or change APIs so the frontend can integrate.
+Backend documents all endpoints in **Docs/API/README.md**. Update it when you add or change APIs so the frontend can integrate. Phase 2: contacts, tags, templates, campaigns, CSV import (`POST .../contacts/import`), storage — see that doc.
