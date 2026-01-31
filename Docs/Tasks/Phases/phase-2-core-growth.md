@@ -152,7 +152,7 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** External access (AWS credentials, domain DNS)
 - **Acceptance Criteria:**
-  - [x] Steps documented: domain verify, DKIM, SPF, sandbox exit. (**Docs/Integrations/ses-setup.md**)
+  - [x] Steps documented: domain verify, DKIM, SPF, sandbox exit. (**`Docs/Integrations/ses-setup.md`**)
   - [x] Sender identities defined (verified domain/email in checklist).
 
 ### TASK: P2-SES-002 — Edge Function: send campaign batch
@@ -162,9 +162,9 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P2-SES-001, P2-CAMP-001
 - **Acceptance Criteria:**
-  - [ ] Server-only function sends via SES.
-  - [ ] Rate limiting/batching strategy documented.
-  - [ ] Email content assembled from template + variables.
+  - [x] Server-only function sends via SES (FastAPI + boto3; `POST .../campaigns/{id}/send`).
+  - [x] Rate limiting/batching strategy documented (Docs/Integrations/ses-setup.md §7; `rate_per_sec` param).
+  - [x] Email content assembled from template + variables (`{{first_name}}`, `{{email}}`, etc.).
 
 ### TASK: P2-SES-003 — Scheduling worker (MVP)
 

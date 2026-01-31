@@ -28,11 +28,11 @@ class Settings(BaseSettings):
     environment: Literal["development",
                          "staging", "production"] = "development"
 
-    # Optional — Phase 2+
-    # aws_access_key_id: str | None = None
-    # aws_secret_access_key: str | None = None
-    # aws_region: str = "ap-south-1"
-    # ses_from_email: str | None = None
+    # Optional — Phase 2+ (SES)
+    aws_access_key_id: str = ""
+    aws_secret_access_key: str = ""
+    aws_region: str = "us-east-1"
+    ses_from_email: str = ""
     # razorpay_key_id: str | None = None
     # razorpay_key_secret: str | None = None
     # razorpay_webhook_secret: str | None = None

@@ -1,4 +1,5 @@
-"""P2-CAMP-001: Campaigns — list, get, create, update; target_rules and recipients."""
+"""P2-CAMP-001: Campaigns — list, get, create, update; target_rules and recipients.
+P2-SES-002: Send campaign batch via SES (prepare + send)."""
 
 from uuid import UUID
 
@@ -6,6 +7,11 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel
 
 from app.dependencies import ensure_org_member, require_current_user
+from app.services.campaign_send import (
+    DEFAULT_RATE_PER_SEC,
+    prepare_campaign_recipients,
+    send_campaign_batch,
+)
 from app.supabase_client import get_supabase_client
 
 router = APIRouter()
@@ -268,3 +274,49 @@ def list_campaign_recipients(
         q = q.eq("status", status_filter)
     r = q.execute()
     return {"recipients": r.data or [], "total": r.count or 0}
+
+
+# ---------------------------------------------------------------------------
+# P2-SES-002: Send campaign (prepare + send via SES)
+# ---------------------------------------------------------------------------
+
+@router.post("/organizations/{organization_id}/campaigns/{campaign_id}/prepare")
+def prepare_campaign(
+    organization_id: UUID,
+    campaign_id: UUID,
+    user_id: str = Depends(require_current_user),
+):
+    """Resolve recipients from target_rules and insert into campaign_recipients (pending)."""
+    ensure_org_member(organization_id, user_id)
+    count = prepare_campaign_recipients(campaign_id, organization_id)
+    return {"recipients_count": count}
+
+
+@router.post("/organizations/{organization_id}/campaigns/{campaign_id}/send")
+def send_campaign(
+    organization_id: UUID,
+    campaign_id: UUID,
+    dry_run: bool = Query(
+        False, description="If true, only prepare; do not send"),
+    rate_per_sec: float = Query(
+        DEFAULT_RATE_PER_SEC,
+        ge=0.1,
+        le=14,
+        description="SES rate: messages per second (1 for sandbox, up to 14 in production)",
+    ),
+    user_id: str = Depends(require_current_user),
+):
+    """Prepare recipients if needed, then send campaign emails via SES. Returns sent/failed summary."""
+    ensure_org_member(organization_id, user_id)
+    if dry_run:
+        count = prepare_campaign_recipients(campaign_id, organization_id)
+        return {"dry_run": True, "recipients_count": count}
+    try:
+        result = send_campaign_batch(
+            campaign_id, organization_id, rate_per_sec=rate_per_sec)
+        return result
+    except RuntimeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(e),
+        )

@@ -234,6 +234,19 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 - **Request:** Query: `status`, `limit`, `offset`.
 - **Response:** `200` — `{ "recipients": [ ... ], "total": number }`
 
+#### `POST /api/v1/organizations/{organization_id}/campaigns/{campaign_id}/prepare` (P2-SES-002)
+
+- **Description:** Resolve recipients from target_rules and insert into campaign_recipients (pending). Does not send.
+- **Auth:** Required
+- **Response:** `200` — `{ "recipients_count": number }`
+
+#### `POST /api/v1/organizations/{organization_id}/campaigns/{campaign_id}/send` (P2-SES-002)
+
+- **Description:** Prepare recipients if needed, then send campaign emails via SES. Template variables: `{{first_name}}`, `{{last_name}}`, `{{email}}`, `{{country}}`.
+- **Auth:** Required
+- **Request:** Query: `dry_run` (default false; if true only prepare, no send), `rate_per_sec` (default 1, max 14; messages per second).
+- **Response:** `200` — `{ "sent": number, "failed": number, "errors": [ { "contact_id", "reason" }, ... ] }` or if dry*run: `{ "dry_run": true, "recipients_count": number }`. **503** if SES not configured (AWS*\* / SES_FROM_EMAIL missing).
+
 ---
 
 ### Format for new endpoints
@@ -259,3 +272,4 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 | 2026-01-31 | JWT: support both HS256 and ES256 (Supabase). Backend CI (P1-SETUP-003).                 |
 | 2026-01-31 | P2: Contacts, tags, templates, campaigns APIs. P2-ASSET-001 storage doc + migration.     |
 | 2026-01-31 | P2-CRM-004: CSV import endpoint `POST .../contacts/import` (multipart, mapping, report). |
+| 2026-01-31 | P2-SES-002: Send campaign batch (prepare + send via SES, rate limit, template vars).     |
