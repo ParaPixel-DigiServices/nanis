@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     supabase_url: str = ""
     supabase_anon_key: str = ""
     supabase_service_role_key: str = ""
+    # JWT Secret from Dashboard → Settings → API (for verifying access tokens)
+    supabase_jwt_secret: str = ""
 
     # Server
     api_host: str = "0.0.0.0"

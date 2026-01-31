@@ -11,7 +11,7 @@ Quick entry points:
 
 ## Folder structure
 
-- [Overview/](./Overview/) — high-level context, roadmap, decisions
+- [Overview/](./Overview/) — high-level context, roadmap, decisions, [RBAC roles](./Overview/rbac-roles.md)
 - [Team/](./Team/) — how we work together (frontend + backend)
 - [API/](./API/) — API contract (backend documents; frontend consumes)
 - [Platform/](./Platform/) — routing and platform-level conventions

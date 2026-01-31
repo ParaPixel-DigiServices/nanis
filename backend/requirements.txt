@@ -4,9 +4,11 @@
 fastapi>=0.109.0,<0.110
 uvicorn[standard]>=0.27.0,<0.28
 pydantic-settings>=2.1.0,<3
+email-validator>=2.1.0,<3
 python-dotenv>=1.0.0,<2
 httpx>=0.26.0,<0.28
 supabase>=2.3.0,<3
+pyjwt>=2.8.0,<3
 
 # Dev / quality (optional but recommended)
 ruff>=0.1.14,<0.2

@@ -28,17 +28,28 @@ Copy `.env.example` to `.env` and set values. **Never commit `.env`.**
 | `SUPABASE_URL`                                        | **Yes**      | Frontend needs this to connect to Supabase (Auth, Realtime).                            |
 | `SUPABASE_ANON_KEY`                                   | **Yes**      | Public anon key; safe in browser. RLS enforces security.                                |
 | `SUPABASE_SERVICE_ROLE_KEY`                           | **No**       | **Server-only.** Bypasses RLS. Use only in backend (FastAPI). Never expose to frontend. |
+| `SUPABASE_JWT_SECRET`                                 | **No**       | **Server-only.** Used to verify Supabase access tokens (Dashboard → Settings → API).    |
 | `AWS_*`, `RAZORPAY_*`, `*_SECRET`, `*_WEBHOOK_SECRET` | **No**       | **Server-only.** All third-party secrets stay in backend.                               |
 
 **Rule:** If it bypasses RLS or is a secret/API key for a third party, it is **server-only**. Only `SUPABASE_URL` and `SUPABASE_ANON_KEY` are safe for the frontend.
 
 ## Local workflow (migrations & seed)
 
-- **Migrations:** SQL for schema changes. Apply via Supabase Dashboard (SQL Editor) or [Supabase CLI](https://supabase.com/docs/guides/cli) (`supabase db push`). Migration files live in `migrations/` (see `migrations/README.md`).
-- **Seed:** One-off script to create a dev org + admin user for local testing. Run after migrations: `python scripts/seed_dev_org.py` (to be added in P1-DB-004).
+- **Migrations:** SQL for schema changes. Apply via Supabase Dashboard (SQL Editor) or [Supabase CLI](https://supabase.com/docs/guides/cli). Migration files in `migrations/` (see `migrations/README.md`). Run **001**, **002**, then **003** in order.
+- **Seed:** After migrations, create a dev org and add yourself as owner:  
+  `python scripts/seed_dev_org.py --email you@example.com`  
+  Or with user id: `python scripts/seed_dev_org.py --user-id <uuid>`.  
+  Requires `.env` with `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 - **Resetting:** Use Supabase Dashboard to reset DB or re-run migrations on a fresh project.
 
-See **Docs/Tasks/Phases/phase-1-foundation.md** for task P1-DB-001 (Supabase project + local workflow).
+## Supabase at this stage (Phase 1)
+
+After running **001**, **002**, and **003** in the SQL Editor:
+
+- **Done:** Core tables, RLS, profile-on-signup trigger. No further Supabase SQL is required for Phase 1.
+- **Optional:** In Dashboard → Authentication → Providers, enable Email and (later) Google/Apple if needed.
+- **Optional:** In Authentication → URL Configuration, set Site URL and Redirect URLs when you have a frontend URL.
+- **Edge Function** `on-signup-create-org` is **not** required for Phase 1: org creation is done in the app when the user clicks “Create workspace” (P1-AUTH-003). The trigger **003** only creates the profile row on signup.
 
 ## Project structure
 
