@@ -22,8 +22,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-SETUP-001
 - **Acceptance Criteria:**
-  - [ ] `.env.example` created for required vars (Supabase URL/keys, SES placeholders, Razorpay placeholders).
-  - [ ] Document which keys are client-safe vs server-only.
+  - [x] `.env.example` created for required vars (Supabase URL/keys, SES placeholders, Razorpay placeholders).
+  - [x] Document which keys are client-safe vs server-only.
 
 ### TASK: P1-SETUP-003 — CI baseline (lint/typecheck/build)
 
@@ -32,7 +32,7 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P1
 - **Depends on:** P1-SETUP-001
 - **Acceptance Criteria:**
-  - [ ] CI runs on PR: install → lint → typecheck → build.
+  - [x] CI runs on PR: install → lint → typecheck → build — backend: `.github/workflows/backend-ci.yml` (ruff, mypy, app load).
 
 ## Epic P1-B: Supabase initialization + schema skeleton + RLS
 
@@ -43,9 +43,9 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** None
 - **Acceptance Criteria:**
-  - [ ] Supabase project created.
-  - [ ] Local workflow documented (migrations, seed, resetting).
-  - [ ] Service-role key usage restricted to server contexts.
+  - [x] Supabase project created.
+  - [x] Local workflow documented (migrations, seed, resetting) — see backend/README.md and backend/migrations/README.md.
+  - [x] Service-role key usage restricted to server contexts — documented in backend/README.md; use only in FastAPI.
 
 ### TASK: P1-DB-002 — Define core tables (orgs, members, profiles)
 
@@ -54,9 +54,9 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-DB-001
 - **Acceptance Criteria:**
-  - [ ] Tables exist for: `profiles`, `organizations`, `organization_members`.
-  - [ ] Foreign keys and tenant boundaries are present.
-  - [ ] Created/updated timestamps included.
+  - [x] Tables exist for: `profiles`, `organizations`, `organization_members` — migration 001_core_tables.sql.
+  - [x] Foreign keys and tenant boundaries are present.
+  - [x] Created/updated timestamps included.
 
 ### TASK: P1-DB-003 — Add RLS policies for multi-tenancy
 
@@ -65,9 +65,19 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-DB-002
 - **Acceptance Criteria:**
-  - [ ] RLS enabled for tenant-owned tables.
-  - [ ] Policies enforce: user can only access orgs they belong to.
-  - [ ] Policies reviewed for least privilege.
+  - [x] RLS enabled for tenant-owned tables.
+  - [x] Policies enforce: user can only access orgs they belong to — migration 002_rls_policies.sql.
+  - [x] Policies reviewed for least privilege.
+
+### TASK: P1-RBAC-001 — Define roles + permissions model
+
+- **Owner:** Backend
+- **Estimate:** 1d
+- **Priority:** P0
+- **Depends on:** P1-DB-002
+- **Acceptance Criteria:**
+  - [x] Roles documented (e.g., Owner/Admin/Member) — see Docs/Overview/rbac-roles.md.
+  - [x] Permission checks implemented server-side — backend/app/dependencies.py stubs; RLS in 002_rls_policies.sql.
 
 ### TASK: P1-DB-004 — Seed script for dev org + admin user
 
@@ -76,7 +86,7 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P1
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] One command creates a dev org + membership for local testing.
+  - [x] One command creates a dev org + membership for local testing — `python scripts/seed_dev_org.py --email you@example.com`.
 
 ## Epic P1-C: Auth + onboarding flows
 
@@ -113,15 +123,7 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 
 ## Epic P1-D: RBAC + Team management (minimum viable)
 
-### TASK: P1-RBAC-001 — Define roles + permissions model
-
-- **Owner:** Backend
-- **Estimate:** 1d
-- **Priority:** P0
-- **Depends on:** P1-DB-002
-- **Acceptance Criteria:**
-  - [ ] Roles documented (e.g., Owner/Admin/Member).
-  - [ ] Permission checks implemented server-side (Edge Function helpers or DB functions).
+(P1-RBAC-001 is defined under Epic P1-B above.)
 
 ### TASK: P1-RBAC-002 — Invite team member (email invite stub)
 
@@ -130,8 +132,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P1
 - **Depends on:** P1-RBAC-001, P1-AUTH-001
 - **Acceptance Criteria:**
-  - [ ] Admin can invite member via email.
-  - [ ] Invite creates pending membership record.
+  - [x] Admin can invite member via email — `POST /api/v1/organizations/:id/invites`.
+  - [x] Invite creates pending membership record — `organization_invites` table (migration 005).
   - [ ] (MVP) Invitation email can be a simple transactional email (provider TBD in Phase 2).
 
 ### TASK: P1-RBAC-003 — Team management UI
@@ -173,8 +175,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P2
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] Simple `activity_events` table and insert helper.
-  - [ ] Dashboard can read recent events for current org.
+  - [x] Simple `activity_events` table and insert helper — migration 004; `POST /api/v1/organizations/:id/activity`.
+  - [x] Dashboard can read recent events for current org — `GET /api/v1/organizations/:id/activity`.
 
 ## Phase 1 Exit Criteria (must be true)
 

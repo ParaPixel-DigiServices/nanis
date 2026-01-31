@@ -19,7 +19,7 @@ Nanis is an all-in-one Campaign, Communication, and Growth Management SaaS platf
 
 ## 3) Non-negotiables
 
-- **Tech stack is locked:** Next.js + TypeScript + Tailwind + Framer Motion; Supabase (Postgres/Auth/Storage/Realtime/Edge Functions); SES; Razorpay.
+- **Tech stack is locked:** Next.js + TypeScript + Tailwind + Framer Motion; FastAPI (Python) + Supabase (Postgres/Auth/Storage/Realtime); SES; Razorpay.
 - **Multi-tenancy + security:** all org-owned data must be protected by RLS.
 - **Secrets:** never ship secrets to the browser; third-party keys are server-only.
 
@@ -28,6 +28,7 @@ Nanis is an all-in-one Campaign, Communication, and Growth Management SaaS platf
 - Work is phased (Weeks 1–12). Each phase file contains tasks.
 - For large tasks, use Docs/Tasks/Planning/atomic-breakdowns.md to pick smaller units.
 - Use task IDs in branch names and PR titles.
+- **Backend:** Setup, env vars, and local workflow → backend/README.md. API contract → Docs/API/README.md.
 
 ## 5) Definition of Done (DoD) for a task
 

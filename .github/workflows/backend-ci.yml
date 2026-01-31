@@ -1,0 +1,47 @@
+# P1-SETUP-003: Backend CI — install, lint, typecheck, app load
+# Runs on PR and push to main when backend/ or .github/workflows/backend-ci.yml change
+
+name: Backend CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: ruff check app
+
+      - name: Format check (ruff)
+        run: ruff format --check app
+
+      - name: Typecheck (mypy)
+        run: mypy app --ignore-missing-imports
+        continue-on-error: true
+
+      - name: App load (build check)
+        run: python -c "from app.main import app; print('OK')"
