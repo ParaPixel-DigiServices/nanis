@@ -97,8 +97,8 @@ The backend is responsible for:
 
 Server-side logic is implemented using:
 
-* Supabase Edge Functions
-* Next.js API routes (when applicable)
+* **FastAPI (Python)** — custom API layer for business logic (contacts, campaigns, SES, Razorpay, webhooks, workers)
+* Supabase Edge Functions (optional) — for Supabase-triggered logic (e.g. DB webhooks) in Deno if desired
 
 Used for:
 

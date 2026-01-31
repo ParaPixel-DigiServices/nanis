@@ -85,17 +85,19 @@ Includes:
 
 ---
 
-### **3.3 Server Logic**
+### **3.3 Server Logic (Custom API)**
 
-* **Supabase Edge Functions**
-* **Next.js API Routes (where applicable)**
+* **FastAPI (Python)** — primary custom API layer (see Decision D-017)
 
 Used for:
 
-* Email sending logic
+* REST APIs for contacts, campaigns, templates, etc.
+* Email sending logic (via Amazon SES)
 * Automation execution
-* Third-party API integrations
-* Secure server-side operations
+* Third-party API integrations (Razorpay, WhatsApp, Telegram, etc.)
+* Webhooks and secure server-side operations
+
+**Deployment:** FastAPI app hosted separately (e.g. Railway, Render, Fly.io). Supabase Edge Functions may still be used for Supabase-triggered logic (e.g. DB webhooks) in Deno if desired.
 
 ---
 

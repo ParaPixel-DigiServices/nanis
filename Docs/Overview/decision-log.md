@@ -186,6 +186,19 @@ This log should be **updated whenever a major decision is made**.
 
 ---
 
+### **D-017: Custom API Layer — FastAPI (Python)**
+
+* **Decision:** Use **FastAPI (Python)** for the custom API layer instead of Supabase Edge Functions + Next.js API routes
+* **Reason:** Backend developer is more familiar with Python (Flask/FastAPI); FastAPI is async, well-suited for REST APIs, and can handle all planned features (contacts, campaigns, SES, Razorpay, webhooks, workers)
+* **Impact:**
+  * Backend lives in `backend/` as a FastAPI app; deploy separately (e.g. Railway, Render, Fly.io)
+  * Supabase remains for: PostgreSQL, Auth, Storage, Realtime (frontend and/or FastAPI talk to Supabase)
+  * FastAPI validates Supabase JWT for auth; RLS in Postgres still applies
+  * Frontend (Next.js) calls FastAPI for business logic; document all endpoints in `Docs/API/README.md`
+  * Supabase Edge Functions can still be used for Supabase-triggered logic (e.g. `on-signup-create-org` in Deno) if desired, or that logic can live in FastAPI
+
+---
+
 ## **Commercial & Legal Decisions**
 
 ### **D-015: Code Ownership**
