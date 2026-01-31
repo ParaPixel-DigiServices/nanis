@@ -4,7 +4,12 @@ P1-RBAC-001: Permission checks run server-side here. RLS enforces tenant boundar
 Supabase can issue JWTs with HS256 (JWT Secret) or ES256 (JWKS). We support both.
 """
 
-from typing import Sequence
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Sequence
+
+if TYPE_CHECKING:
+    from uuid import UUID
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -91,3 +96,51 @@ def require_org_member(min_roles: Sequence[str] = ("member",)):
         return {"user_id": user_id, "role": "member"}
 
     return _require
+
+
+# ---------------------------------------------------------------------------
+# Shared org checks (use in route handlers; org_id from path)
+# ---------------------------------------------------------------------------
+
+def ensure_org_member(org_id: UUID, user_id: str) -> None:
+    """Raise 403 if user is not a member of the org. Import from app.dependencies."""
+    from app.supabase_client import get_supabase_client
+    client = get_supabase_client()
+    r = (
+        client.table("organization_members")
+        .select("id")
+        .eq("organization_id", str(org_id))
+        .eq("user_id", user_id)
+        .limit(1)
+        .execute()
+    )
+    if not r.data or len(r.data) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not a member of this organization",
+        )
+
+
+def ensure_org_admin(org_id: UUID, user_id: str) -> None:
+    """Raise 403 if user is not owner or admin of the org."""
+    from app.supabase_client import get_supabase_client
+
+    client = get_supabase_client()
+    r = (
+        client.table("organization_members")
+        .select("role")
+        .eq("organization_id", str(org_id))
+        .eq("user_id", user_id)
+        .limit(1)
+        .execute()
+    )
+    if not r.data or len(r.data) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not a member of this organization",
+        )
+    if r.data[0].get("role") not in ("owner", "admin"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only owner or admin can perform this action",
+        )

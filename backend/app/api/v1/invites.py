@@ -6,7 +6,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
 
-from app.dependencies import require_current_user
+from app.dependencies import ensure_org_admin, require_current_user
 from app.supabase_client import get_supabase_client
 
 router = APIRouter()
@@ -17,36 +17,13 @@ class CreateInviteBody(BaseModel):
     role: Literal["admin", "member"] = "member"
 
 
-def _ensure_org_admin(org_id: UUID, user_id: str) -> None:
-    """Raise 403 if user is not owner or admin of the org."""
-    client = get_supabase_client()
-    r = (
-        client.table("organization_members")
-        .select("role")
-        .eq("organization_id", str(org_id))
-        .eq("user_id", user_id)
-        .limit(1)
-        .execute()
-    )
-    if not r.data or len(r.data) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not a member of this organization",
-        )
-    if r.data[0].get("role") not in ("owner", "admin"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only owner or admin can invite members",
-        )
-
-
 @router.get("/organizations/{organization_id}/invites")
 def list_invites(
     organization_id: UUID,
     user_id: str = Depends(require_current_user),
 ):
-    """List pending invites for the organization. Requires auth and org membership."""
-    _ensure_org_admin(organization_id, user_id)
+    """List pending invites for the organization. Requires auth and org admin."""
+    ensure_org_admin(organization_id, user_id)
     client = get_supabase_client()
     r = (
         client.table("organization_invites")
@@ -64,7 +41,7 @@ def create_invite(
     user_id: str = Depends(require_current_user),
 ):
     """Create a pending invite. Admin/owner only. Invitation email TBD Phase 2."""
-    _ensure_org_admin(organization_id, user_id)
+    ensure_org_admin(organization_id, user_id)
     client = get_supabase_client()
     row = {
         "organization_id": str(organization_id),

@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 
-from app.dependencies import require_current_user
+from app.dependencies import ensure_org_member, require_current_user
 from app.supabase_client import get_supabase_client
 
 router = APIRouter()
@@ -16,24 +16,6 @@ class CreateEventBody(BaseModel):
     payload: dict = {}
 
 
-def _ensure_org_member(org_id: UUID, user_id: str) -> None:
-    """Raise 403 if user is not a member of the org."""
-    client = get_supabase_client()
-    r = (
-        client.table("organization_members")
-        .select("id")
-        .eq("organization_id", str(org_id))
-        .eq("user_id", user_id)
-        .limit(1)
-        .execute()
-    )
-    if not r.data or len(r.data) == 0:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not a member of this organization",
-        )
-
-
 @router.get("/organizations/{organization_id}/activity")
 def list_activity(
     organization_id: UUID,
@@ -41,7 +23,7 @@ def list_activity(
     user_id: str = Depends(require_current_user),
 ):
     """Return recent activity events for the organization. Requires auth and org membership."""
-    _ensure_org_member(organization_id, user_id)
+    ensure_org_member(organization_id, user_id)
     client = get_supabase_client()
     r = (
         client.table("activity_events")
@@ -61,7 +43,7 @@ def create_activity_event(
     user_id: str = Depends(require_current_user),
 ):
     """Insert an activity event for the org (insert helper). Requires auth and org membership."""
-    _ensure_org_member(organization_id, user_id)
+    ensure_org_member(organization_id, user_id)
     client = get_supabase_client()
     row = {
         "organization_id": str(organization_id),

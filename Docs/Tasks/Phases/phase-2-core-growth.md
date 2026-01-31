@@ -11,8 +11,9 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] `contacts` table scoped to org.
-  - [ ] RLS policies prevent cross-org access.
+  - [x] `contacts` table scoped to org.
+  - [x] RLS policies prevent cross-org access.
+  - [x] Contacts + tags API routes (list/create/update/delete, tag CRUD, assignments).
 
 ### TASK: P2-CRM-002 — Contacts list + detail UI
 
@@ -75,8 +76,8 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] Bucket(s) created for org assets.
-  - [ ] Access controlled by org membership.
+  - [x] Bucket(s) created for org assets (doc + migration for `org-assets` + RLS).
+  - [x] Access controlled by org membership (path = `{organization_id}/...`).
 
 ### TASK: P2-ASSET-002 — Upload UI + asset listing
 
@@ -107,8 +108,9 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] Tables for templates with `admin_provided` vs `user_created`.
-  - [ ] Template content stored in a renderable format (HTML + metadata OR JSON → renderer).
+  - [x] Tables for templates with `admin_provided` vs `user_created`.
+  - [x] Template content stored in a renderable format (HTML + metadata OR JSON → renderer).
+  - [x] Templates API (list/get/create/update/delete).
 
 ### TASK: P2-TPL-002 — Template gallery UI
 
@@ -127,8 +129,9 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [ ] `campaigns` table with status workflow: draft → scheduled → sending → sent/failed.
-  - [ ] Audience selector references segments or explicit contact lists. (code exists for recipients/target rules; DB tables + UI pending)
+  - [x] `campaigns` table with status workflow: draft → scheduled → sending → sent/failed.
+  - [x] Audience selector references segments or explicit contact lists (target_rules + recipients tables + API).
+  - [x] Campaigns API (list/get/create/update, target-rules GET/PUT, recipients list).
 
 ### TASK: P2-CAMP-002 — Campaign creation wizard (MVP)
 

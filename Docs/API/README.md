@@ -62,6 +62,173 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 
 ---
 
+### Contacts (P2-CRM-001)
+
+#### `GET /api/v1/organizations/{organization_id}/contacts`
+
+- **Description:** List contacts for the org. Pagination and optional search.
+- **Auth:** Required
+- **Request:** Path `organization_id`. Query: `limit` (default 50, max 100), `offset` (default 0), `search` (optional).
+- **Response:** `200` — `{ "contacts": [ ... ], "total": number }`
+
+#### `GET /api/v1/organizations/{organization_id}/contacts/{contact_id}`
+
+- **Description:** Get a single contact. 404 if deleted or wrong org.
+- **Auth:** Required
+- **Response:** `200` — contact object
+
+#### `POST /api/v1/organizations/{organization_id}/contacts`
+
+- **Description:** Create a contact. At least `email` or `mobile` required.
+- **Auth:** Required
+- **Request:** Body `{ "email"?, "first_name"?, "last_name"?, "mobile"?, "country"?, "source"?, "is_active"?, "is_subscribed"? }`
+- **Response:** `201` — created contact
+
+#### `PATCH /api/v1/organizations/{organization_id}/contacts/{contact_id}`
+
+- **Description:** Update a contact. Only provided fields updated.
+- **Auth:** Required
+- **Response:** `200` — updated contact
+
+#### `DELETE /api/v1/organizations/{organization_id}/contacts/{contact_id}`
+
+- **Description:** Soft-delete a contact (sets `deleted_at`).
+- **Auth:** Required
+- **Response:** `204`
+
+#### `GET /api/v1/organizations/{organization_id}/contacts/tags/list`
+
+- **Description:** List all contact tags for the org.
+- **Auth:** Required
+- **Response:** `200` — `{ "tags": [ { "id", "organization_id", "name", "color", "created_at" }, ... ] }`
+
+#### `POST /api/v1/organizations/{organization_id}/contacts/tags`
+
+- **Description:** Create a contact tag. Name unique per org.
+- **Auth:** Required
+- **Request:** Body `{ "name": string, "color"?: string }`
+- **Response:** `201` — created tag
+
+#### `PATCH /api/v1/organizations/{organization_id}/contacts/tags/{tag_id}`
+
+- **Description:** Update a contact tag.
+- **Auth:** Required
+- **Response:** `200` — updated tag
+
+#### `DELETE /api/v1/organizations/{organization_id}/contacts/tags/{tag_id}`
+
+- **Description:** Delete a contact tag (assignments cascade-deleted).
+- **Auth:** Required
+- **Response:** `204`
+
+#### `GET /api/v1/organizations/{organization_id}/contacts/{contact_id}/tags`
+
+- **Description:** List tags assigned to a contact.
+- **Auth:** Required
+- **Response:** `200` — `{ "assignments": [ ... ], "tags": [ ... ] }`
+
+#### `POST /api/v1/organizations/{organization_id}/contacts/{contact_id}/tags`
+
+- **Description:** Assign a tag to a contact.
+- **Auth:** Required
+- **Request:** Body `{ "tag_id": UUID }`
+- **Response:** `201` — assignment object
+
+#### `DELETE /api/v1/organizations/{organization_id}/contacts/{contact_id}/tags/{tag_id}`
+
+- **Description:** Remove a tag from a contact.
+- **Auth:** Required
+- **Response:** `204`
+
+---
+
+### Templates (P2-TPL-001)
+
+#### `GET /api/v1/organizations/{organization_id}/templates`
+
+- **Description:** List templates: org's user-created + optionally admin-provided (global).
+- **Auth:** Required
+- **Request:** Query: `include_admin_provided` (default true), `limit`, `offset`.
+- **Response:** `200` — `{ "templates": [ ... ], "total": number }`
+
+#### `GET /api/v1/organizations/{organization_id}/templates/{template_id}`
+
+- **Description:** Get a template by id (org-owned or admin_provided).
+- **Auth:** Required
+- **Response:** `200` — template object (includes content_html, content_json, subject_line)
+
+#### `POST /api/v1/organizations/{organization_id}/templates`
+
+- **Description:** Create a user template. At least content_html or content_json required.
+- **Auth:** Required
+- **Request:** Body `{ "name", "content_html"?, "content_json"?, "subject_line"? }`
+- **Response:** `201` — created template
+
+#### `PATCH /api/v1/organizations/{organization_id}/templates/{template_id}`
+
+- **Description:** Update a user-created template (not admin_provided).
+- **Auth:** Required
+- **Response:** `200` — updated template
+
+#### `DELETE /api/v1/organizations/{organization_id}/templates/{template_id}`
+
+- **Description:** Delete a user-created template.
+- **Auth:** Required
+- **Response:** `204`
+
+---
+
+### Campaigns (P2-CAMP-001)
+
+#### `GET /api/v1/organizations/{organization_id}/campaigns`
+
+- **Description:** List campaigns. Optional status filter.
+- **Auth:** Required
+- **Request:** Query: `status` (draft, scheduled, sending, sent, failed, paused), `limit`, `offset`.
+- **Response:** `200` — `{ "campaigns": [ ... ], "total": number }`
+
+#### `GET /api/v1/organizations/{organization_id}/campaigns/{campaign_id}`
+
+- **Description:** Get a campaign by id.
+- **Auth:** Required
+- **Response:** `200` — campaign object
+
+#### `POST /api/v1/organizations/{organization_id}/campaigns`
+
+- **Description:** Create a draft campaign.
+- **Auth:** Required
+- **Request:** Body `{ "name", "template_id"?, "subject_line"?, "scheduled_at"? }`
+- **Response:** `201` — created campaign
+
+#### `PATCH /api/v1/organizations/{organization_id}/campaigns/{campaign_id}`
+
+- **Description:** Update a campaign (draft/scheduled/paused). Status only settable to draft, scheduled, or paused.
+- **Auth:** Required
+- **Request:** Body `{ "name"?, "template_id"?, "subject_line"?, "scheduled_at"?, "status"? }`
+- **Response:** `200` — updated campaign
+
+#### `GET /api/v1/organizations/{organization_id}/campaigns/{campaign_id}/target-rules`
+
+- **Description:** Get target rules for a campaign (creates default if missing).
+- **Auth:** Required
+- **Response:** `200` — target rules object (include_tags, exclude_tags, exclude_countries, exclude_unsubscribed, etc.)
+
+#### `PUT /api/v1/organizations/{organization_id}/campaigns/{campaign_id}/target-rules`
+
+- **Description:** Create or update target rules for a campaign.
+- **Auth:** Required
+- **Request:** Body `{ "include_tags"?, "exclude_tags"?, "exclude_countries"?, "exclude_unsubscribed"?, "exclude_inactive"?, "exclude_bounced"? }`
+- **Response:** `200` — saved target rules object
+
+#### `GET /api/v1/organizations/{organization_id}/campaigns/{campaign_id}/recipients`
+
+- **Description:** List recipients for a campaign. Optional status filter (pending, sent, delivered, bounced, opened, clicked).
+- **Auth:** Required
+- **Request:** Query: `status`, `limit`, `offset`.
+- **Response:** `200` — `{ "recipients": [ ... ], "total": number }`
+
+---
+
 ### Format for new endpoints
 
 ```markdown
@@ -78,8 +245,9 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 
 ## Changelog
 
-| Date       | Change                                                                   |
-| ---------- | ------------------------------------------------------------------------ |
-| 2026-01-31 | Backend setup: FastAPI; `GET /api/v1/health` added.                      |
-| 2026-01-31 | P1-DASH-002: activity GET/POST; P1-RBAC-002: invites GET/POST. JWT auth. |
-| 2026-01-31 | JWT: support both HS256 and ES256 (Supabase). Backend CI (P1-SETUP-003). |
+| Date       | Change                                                                               |
+| ---------- | ------------------------------------------------------------------------------------ |
+| 2026-01-31 | Backend setup: FastAPI; `GET /api/v1/health` added.                                  |
+| 2026-01-31 | P1-DASH-002: activity GET/POST; P1-RBAC-002: invites GET/POST. JWT auth.             |
+| 2026-01-31 | JWT: support both HS256 and ES256 (Supabase). Backend CI (P1-SETUP-003).             |
+| 2026-01-31 | P2: Contacts, tags, templates, campaigns APIs. P2-ASSET-001 storage doc + migration. |
