@@ -96,6 +96,13 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 - **Auth:** Required
 - **Response:** `204`
 
+#### `POST /api/v1/organizations/{organization_id}/contacts/import` (P2-CRM-004)
+
+- **Description:** CSV import: upload CSV, map columns to contact fields, create contacts under org. Returns created/failed counts and per-row errors (max 2000 rows per request).
+- **Auth:** Required
+- **Request:** `multipart/form-data`: `file` (CSV, UTF-8, first row = headers); optional `column_mapping` (JSON string e.g. `{"email":"Email","first_name":"First Name"}`); optional `source` (default `csv_import`). If no mapping, headers are auto-matched to email, first_name, last_name, mobile, country.
+- **Response:** `200` — `{ "created": number, "failed": number, "total": number, "errors": [ { "row": number, "reason": string }, ... ] }` (errors capped at 100).
+
 #### `GET /api/v1/organizations/{organization_id}/contacts/tags/list`
 
 - **Description:** List all contact tags for the org.
@@ -245,9 +252,10 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 
 ## Changelog
 
-| Date       | Change                                                                               |
-| ---------- | ------------------------------------------------------------------------------------ |
-| 2026-01-31 | Backend setup: FastAPI; `GET /api/v1/health` added.                                  |
-| 2026-01-31 | P1-DASH-002: activity GET/POST; P1-RBAC-002: invites GET/POST. JWT auth.             |
-| 2026-01-31 | JWT: support both HS256 and ES256 (Supabase). Backend CI (P1-SETUP-003).             |
-| 2026-01-31 | P2: Contacts, tags, templates, campaigns APIs. P2-ASSET-001 storage doc + migration. |
+| Date       | Change                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| 2026-01-31 | Backend setup: FastAPI; `GET /api/v1/health` added.                                      |
+| 2026-01-31 | P1-DASH-002: activity GET/POST; P1-RBAC-002: invites GET/POST. JWT auth.                 |
+| 2026-01-31 | JWT: support both HS256 and ES256 (Supabase). Backend CI (P1-SETUP-003).                 |
+| 2026-01-31 | P2: Contacts, tags, templates, campaigns APIs. P2-ASSET-001 storage doc + migration.     |
+| 2026-01-31 | P2-CRM-004: CSV import endpoint `POST .../contacts/import` (multipart, mapping, report). |

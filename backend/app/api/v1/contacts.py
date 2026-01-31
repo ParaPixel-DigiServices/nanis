@@ -1,12 +1,19 @@
-"""P2-CRM-001: Contacts + tags — list, create, update, delete; tag CRUD and assignments."""
+"""P2-CRM-001: Contacts + tags — list, create, update, delete; tag CRUD and assignments.
+P2-CRM-004: CSV import pipeline — upload CSV, map columns, bulk create contacts, return report."""
 
+import csv
+import io
+import json
 from datetime import datetime, timezone
 from uuid import UUID
 
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import File
+from fastapi import Form
 from fastapi import HTTPException
 from fastapi import Query
+from fastapi import UploadFile
 from fastapi import status
 
 from pydantic import BaseModel, EmailStr
@@ -198,6 +205,182 @@ def delete_contact(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Contact not found")
     return None
+
+
+# ---------------------------------------------------------------------------
+# P2-CRM-004: CSV import
+# ---------------------------------------------------------------------------
+
+CONTACT_IMPORT_FIELDS = ("email", "first_name",
+                         "last_name", "mobile", "country")
+MAX_IMPORT_ROWS = 2000
+
+# Common CSV header names → our field name (case-insensitive match)
+_HEADER_ALIASES = {
+    "email": ["email", "e-mail", "mail"],
+    "first_name": ["first_name", "first name", "firstname", "given name"],
+    "last_name": ["last_name", "last name", "lastname", "surname", "family name"],
+    "mobile": ["mobile", "phone", "telephone", "cell", "number"],
+    "country": ["country", "country code", "location"],
+}
+
+
+def _normalize_header(h: str) -> str:
+    return (h or "").strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def _infer_column_mapping(csv_headers: list[str]) -> dict[str, int]:
+    """Map our field names to column indices using CSV headers. Returns field_name -> index."""
+    mapping: dict[str, int] = {}
+    normalized_headers = [_normalize_header(h) for h in csv_headers]
+    for field in CONTACT_IMPORT_FIELDS:
+        for alias in _HEADER_ALIASES.get(field, [field]):
+            norm = _normalize_header(alias)
+            for i, nh in enumerate(normalized_headers):
+                if nh == norm or nh == field.replace("_", ""):
+                    mapping[field] = i
+                    break
+            if field in mapping:
+                break
+    return mapping
+
+
+def _validate_email(s: str | None) -> bool:
+    if not s or not s.strip():
+        return False
+    s = s.strip()
+    return "@" in s and "." in s and len(s) > 3
+
+
+@router.post("/organizations/{organization_id}/contacts/import")
+def import_contacts_csv(
+    organization_id: UUID,
+    file: UploadFile = File(...,
+                            description="CSV file (headers in first row)"),
+    column_mapping: str | None = Form(
+        None, description="Optional JSON: our_field -> CSV header"),
+    source: str = Form(
+        "csv_import", description="Source label for imported contacts"),
+    user_id: str = Depends(require_current_user),
+):
+    """P2-CRM-004: Upload CSV, map columns, create contacts under org. Returns created/failed + errors."""
+    ensure_org_member(organization_id, user_id)
+    if not file.filename or not file.filename.lower().endswith(".csv"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File must be a CSV (.csv)",
+        )
+    content = file.file.read()
+    try:
+        text = content.decode("utf-8")
+    except UnicodeDecodeError:
+        try:
+            text = content.decode("utf-8-sig")
+        except Exception:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="CSV must be UTF-8 encoded",
+            )
+    reader = csv.reader(io.StringIO(text))
+    rows = list(reader)
+    if not rows:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="CSV is empty",
+        )
+    headers = [h.strip() for h in rows[0]]
+    data_rows = rows[1:]
+    if len(data_rows) > MAX_IMPORT_ROWS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Maximum {MAX_IMPORT_ROWS} rows per import",
+        )
+    if column_mapping:
+        try:
+            user_map = json.loads(column_mapping)
+        except json.JSONDecodeError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="column_mapping must be valid JSON object: { \"email\": \"Email\", ... }",
+            )
+        field_to_index: dict[str, int] = {}
+        for our_field, csv_header in user_map.items():
+            if our_field not in CONTACT_IMPORT_FIELDS:
+                continue
+            for i, h in enumerate(headers):
+                if (h or "").strip() == (csv_header or "").strip():
+                    field_to_index[our_field] = i
+                    break
+    else:
+        field_to_index = _infer_column_mapping(headers)
+    if not field_to_index:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "Could not map any columns. Provide column_mapping or use headers: "
+                "email, first_name, last_name, mobile, country"
+            ),
+        )
+    client = get_supabase_client()
+    created = 0
+    errors: list[dict] = []
+    for row_index, row in enumerate(data_rows):
+        one_indexed = row_index + 2
+        if not any(cell and str(cell).strip() for cell in row):
+            continue
+        email_val = None
+        if "email" in field_to_index:
+            idx = field_to_index["email"]
+            if idx < len(row) and row[idx] is not None:
+                email_val = str(row[idx]).strip() or None
+        mobile_val = None
+        if "mobile" in field_to_index:
+            idx = field_to_index["mobile"]
+            if idx < len(row) and row[idx] is not None:
+                mobile_val = str(row[idx]).strip() or None
+        if not email_val and not mobile_val:
+            errors.append(
+                {"row": one_indexed, "reason": "Missing email and mobile"})
+            continue
+        if email_val and not _validate_email(email_val):
+            errors.append(
+                {"row": one_indexed, "reason": "Invalid email format"})
+            continue
+        payload: dict = {
+            "organization_id": str(organization_id),
+            "source": source,
+            "is_active": True,
+            "is_subscribed": True,
+            "created_by": user_id,
+        }
+        if email_val:
+            payload["email"] = email_val
+        if mobile_val:
+            payload["mobile"] = mobile_val
+        for field in ("first_name", "last_name", "country"):
+            if field in field_to_index:
+                idx = field_to_index[field]
+                if idx < len(row) and row[idx] is not None:
+                    val = str(row[idx]).strip() or None
+                    if val:
+                        payload[field] = val
+        try:
+            r = client.table("contacts").insert(payload).execute()
+            if r.data and len(r.data) > 0:
+                created += 1
+            else:
+                errors.append(
+                    {"row": one_indexed,
+                        "reason": "Insert failed (e.g. duplicate email)"}
+                )
+        except Exception as e:
+            errors.append({"row": one_indexed, "reason": str(e)[:200]})
+    return {
+        "created": created,
+        "failed": len(errors),
+        "total": len(data_rows),
+        "errors": errors[:100],
+    }
 
 
 # ---------------------------------------------------------------------------

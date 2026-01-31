@@ -42,9 +42,9 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P1
 - **Depends on:** P2-CRM-001
 - **Acceptance Criteria:**
-  - [ ] Upload CSV, map columns to standard fields.
-  - [ ] Import creates contacts under current org. (API/service implemented; requires DB tables + UI wiring)
-  - [ ] Import report shows successes/failures. (API returns summary; UI pending)
+  - [x] Upload CSV, map columns to standard fields (auto-detect or optional column_mapping JSON).
+  - [x] Import creates contacts under current org. (API: `POST /organizations/{org_id}/contacts/import`; UI wiring pending.)
+  - [x] Import report shows successes/failures. (API returns `created`, `failed`, `total`, `errors`; UI pending.)
 
 ### TASK: P2-CRM-005 — Custom fields framework (schema + UI)
 
