@@ -2,18 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force specific scrollbar styling if needed, or global resets */
 body {
   margin: 0;
   padding: 0;
-  background-color: #000; /* Assuming dark mode, change if light */
-  overflow-x: hidden; /* Prevent accidental horizontal scroll */
-}
-
-#root {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Centers the 1728px app on larger screens */
+  /* Optional: Set a fallback color in case the image loads slowly */
+  background-color: #000; 
+  -webkit-font-smoothing: antialiased;
 }
