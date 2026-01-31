@@ -152,8 +152,8 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** External access (AWS credentials, domain DNS)
 - **Acceptance Criteria:**
-  - [ ] Steps documented: domain verify, DKIM, SPF, sandbox exit.
-  - [ ] Sender identities defined.
+  - [x] Steps documented: domain verify, DKIM, SPF, sandbox exit. (**Docs/Integrations/ses-setup.md**)
+  - [x] Sender identities defined (verified domain/email in checklist).
 
 ### TASK: P2-SES-002 — Edge Function: send campaign batch
 

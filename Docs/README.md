@@ -15,6 +15,7 @@ Quick entry points:
 - [Team/](./Team/) — how we work together (frontend + backend)
 - [API/](./API/) — API contract (backend documents; frontend consumes)
 - [Platform/](./Platform/) — routing and platform-level conventions
+- [Integrations/](./Integrations/) — external services (e.g. [SES setup](./Integrations/ses-setup.md))
 - [Deploy/](./Deploy/) — deployment and environment notes
 - [Tasks/](./Tasks/) — delivery phases + developer task breakdowns
 
