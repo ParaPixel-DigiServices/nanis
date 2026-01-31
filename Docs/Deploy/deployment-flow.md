@@ -17,6 +17,7 @@ The deployment follows a **phased approach** to ensure stability and allow for i
 3. **Phase 3**: Add Apple OAuth integration
 
 This approach allows for:
+
 - Initial deployment with core authentication working
 - Incremental testing of each authentication method
 - Easier debugging and rollback if issues arise
@@ -28,15 +29,16 @@ This approach allows for:
 
 ### **1.1 Prerequisites**
 
-- ✅ Authentication implementation complete (signup, login, session management)
-- ✅ Database schema deployed (profiles, organizations, organization_members)
-- ✅ RLS policies applied
-- ✅ Edge function deployed (`on-signup-create-org`)
-- ✅ Frontend authentication flow working locally
+- [ ] Authentication implementation complete (signup, login, session management)
+- [ ] Database schema deployed (profiles, organizations, organization_members)
+- [ ] RLS policies applied
+- [ ] Edge function deployed (`on-signup-create-org`)
+- [ ] Frontend authentication flow working locally
 
 ### **1.2 Vercel Project Setup**
 
 1. **Create Vercel Project**
+
    - Connect GitHub repository
    - Select Next.js framework preset
    - Configure build settings:
@@ -45,6 +47,7 @@ This approach allows for:
      - Install Command: `npm install`
 
 2. **Environment Variables**
+
    - `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon/public key
    - `SUPABASE_SERVICE_ROLE_KEY`: (For Edge Functions, if needed)
@@ -57,11 +60,13 @@ This approach allows for:
 ### **1.3 Supabase Configuration**
 
 1. **Email/Password Authentication**
+
    - Ensure email/password provider is enabled in Supabase Dashboard
    - Configure email templates (if custom)
    - Set email confirmation requirements (recommended: disabled for initial deployment)
 
 2. **Database Webhook**
+
    - Verify webhook is configured for `auth.users` INSERT events
    - Ensure Edge Function is deployed and accessible
 
@@ -93,12 +98,13 @@ This approach allows for:
 
 ### **2.1 Prerequisites**
 
-- ✅ Phase 1 deployment stable and tested
-- ✅ Email/password authentication working in production
+- [ ] Phase 1 deployment stable and tested
+- [ ] Email/password authentication working in production
 
 ### **2.2 Google OAuth Setup**
 
 1. **Google Cloud Console**
+
    - Create OAuth 2.0 credentials
    - Configure authorized redirect URIs:
      - `https://[your-project].supabase.co/auth/v1/callback`
@@ -106,6 +112,7 @@ This approach allows for:
    - Note Client ID and Client Secret
 
 2. **Supabase Configuration**
+
    - Navigate to Authentication → Providers → Google
    - Enable Google provider
    - Enter Google Client ID and Client Secret
@@ -140,12 +147,13 @@ This approach allows for:
 
 ### **3.1 Prerequisites**
 
-- ✅ Phase 2 deployment stable and tested
-- ✅ Google OAuth working in production
+- [ ] Phase 2 deployment stable and tested
+- [ ] Google OAuth working in production
 
 ### **3.2 Apple OAuth Setup**
 
 1. **Apple Developer Account**
+
    - Create App ID in Apple Developer Portal
    - Configure Services ID for Sign in with Apple
    - Create Service ID with domain and redirect URLs:
@@ -155,6 +163,7 @@ This approach allows for:
    - Note Services ID and Team ID
 
 2. **Supabase Configuration**
+
    - Navigate to Authentication → Providers → Apple
    - Enable Apple provider
    - Enter Apple Services ID, Team ID, Key ID, and Private Key
@@ -224,6 +233,7 @@ This approach allows for:
 If issues arise during deployment:
 
 1. **Phase 1 Issues**
+
    - Revert to previous Vercel deployment
    - Check environment variables
    - Review Supabase configuration

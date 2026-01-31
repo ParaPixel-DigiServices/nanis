@@ -2,21 +2,20 @@
 
 Quick entry points:
 
-- Start here: [tasks-index.md](./tasks-index.md)
-- Project overview: [Overview/project-overview.md](./Overview/project-overview.md)
-- Architecture: [Overview/architecture-overview.md](./Overview/architecture-overview.md)
-- Database overview: [Database/database-overview.md](./Database/database-overview.md)
-- Contacts/Campaigns implementation notes: [implementation-complete.md](./implementation-complete.md)
-- SQL scripts: [../database/](../database/)
+- **Start here:** [tasks-index.md](./tasks-index.md)
+- **Project overview:** [Overview/project-overview.md](./Overview/project-overview.md)
+- **Architecture:** [Overview/architecture-overview.md](./Overview/architecture-overview.md)
+- **I'm Backend:** [Team/collaboration.md](./Team/collaboration.md) → [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) + [API/README.md](./API/README.md)
+- **I'm Frontend:** [Team/collaboration.md](./Team/collaboration.md) → [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) + [API/README.md](./API/README.md)
+- Contacts/Campaigns reference (Phase 2+): [implementation-complete.md](./implementation-complete.md)
 
 ## Folder structure
 
 - [Overview/](./Overview/) — high-level context, roadmap, decisions
-- [Auth/](./Auth/) — auth + signup + OAuth
-- [Database/](./Database/) — schema model + RLS
-- [Contacts/](./Contacts/) — contacts architecture + schema + query/segment engines
-- [Deploy/](./Deploy/) — deployment and environment notes
+- [Team/](./Team/) — how we work together (frontend + backend)
+- [API/](./API/) — API contract (backend documents; frontend consumes)
 - [Platform/](./Platform/) — routing and platform-level conventions
+- [Deploy/](./Deploy/) — deployment and environment notes
 - [Tasks/](./Tasks/) — delivery phases + developer task breakdowns
 
 ## Tasks substructure

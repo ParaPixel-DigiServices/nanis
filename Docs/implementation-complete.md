@@ -1,23 +1,37 @@
-# **IMPLEMENTATION COMPLETE — CONTACTS & CAMPAIGNS MODULE**
+# **IMPLEMENTATION COMPLETE — CONTACTS & CAMPAIGNS MODULE (REFERENCE)**
 
-## **Document Overview**
+## **FRESH START — PROJECT RESET**
 
-This document provides a comprehensive overview of all implemented features in the Contacts and Campaigns modules. It covers the complete implementation from contact import and list functionality to campaign scheduling and automation.
+**The project was reset and is starting afresh.** This document is kept as **reference only** for the previous attempt. No tasks or features described here should be considered done in the current codebase. All work is to be (re)implemented according to the phase task files (Phase 1–4) and current repo structure.
 
-**Last Updated:** January 24, 2026  
-**Status:** API/Service Implementation Present (DB/RLS/UI prerequisites pending)
+---
+
+## **Document Overview (Reference)**
+
+This document describes the **previous** implementation attempt for Contacts and Campaigns modules. Use it as a specification reference when re-implementing; do not assume any of it exists in the current repo.
+
+**Last Updated:** January 31, 2026  
+**Status:** Reference only — all implementation tasks reset to uncompleted.
 
 > Note: This repo contains substantial Contacts/Campaigns/Tags **service + controller** code under `apps/api/src/modules/**` and **Next.js API routes** under `apps/web/app/api/**`.
 > However, some database tables referenced by the code (e.g. tags + campaign recipients/targeting) are not present in the current `database/` SQL scripts or `migrations/` folder, and RLS policies for these domain tables are not yet captured in the repo.
 > Treat this document as “what the code intends/implements”, not an end-to-end production readiness guarantee.
 
-### **Reality Check (Repo Evidence)**
+### **Reality Check (Fresh Start)**
 
-**Implemented in code (server modules + API routes):**
+**Current repo:** No Contacts/Campaigns/Tags implementation is assumed. Backend and frontend folders are empty (.gitkeep). All features described in this document are **to be implemented** as part of Phase 2+ per the task files.
 
-- Contacts: list + import modules exist in `apps/api/src/modules/contacts/**` and are exposed via `apps/web/app/api/contacts/**`.
-- Tags: tags module exists in `apps/api/src/modules/tags/**` and is exposed via `apps/web/app/api/tags/**`.
-- Campaigns: campaigns module (create/list/get + recipients generation + scheduler/runner) exists in `apps/api/src/modules/campaigns/**` and is exposed via `apps/web/app/api/campaigns/**`.
+**When re-implementing, ensure:**
+
+- Database: Define all required tables (contacts, contact_tags, contact_tag_assignments, campaigns, campaign_recipients, campaign_target_rules, etc.) in migrations.
+- RLS: Add tenant-scoped RLS policies for all domain tables.
+- UI: Build contacts/campaigns/tags pages per phase task breakdowns.
+
+**Previous attempt (reference only):**
+
+- Contacts: list + import modules existed under `apps/api/src/modules/contacts/**` and were exposed via `apps/web/app/api/contacts/**`.
+- Tags: tags module existed under `apps/api/src/modules/tags/**` and was exposed via `apps/web/app/api/tags/**`.
+- Campaigns: campaigns module existed under `apps/api/src/modules/campaigns/**` and was exposed via `apps/web/app/api/campaigns/**`.
 
 **Known repo gaps (must be addressed before calling this “production-ready”):**
 
@@ -57,6 +71,7 @@ A production-grade contact import system that supports multiple data sources and
 **1. Normalization (`import.normalizer.ts`)**
 
 - **Field Detection:** Auto-detects standard fields using aliases:
+
   - `first_name`: `["first_name", "firstname", "first name", "fname", "f_name"]`
   - `last_name`: `["last_name", "lastname", "last name", "lname", "l_name"]`
   - `full_name`: `["full_name", "fullname", "full name", "name"]`
@@ -1068,7 +1083,7 @@ interface CampaignContext {
 
 ### **6.1 Contact Management**
 
-✅ **Import System:**
+**Import System (to be implemented):**
 
 - Multi-source import (Excel, CSV, XLSX, Mailchimp)
 - Automatic field detection and normalization
@@ -1077,7 +1092,7 @@ interface CampaignContext {
 - Custom field auto-creation
 - Bulk insert with error handling
 
-✅ **List & Filtering:**
+**List & Filtering (to be implemented):**
 
 - Paginated contact list
 - Full-text search (email, name, mobile)
@@ -1086,7 +1101,7 @@ interface CampaignContext {
 - Custom field inclusion
 - Efficient database queries
 
-✅ **Tag Management:**
+**Tag Management (to be implemented):**
 
 - Create and list tags
 - Assign tags to contacts
@@ -1095,14 +1110,14 @@ interface CampaignContext {
 
 ### **6.2 Campaign Management**
 
-✅ **Campaign Lifecycle:**
+**Campaign Lifecycle (to be implemented):**
 
 - Create campaigns (draft/scheduled)
 - List campaigns with filters
 - Get campaign details with recipient count
 - Campaign scheduling support
 
-✅ **Recipient Generation:**
+**Recipient Generation (to be implemented):**
 
 - Automatic recipient generation
 - Sophisticated filtering rules:
@@ -1114,7 +1129,7 @@ interface CampaignContext {
 - Bulk recipient insertion
 - Duplicate handling
 
-✅ **Scheduling & Automation:**
+**Scheduling & Automation (to be implemented):**
 
 - Scheduled campaign support (`scheduled_at`)
 - Background runner service
@@ -1123,7 +1138,7 @@ interface CampaignContext {
 - Idempotent execution
 - Cron/Edge Function compatible
 
-✅ **Bounce Tracking:**
+**Bounce Tracking (to be implemented):**
 
 - Mark recipients as bounced
 - Bulk bounce marking
@@ -1428,29 +1443,27 @@ migrations/
 
 ---
 
-## **15. CONCLUSION**
+## **15. CONCLUSION (REFERENCE)**
 
-This implementation provides a complete, production-ready foundation for:
+This document describes the **target** behavior for Contact and Campaign modules. In the fresh start, none of this is considered done; use it as a specification when implementing Phase 2+.
 
-✅ **Contact Management:**
+**Contact Management (to be implemented):**
 
 - Multi-source import with normalization
 - Advanced filtering and search
 - Tag management
 - Custom fields support
 
-✅ **Campaign Management:**
+**Campaign Management (to be implemented):**
 
 - Campaign lifecycle management
 - Sophisticated recipient generation
 - Automated scheduling
 - Bounce tracking
 
-✅ **Architecture:**
+**Architecture goals:**
 
 - Layered, maintainable codebase
 - Multi-tenant security
 - Type-safe implementation
 - Scalable design patterns
-
-All features are fully implemented, tested, and ready for production use.

@@ -10,10 +10,12 @@ Nanis is an all-in-one Campaign, Communication, and Growth Management SaaS platf
 
 1. Docs/Overview/project-overview.md
 2. Docs/Overview/architecture-overview.md
-3. Docs/Database/database-overview.md
-4. Docs/Overview/techstack-locked.md
-5. Docs/Overview/roadmap-delivery.md
+3. Docs/Overview/techstack-locked.md
+4. Docs/Overview/roadmap-delivery.md
+5. Docs/Team/collaboration.md — how frontend and backend work together
 6. Docs/Tasks/Phases/phase-1-foundation.md (then the other phases)
+
+(Database overview and auth-specific docs will be added when schema/auth are implemented.)
 
 ## 3) Non-negotiables
 
@@ -57,5 +59,6 @@ A task is "Done" only when:
 
 ## 8) Communication
 
+- **Single source:** Docs/Team/collaboration.md — read it and keep API contract (Docs/API/README.md) in sync when Backend adds endpoints.
 - Raise blockers immediately, especially external approvals.
 - Prefer small PRs (0.5–2 day tasks) for fast review and integration.

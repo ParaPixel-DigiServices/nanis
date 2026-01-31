@@ -10,11 +10,11 @@ This folder is meant to be shared with developers so they can:
 
 - [Overview/project-overview.md](./Overview/project-overview.md)
 - [Overview/architecture-overview.md](./Overview/architecture-overview.md)
-- [Database/database-overview.md](./Database/database-overview.md)
 - [Overview/techstack-locked.md](./Overview/techstack-locked.md)
 - [Overview/roadmap-delivery.md](./Overview/roadmap-delivery.md)
 - [Overview/decision-log.md](./Overview/decision-log.md)
 - [Overview/feature-roadmap.md](./Overview/feature-roadmap.md)
+- [Team/collaboration.md](./Team/collaboration.md) — how frontend and backend stay in sync
 
 ## 1) How to use these task files
 
@@ -57,11 +57,12 @@ Use one of:
 - [Tasks/Phases/phase-3-builders-comms.md](./Tasks/Phases/phase-3-builders-comms.md) (Weeks 7–9)
 - [Tasks/Phases/phase-4-automation-monetization.md](./Tasks/Phases/phase-4-automation-monetization.md) (Weeks 10–12)
 
-## 3) Suggested staffing (3 developers)
+## 3) Team (2 developers)
 
-- [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) (Developer A)
-- [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) (Developer B)
-- [Tasks/Dev/dev-integrations.md](./Tasks/Dev/dev-integrations.md) (Developer C)
+- [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) — Frontend (Next.js, UI, routing)
+- [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) — Backend (Supabase, API, RLS, Edge Functions)
+
+Integrations (SES, Razorpay, WhatsApp, etc.) are owned by Backend unless a task needs frontend work. See [Team/collaboration.md](./Team/collaboration.md) for handoff and [Tasks/Dev/dev-integrations.md](./Tasks/Dev/dev-integrations.md) for integration task reference.
 
 ## 4) Recommended weekly cadence
 

@@ -11,7 +11,7 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [x] `contacts` table scoped to org.
+  - [ ] `contacts` table scoped to org.
   - [ ] RLS policies prevent cross-org access.
 
 ### TASK: P2-CRM-002 — Contacts list + detail UI
@@ -127,7 +127,7 @@ Goal: contacts + assets + campaigns + SES sending + baseline analytics.
 - **Priority:** P0
 - **Depends on:** P1-DB-003
 - **Acceptance Criteria:**
-  - [x] `campaigns` table with status workflow: draft → scheduled → sending → sent/failed.
+  - [ ] `campaigns` table with status workflow: draft → scheduled → sending → sent/failed.
   - [ ] Audience selector references segments or explicit contact lists. (code exists for recipients/target rules; DB tables + UI pending)
 
 ### TASK: P2-CAMP-002 — Campaign creation wizard (MVP)
