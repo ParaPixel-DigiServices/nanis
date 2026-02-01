@@ -10,6 +10,7 @@ Entry points:
 - **Setup (env, Auth, OAuth):** [Tasks/Onboarding/setup-checklist.md](./Tasks/Onboarding/setup-checklist.md)
 - **Client (Phase 2):** [Client/client-checklist-through-phase-2.md](./Client/client-checklist-through-phase-2.md) — Supabase, Google/Apple OAuth, AWS SES, what to share with dev
 - **Tasks:** [tasks-index.md](./tasks-index.md) — phases and task breakdowns
+- **Deploy (backend on Render):** [Deploy/render-backend.md](./Deploy/render-backend.md)
 
 ## Folders
 
@@ -20,6 +21,6 @@ Entry points:
 | API/          | API contract (Backend owns)                               |
 | Platform/     | Routing, storage                                          |
 | Integrations/ | SES backend setup                                         |
-| Deploy/       | Deployment flow                                           |
+| Deploy/       | Render backend (step-by-step)                             |
 | Client/       | Client checklist (Phase 2)                                |
 | Tasks/        | Phases, Dev task lists, Onboarding, Templates             |

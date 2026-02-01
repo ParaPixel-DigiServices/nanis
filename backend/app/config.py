@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     api_port: int = 8000
     environment: Literal["development",
                          "staging", "production"] = "development"
+    # CORS: comma-separated origins for production (e.g. https://yourapp.vercel.app)
+    allowed_origins_extra: str = ""
 
     # Optional — Phase 2+ (SES)
     aws_access_key_id: str = ""
