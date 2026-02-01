@@ -61,7 +61,15 @@ export function AuthProvider({ children }) {
       supabase.auth.signUp({ email, password, options }),
     signInWithPassword: (email, password) =>
       supabase.auth.signInWithPassword({ email, password }),
-    signInWithOAuth: (provider) => supabase.auth.signInWithOAuth({ provider }),
+    signInWithOAuth: (provider) =>
+      supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${
+            typeof window !== "undefined" ? window.location.origin : ""
+          }/signup`,
+        },
+      }),
     signOut: () => supabase.auth.signOut(),
   };
 
