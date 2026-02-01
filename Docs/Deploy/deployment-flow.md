@@ -40,21 +40,22 @@ This approach allows for:
 1. **Create Vercel Project**
 
    - Connect GitHub repository
-   - Select Next.js framework preset
+   - Select Vite (or "Other") framework preset for the frontend SPA
    - Configure build settings:
-     - Build Command: `npm run build` (or `next build`)
-     - Output Directory: `.next`
+     - Root directory: `frontend/`
+     - Build Command: `npm run build`
+     - Output Directory: `dist`
      - Install Command: `npm install`
 
-2. **Environment Variables**
+2. **Environment Variables** (frontend — use `VITE_` prefix for client-exposed vars)
 
-   - `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon/public key
-   - `SUPABASE_SERVICE_ROLE_KEY`: (For Edge Functions, if needed)
+   - `VITE_SUPABASE_URL`: Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY`: Supabase anon/public key
+   - `SUPABASE_SERVICE_ROLE_KEY`: Server-only (backend/Edge Functions); do not expose in frontend
 
 3. **Deployment Configuration**
-   - Root directory: `apps/web` (if monorepo) or project root
-   - Framework: Next.js
+   - Root directory: `frontend/` (Vite + React SPA)
+   - Framework: Vite
    - Node.js version: 18.x or 20.x
 
 ### **1.3 Supabase Configuration**

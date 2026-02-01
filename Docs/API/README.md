@@ -26,6 +26,25 @@ The frontend uses this as the **single source of truth** for endpoints, request/
 
 ---
 
+### Onboarding (P1-AUTH-003)
+
+#### `GET /api/v1/onboard/me`
+
+- **Description:** Current user id and list of organizations they belong to (for app shell / org switcher).
+- **Auth:** Required
+- **Request:** None
+- **Response:** `200` — `{ "user_id": string, "organizations": [ { "id", "name", "slug", "created_at", "role" }, ... ] }`
+
+#### `POST /api/v1/onboard`
+
+- **Description:** Create the user's first organization and add them as owner. Idempotent: if user already has an org, returns that org with `already_exists: true`.
+- **Auth:** Required
+- **Request:** Body `{ "name": string (1–500 chars), "slug": string (1–64 chars, lowercase alphanumeric and hyphens) }`
+- **Response:** `201` — `{ "organization": { "id", "name", "slug", "created_at", "updated_at" }, "already_exists": boolean }`
+- **Errors:** `400` — invalid slug format; `409` — slug already taken
+
+---
+
 ### Activity (P1-DASH-002)
 
 #### `GET /api/v1/organizations/{organization_id}/activity`

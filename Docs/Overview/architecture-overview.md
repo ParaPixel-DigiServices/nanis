@@ -8,10 +8,10 @@ This document provides a **high-level architectural view** of the Campaign & Gro
 
 The goal is to clearly define:
 
-* Major system components
-* How data flows between them
-* Where third-party services fit
-* Clear separation of responsibilities
+- Major system components
+- How data flows between them
+- Where third-party services fit
+- Clear separation of responsibilities
 
 This is an **implementation-agnostic overview** meant for alignment, not low-level coding details.
 
@@ -30,21 +30,20 @@ The platform is composed of the following core layers:
 
 ## **3. Frontend Architecture**
 
-### **3.1 User Application (Next.js)**
+### **3.1 User Application (Vite + React SPA)**
 
 The frontend is a **single unified web application** responsible for:
 
-* User interaction
-* Visual builders (email editor, website builder)
-* Dashboard and analytics views
-* Real-time inbox experience
+- User interaction
+- Visual builders (email editor, website builder)
+- Dashboard and analytics views
+- Real-time inbox experience
 
 Key characteristics:
 
-* Built with Next.js + TypeScript
-* Modular component-based architecture
-* Uses shared UI packages for consistency
-* Communicates with backend via secured APIs
+- Built with Vite + React (SPA); see `Docs/Tasks/Dev/frontend-state.md`
+- Modular component-based architecture
+- Communicates with backend via secured APIs (FastAPI + Supabase Auth)
 
 ---
 
@@ -52,16 +51,16 @@ Key characteristics:
 
 The frontend:
 
-* Handles UI state and interactions
-* Renders builders and dashboards
-* Displays analytics and reports
-* Sends authenticated requests to backend services
+- Handles UI state and interactions
+- Renders builders and dashboards
+- Displays analytics and reports
+- Sends authenticated requests to backend services
 
 The frontend **does not**:
 
-* Store sensitive secrets
-* Execute business-critical logic
-* Directly interact with third-party APIs
+- Store sensitive secrets
+- Execute business-critical logic
+- Directly interact with third-party APIs
 
 ---
 
@@ -71,10 +70,10 @@ The frontend **does not**:
 
 Supabase serves as the **central backend platform**, providing:
 
-* PostgreSQL database
-* Authentication & authorization
-* File storage
-* Realtime subscriptions
+- PostgreSQL database
+- Authentication & authorization
+- File storage
+- Realtime subscriptions
 
 All persistent data flows through Supabase.
 
@@ -84,12 +83,12 @@ All persistent data flows through Supabase.
 
 The backend is responsible for:
 
-* User authentication and session management
-* Organization, team, and permission enforcement
-* Campaign execution logic
-* Automation workflow execution
-* Analytics aggregation
-* Secure interaction with third-party APIs
+- User authentication and session management
+- Organization, team, and permission enforcement
+- Campaign execution logic
+- Automation workflow execution
+- Analytics aggregation
+- Secure interaction with third-party APIs
 
 ---
 
@@ -97,15 +96,15 @@ The backend is responsible for:
 
 Server-side logic is implemented using:
 
-* **FastAPI (Python)** — custom API layer for business logic (contacts, campaigns, SES, Razorpay, webhooks, workers)
-* Supabase Edge Functions (optional) — for Supabase-triggered logic (e.g. DB webhooks) in Deno if desired
+- **FastAPI (Python)** — custom API layer for business logic (contacts, campaigns, SES, Razorpay, webhooks, workers)
+- Supabase Edge Functions (optional) — for Supabase-triggered logic (e.g. DB webhooks) in Deno if desired
 
 Used for:
 
-* Sending emails via Amazon SES
-* Processing automation triggers
-* Handling inbound webhooks
-* Executing scheduled tasks
+- Sending emails via Amazon SES
+- Processing automation triggers
+- Handling inbound webhooks
+- Executing scheduled tasks
 
 ---
 
@@ -115,14 +114,14 @@ Used for:
 
 Major data domains include:
 
-* Users & Authentication
-* Organizations / Workspaces
-* Contacts & Audiences
-* Campaigns & Templates
-* Automations & Workflows
-* Messages & Conversations
-* Websites & Content
-* Analytics & Events
+- Users & Authentication
+- Organizations / Workspaces
+- Contacts & Audiences
+- Campaigns & Templates
+- Automations & Workflows
+- Messages & Conversations
+- Websites & Content
+- Analytics & Events
 
 Each domain is logically isolated but relationally connected.
 
@@ -130,9 +129,9 @@ Each domain is logically isolated but relationally connected.
 
 ### **5.2 Data Flow Principles**
 
-* All writes go through backend-controlled endpoints
-* Frontend reads via secure APIs or realtime subscriptions
-* Sensitive data is protected using Row Level Security (RLS)
+- All writes go through backend-controlled endpoints
+- Frontend reads via secure APIs or realtime subscriptions
+- Sensitive data is protected using Row Level Security (RLS)
 
 ---
 
@@ -142,40 +141,40 @@ Each domain is logically isolated but relationally connected.
 
 Integrated services:
 
-* Amazon SES (email delivery)
-* WhatsApp Business API
-* Telegram Bot API
-* Twitter/X API
+- Amazon SES (email delivery)
+- WhatsApp Business API
+- Telegram Bot API
+- Twitter/X API
 
 These services:
 
-* Are accessed only via backend services
-* Communicate via secure API keys and webhooks
+- Are accessed only via backend services
+- Communicate via secure API keys and webhooks
 
 ---
 
 ### **6.2 E-commerce Integrations**
 
-* Shopify API
-* WooCommerce REST API
+- Shopify API
+- WooCommerce REST API
 
 Used for:
 
-* Contact sync
-* Event triggers
-* Automation workflows
+- Contact sync
+- Event triggers
+- Automation workflows
 
 ---
 
 ### **6.3 Payments**
 
-* Razorpay API
+- Razorpay API
 
 Used for:
 
-* Subscription management
-* Billing enforcement
-* Payment status tracking
+- Subscription management
+- Billing enforcement
+- Payment status tracking
 
 ---
 
@@ -183,19 +182,19 @@ Used for:
 
 Realtime capabilities are handled via:
 
-* Supabase Realtime subscriptions
+- Supabase Realtime subscriptions
 
 Used for:
 
-* Unified inbox messages
-* Live updates in dashboards
-* In-app notifications
+- Unified inbox messages
+- Live updates in dashboards
+- In-app notifications
 
 Event-driven logic:
 
-* Automation triggers
-* Webhook events
-* Scheduled jobs
+- Automation triggers
+- Webhook events
+- Scheduled jobs
 
 ---
 
@@ -203,16 +202,16 @@ Event-driven logic:
 
 Security is enforced through:
 
-* Supabase Authentication
-* Role-Based Access Control (RBAC)
-* Row Level Security (RLS)
-* Secure API key storage
+- Supabase Authentication
+- Role-Based Access Control (RBAC)
+- Row Level Security (RLS)
+- Secure API key storage
 
 Principles:
 
-* Least privilege access
-* Backend-only access to third-party services
-* No sensitive secrets exposed to frontend
+- Least privilege access
+- Backend-only access to third-party services
+- No sensitive secrets exposed to frontend
 
 ---
 
@@ -220,10 +219,10 @@ Principles:
 
 The architecture is designed to:
 
-* Scale horizontally via cloud services
-* Support additional integrations
-* Allow new modules without breaking existing ones
-* Enable future migration of services if required
+- Scale horizontally via cloud services
+- Support additional integrations
+- Allow new modules without breaking existing ones
+- Enable future migration of services if required
 
 ---
 

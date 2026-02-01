@@ -59,7 +59,7 @@ Use one of:
 
 ## 3) Team (2 developers)
 
-- [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) — Frontend (Next.js, UI, routing)
+- [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) — Frontend (Vite/React, UI, routing); current state: [Tasks/Dev/frontend-state.md](./Tasks/Dev/frontend-state.md)
 - [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) — Backend (Supabase, API, RLS, Edge Functions)
 
 Integrations (SES, Razorpay, WhatsApp, etc.) are owned by Backend unless a task needs frontend work. See [Team/collaboration.md](./Team/collaboration.md) for handoff and [Tasks/Dev/dev-integrations.md](./Tasks/Dev/dev-integrations.md) for integration task reference.

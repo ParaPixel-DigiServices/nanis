@@ -9,7 +9,7 @@ This doc is the **single source of truth** for how the two developers work toget
 | Role         | Focus                                        | Primary folder |
 | ------------ | -------------------------------------------- | -------------- |
 | **Backend**  | Supabase, Postgres, RLS, Edge Functions, API | `backend/`     |
-| **Frontend** | Next.js, TypeScript, Tailwind, UI, routing   | `frontend/`    |
+| **Frontend** | Vite, React, Tailwind, UI, routing           | `frontend/`    |
 
 - **Backend** owns: database schema, migrations, RLS, server-side logic, Edge Functions, and **documenting all APIs** in `Docs/API/`.
 - **Frontend** owns: app shell, pages, components, auth UI, and calling backend/APIs per the API contract.

@@ -8,11 +8,11 @@ This document defines the **feature-gating strategy** for managing unfinished or
 
 The strategy ensures that:
 
-* Unfinished features are clearly marked and inaccessible to users
-* Users receive clear, helpful messaging about upcoming features
-* Development can proceed incrementally without exposing incomplete functionality
-* The user experience remains professional and consistent
-* Feature states can be easily toggled during development and deployment
+- Unfinished features are clearly marked and inaccessible to users
+- Users receive clear, helpful messaging about upcoming features
+- Development can proceed incrementally without exposing incomplete functionality
+- The user experience remains professional and consistent
+- Feature states can be easily toggled during development and deployment
 
 ---
 
@@ -21,32 +21,37 @@ The strategy ensures that:
 Each feature/module can exist in one of the following states:
 
 ### **2.1 Available (`available`)**
-* Feature is fully implemented and accessible
-* No restrictions or warnings shown
-* Standard user experience
+
+- Feature is fully implemented and accessible
+- No restrictions or warnings shown
+- Standard user experience
 
 ### **2.2 Coming Soon (`coming-soon`)**
-* Feature is planned but not yet implemented
-* UI shows a "Coming Soon" placeholder or badge
-* Navigation links may be disabled or show a tooltip
-* Users cannot access the feature
+
+- Feature is planned but not yet implemented
+- UI shows a "Coming Soon" placeholder or badge
+- Navigation links may be disabled or show a tooltip
+- Users cannot access the feature
 
 ### **2.3 In Development (`in-development`)**
-* Feature is partially implemented
-* Accessible only to developers/internal users (via feature flag)
-* Shows a development banner or warning
-* May have limited functionality
+
+- Feature is partially implemented
+- Accessible only to developers/internal users (via feature flag)
+- Shows a development banner or warning
+- May have limited functionality
 
 ### **2.4 Beta (`beta`)**
-* Feature is functional but may have bugs or incomplete functionality
-* Accessible to users with a beta opt-in
-* Shows a beta badge or warning
-* Feedback collection enabled
+
+- Feature is functional but may have bugs or incomplete functionality
+- Accessible to users with a beta opt-in
+- Shows a beta badge or warning
+- Feedback collection enabled
 
 ### **2.5 Maintenance (`maintenance`)**
-* Feature is temporarily unavailable due to maintenance
-* Shows a maintenance message
-* Users cannot access the feature
+
+- Feature is temporarily unavailable due to maintenance
+- Shows a maintenance message
+- Users cannot access the feature
 
 ---
 
@@ -59,11 +64,11 @@ Features are configured in a centralized configuration file:
 **File:** `apps/web/config/features.ts`
 
 ```typescript
-export type FeatureState = 
-  | "available" 
-  | "coming-soon" 
-  | "in-development" 
-  | "beta" 
+export type FeatureState =
+  | "available"
+  | "coming-soon"
+  | "in-development"
+  | "beta"
   | "maintenance";
 
 export interface FeatureConfig {
@@ -150,7 +155,7 @@ export function useFeature(featureName: string): {
   }
 
   const isAvailable = config.state === "available";
-  
+
   // Check role-based access if configured
   let canAccess = isAvailable;
   if (config.availableToRoles && organizationMember) {
@@ -186,11 +191,7 @@ interface FeatureGateProps {
   fallback?: ReactNode;
 }
 
-export function FeatureGate({ 
-  feature, 
-  children, 
-  fallback 
-}: FeatureGateProps) {
+export function FeatureGate({ feature, children, fallback }: FeatureGateProps) {
   const { isAvailable, config } = useFeature(feature);
 
   if (isAvailable) {
@@ -224,9 +225,7 @@ export function FeatureGate({
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
-          Coming Soon
-        </h2>
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Coming Soon</h2>
         {config?.message && (
           <p className="text-slate-600 mb-4">{config.message}</p>
         )}
@@ -252,7 +251,7 @@ Create a navigation link component that respects feature gates:
 ```typescript
 "use client";
 
-import Link from "next/link";
+import { Link } from "react-router-dom"; // (Current app uses React Router; replace with your router’s Link.)
 import { useFeature } from "../hooks/useFeature";
 import { ReactNode } from "react";
 
@@ -305,9 +304,7 @@ In the navigation/sidebar, show features with appropriate indicators:
 <NavLink href="/inbox" feature="inbox">
   <InboxIcon />
   <span>Inbox</span>
-  {!isAvailable && (
-    <span className="ml-auto text-xs text-slate-400">Soon</span>
-  )}
+  {!isAvailable && <span className="ml-auto text-xs text-slate-400">Soon</span>}
 </NavLink>
 ```
 
@@ -316,19 +313,22 @@ In the navigation/sidebar, show features with appropriate indicators:
 For dashboard widgets or cards linking to features:
 
 ```tsx
-<FeatureGate feature="analytics" fallback={
-  <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-[40px] p-6">
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-lg font-bold text-slate-900">Analytics</h3>
-      <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
-        Beta
-      </span>
+<FeatureGate
+  feature="analytics"
+  fallback={
+    <div className="bg-white/80 backdrop-blur-xl border border-white/60 rounded-[40px] p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold text-slate-900">Analytics</h3>
+        <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+          Beta
+        </span>
+      </div>
+      <p className="text-sm text-slate-600">
+        Analytics dashboard is in beta. Some features may be limited.
+      </p>
     </div>
-    <p className="text-sm text-slate-600">
-      Analytics dashboard is in beta. Some features may be limited.
-    </p>
-  </div>
-}>
+  }
+>
   <AnalyticsWidget />
 </FeatureGate>
 ```
@@ -359,13 +359,14 @@ const { isAvailable, config } = useFeature("automation");
 
 <button
   disabled={!isAvailable}
-  className={isAvailable 
-    ? "bg-blue-600 hover:bg-blue-700" 
-    : "bg-slate-300 cursor-not-allowed"
+  className={
+    isAvailable
+      ? "bg-blue-600 hover:bg-blue-700"
+      : "bg-slate-300 cursor-not-allowed"
   }
 >
   {isAvailable ? "Create Automation" : "Coming Soon"}
-</button>
+</button>;
 ```
 
 ---
@@ -376,10 +377,10 @@ const { isAvailable, config } = useFeature("automation");
 
 Each feature state should have a consistent message pattern:
 
-* **Coming Soon:** "This feature is coming soon. We're working hard to bring it to you."
-* **In Development:** "This feature is currently in development and not yet available."
-* **Beta:** "This feature is in beta. You may encounter bugs or incomplete functionality."
-* **Maintenance:** "This feature is temporarily unavailable due to maintenance. Please check back soon."
+- **Coming Soon:** "This feature is coming soon. We're working hard to bring it to you."
+- **In Development:** "This feature is currently in development and not yet available."
+- **Beta:** "This feature is in beta. You may encounter bugs or incomplete functionality."
+- **Maintenance:** "This feature is temporarily unavailable due to maintenance. Please check back soon."
 
 ### **5.2 Custom Messages**
 
@@ -392,6 +393,7 @@ Custom messages can be provided in the feature configuration for more specific c
 ### **6.1 Adding a New Feature**
 
 1. **Define the feature** in `config/features.ts` with initial state:
+
    ```typescript
    newFeature: {
      state: "coming-soon",
@@ -400,6 +402,7 @@ Custom messages can be provided in the feature configuration for more specific c
    ```
 
 2. **Create the route/page** with feature gate:
+
    ```tsx
    <FeatureGate feature="newFeature">
      <NewFeatureContent />
@@ -436,7 +439,7 @@ For different environments (development, staging, production), you can override 
 import { FEATURES } from "./features";
 
 // Override features based on environment
-const envOverrides: Partial<typeof FEATURES> = 
+const envOverrides: Partial<typeof FEATURES> =
   process.env.NODE_ENV === "development"
     ? {
         // Enable all features in development
@@ -453,24 +456,28 @@ export const FEATURES_CONFIG = { ...FEATURES, ...envOverrides };
 ## **8. Best Practices**
 
 ### **8.1 Consistency**
-* Use the same feature gate components throughout the application
-* Maintain consistent messaging for each feature state
-* Keep feature configuration centralized
+
+- Use the same feature gate components throughout the application
+- Maintain consistent messaging for each feature state
+- Keep feature configuration centralized
 
 ### **8.2 User Experience**
-* Always provide clear feedback about why a feature is unavailable
-* Use appropriate visual indicators (badges, disabled states, tooltips)
-* Avoid dead-end pages; redirect or show helpful messages
+
+- Always provide clear feedback about why a feature is unavailable
+- Use appropriate visual indicators (badges, disabled states, tooltips)
+- Avoid dead-end pages; redirect or show helpful messages
 
 ### **8.3 Development**
-* Update feature states as development progresses
-* Document feature state changes in commit messages
-* Use feature gates even for "available" features to maintain consistency
+
+- Update feature states as development progresses
+- Document feature state changes in commit messages
+- Use feature gates even for "available" features to maintain consistency
 
 ### **8.4 Performance**
-* Feature checks are lightweight (simple object lookups)
-* No API calls required for feature state checks
-* Consider caching feature config if needed
+
+- Feature checks are lightweight (simple object lookups)
+- No API calls required for feature state checks
+- Consider caching feature config if needed
 
 ---
 
@@ -511,7 +518,7 @@ import { NavLink } from "./NavLink";
 <NavLink href="/contacts" feature="contacts">
   <UsersIcon />
   <span>Contacts</span>
-</NavLink>
+</NavLink>;
 ```
 
 ### **9.4 Dashboard Widget**
@@ -522,7 +529,7 @@ import { FeatureGate } from "./FeatureGate";
 
 <FeatureGate feature="contacts">
   <ContactsWidget />
-</FeatureGate>
+</FeatureGate>;
 ```
 
 ---
@@ -548,8 +555,8 @@ This strategy provides a flexible, maintainable approach to managing feature ava
 
 ## **12. Related Documents**
 
-* `Docs/Overview/project-overview.md` - Complete list of planned features
-* `Docs/Overview/feature-roadmap.md` - Feature development roadmap
-* `Docs/Overview/architecture-overview.md` - System architecture
+- `Docs/Overview/project-overview.md` - Complete list of planned features
+- `Docs/Overview/feature-roadmap.md` - Feature development roadmap
+- `Docs/Overview/architecture-overview.md` - System architecture
 
 ---

@@ -2,10 +2,11 @@
 
 from fastapi import APIRouter
 
-from app.api.v1 import activity, campaigns, contacts, health, internal, invites, templates, track
+from app.api.v1 import activity, campaigns, contacts, health, internal, invites, onboard, templates, track
 
 router = APIRouter()
 router.include_router(health.router, prefix="/health", tags=["health"])
+router.include_router(onboard.router, prefix="/onboard", tags=["onboard"])
 router.include_router(activity.router, tags=["activity"])
 router.include_router(invites.router, tags=["invites"])
 router.include_router(contacts.router, tags=["contacts"])

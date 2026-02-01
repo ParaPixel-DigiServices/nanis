@@ -4,7 +4,7 @@ All-in-one Campaign, Communication, and Growth Management platform ("Mailchimp o
 
 ## Repo structure
 
-- **`frontend/`** — Next.js + TypeScript + Tailwind (UI, routing, auth screens)
+- **`frontend/`** — Vite + React + Tailwind (UI, routing, auth screens); see [Docs/Tasks/Dev/frontend-state.md](Docs/Tasks/Dev/frontend-state.md) for current state
 - **`backend/`** — FastAPI (Python) + Supabase (Postgres, Auth, Storage, Realtime)
 - **`Docs/`** — Project docs, tasks, API contract, and team collaboration
 
@@ -12,12 +12,12 @@ All-in-one Campaign, Communication, and Growth Management platform ("Mailchimp o
 
 1. **Read first:** [Docs/README.md](Docs/README.md) for doc entry points.
 2. **I'm Backend:** [backend/README.md](backend/README.md) for setup and run → [Docs/Team/collaboration.md](Docs/Team/collaboration.md) + [Docs/Tasks/Dev/dev-backend.md](Docs/Tasks/Dev/dev-backend.md) + [Docs/API/README.md](Docs/API/README.md).
-3. **I'm Frontend:** [Docs/Team/collaboration.md](Docs/Team/collaboration.md) → [Docs/Tasks/Dev/dev-frontend.md](Docs/Tasks/Dev/dev-frontend.md) + [Docs/API/README.md](Docs/API/README.md).
+3. **I'm Frontend:** [Docs/Team/collaboration.md](Docs/Team/collaboration.md) → [Docs/Tasks/Dev/dev-frontend.md](Docs/Tasks/Dev/dev-frontend.md) + [Docs/API/README.md](Docs/API/README.md). For env vars and Supabase Auth setup: [Docs/Tasks/Onboarding/setup-checklist.md](Docs/Tasks/Onboarding/setup-checklist.md).
 4. **Tasks:** [Docs/tasks-index.md](Docs/tasks-index.md) — phases, task breakdowns, and acceptance criteria.
 
 ## Tech stack
 
-- **Frontend:** Next.js, TypeScript, Tailwind CSS, Framer Motion
+- **Frontend:** Vite + React, Tailwind CSS, Framer Motion (see [frontend-state.md](Docs/Tasks/Dev/frontend-state.md))
 - **Backend:** FastAPI (Python) + Supabase (PostgreSQL, Auth, Storage, Realtime)
 - **Email:** Amazon SES | **Payments:** Razorpay
 

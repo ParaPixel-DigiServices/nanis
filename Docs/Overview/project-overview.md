@@ -16,11 +16,11 @@ The platform combines the core strengths of tools like email campaign managers, 
 
 Today, businesses face several challenges when managing growth and customer engagement:
 
-* Marketing tools are fragmented across multiple platforms
-* Email campaigns, social messaging, automation, and websites are handled separately
-* Teams struggle with context switching between tools
-* Data and analytics are scattered and hard to unify
-* Building workflows and campaigns requires technical complexity or multiple subscriptions
+- Marketing tools are fragmented across multiple platforms
+- Email campaigns, social messaging, automation, and websites are handled separately
+- Teams struggle with context switching between tools
+- Data and analytics are scattered and hard to unify
+- Building workflows and campaigns requires technical complexity or multiple subscriptions
 
 As a result, businesses lose efficiency, clarity, and consistency in how they communicate with customers.
 
@@ -38,11 +38,11 @@ The vision is to remove tool sprawl and replace it with a unified, intuitive, an
 
 The platform is designed for:
 
-* Startups and growing businesses
-* Marketing teams
-* Product-led SaaS companies
-* E-commerce brands
-* Agencies managing multiple clients
+- Startups and growing businesses
+- Marketing teams
+- Product-led SaaS companies
+- E-commerce brands
+- Agencies managing multiple clients
 
 These users need speed, flexibility, automation, and deep visibility into their campaigns and customer interactions.
 
@@ -52,11 +52,11 @@ These users need speed, flexibility, automation, and deep visibility into their 
 
 The product delivers value by offering:
 
-* **Unified Experience** — One dashboard for campaigns, communication, automation, websites, and analytics
-* **Visual Power** — Canva-like drag-and-drop builders for emails and websites
-* **Automation at Scale** — Event-based and time-based workflows without heavy technical setup
-* **Multi-Channel Communication** — Email, WhatsApp, Telegram, social, and in-app chat in one inbox
-* **Data-Driven Decisions** — Centralized analytics across all customer touchpoints
+- **Unified Experience** — One dashboard for campaigns, communication, automation, websites, and analytics
+- **Visual Power** — Canva-like drag-and-drop builders for emails and websites
+- **Automation at Scale** — Event-based and time-based workflows without heavy technical setup
+- **Multi-Channel Communication** — Email, WhatsApp, Telegram, social, and in-app chat in one inbox
+- **Data-Driven Decisions** — Centralized analytics across all customer touchpoints
 
 ---
 
@@ -64,10 +64,10 @@ The product delivers value by offering:
 
 Unlike traditional tools that focus on only one aspect (email, design, automation, or websites), this platform:
 
-* Combines **campaigns + design + automation + communication + publishing** into one system
-* Eliminates dependency on multiple SaaS subscriptions
-* Allows businesses to manage both **marketing and customer conversations** in one place
-* Is built with extensibility in mind, enabling future integrations and scale
+- Combines **campaigns + design + automation + communication + publishing** into one system
+- Eliminates dependency on multiple SaaS subscriptions
+- Allows businesses to manage both **marketing and customer conversations** in one place
+- Is built with extensibility in mind, enabling future integrations and scale
 
 ---
 
@@ -75,10 +75,10 @@ Unlike traditional tools that focus on only one aspect (email, design, automatio
 
 Over time, the platform aims to:
 
-* Become the central growth infrastructure for businesses
-* Support deeper personalization and automation
-* Expand integrations across ecosystems
-* Enable teams to operate with fewer tools but greater control
+- Become the central growth infrastructure for businesses
+- Support deeper personalization and automation
+- Expand integrations across ecosystems
+- Enable teams to operate with fewer tools but greater control
 
 ---
 
@@ -95,15 +95,15 @@ Over time, the platform aims to:
 
 The platform is designed as an **end-to-end growth, communication, and marketing operating system for businesses**, combining capabilities of:
 
-* Mailchimp (Campaign Management)
-* Canva (Visual Email & Template Builder)
-* Zapier/LangChain-style Automations (Workflow Builder)
-* Wix (Lightweight Website Builder)
-* CRM & Contact Management
-* Unified Multi-Channel Inbox
-* Advanced Analytics & A/B Testing
-* Built-in Newsletter/Blog System
-* Cloud-based Brand Asset Manager
+- Mailchimp (Campaign Management)
+- Canva (Visual Email & Template Builder)
+- Zapier/LangChain-style Automations (Workflow Builder)
+- Wix (Lightweight Website Builder)
+- CRM & Contact Management
+- Unified Multi-Channel Inbox
+- Advanced Analytics & A/B Testing
+- Built-in Newsletter/Blog System
+- Cloud-based Brand Asset Manager
 
 The system will serve as a single control center where businesses can manage marketing, customer communication, automation, and digital presence from one unified dashboard.
 
@@ -115,11 +115,11 @@ The system will serve as a single control center where businesses can manage mar
 
 Features:
 
-* Overview of total campaigns run
-* Key performance metrics (opens, clicks, engagement)
-* Recent activity feed
-* Quick-access shortcuts to major modules
-* High-level system health and usage indicators
+- Overview of total campaigns run
+- Key performance metrics (opens, clicks, engagement)
+- Recent activity feed
+- Quick-access shortcuts to major modules
+- High-level system health and usage indicators
 
 ---
 
@@ -127,18 +127,18 @@ Features:
 
 A centralized inbox that aggregates messages from:
 
-* WhatsApp
-* Telegram
-* Email
-* Twitter/X
-* In-app chat
+- WhatsApp
+- Telegram
+- Email
+- Twitter/X
+- In-app chat
 
 Capabilities:
 
-* View all conversations in one place
-* Reply directly from the platform
-* Real-time message updates
-* Conversation tagging and filtering
+- View all conversations in one place
+- Reply directly from the platform
+- Real-time message updates
+- Conversation tagging and filtering
 
 ---
 
@@ -146,11 +146,11 @@ Capabilities:
 
 Deep analytics covering:
 
-* Email campaign performance
-* User engagement trends
-* Website analytics (views, clicks, conversions)
-* Automation performance
-* Platform usage insights
+- Email campaign performance
+- User engagement trends
+- Website analytics (views, clicks, conversions)
+- Automation performance
+- Platform usage insights
 
 Visualized through interactive charts and dashboards.
 
@@ -160,16 +160,16 @@ Visualized through interactive charts and dashboards.
 
 **A) Prebuilt Templates (Admin-Managed)**
 
-* Professionally designed email templates
-* Stored in central admin database
-* Customizable by end users
+- Professionally designed email templates
+- Stored in central admin database
+- Customizable by end users
 
 **B) Custom Template Builder (Built from Scratch)**
 
-* Drag-and-drop editor
-* Components: text blocks, images, buttons, sections, embeds
-* Mobile and desktop preview
-* Save templates for future use
+- Drag-and-drop editor
+- Components: text blocks, images, buttons, sections, embeds
+- Mobile and desktop preview
+- Save templates for future use
 
 ---
 
@@ -177,21 +177,21 @@ Visualized through interactive charts and dashboards.
 
 Users can:
 
-* Import contacts via CSV
-* Copy-paste from Excel
-* Add single contacts manually
+- Import contacts via CSV
+- Copy-paste from Excel
+- Add single contacts manually
 
 Default fields:
 
-* First Name
-* Last Name
-* Email
-* Mobile
+- First Name
+- Last Name
+- Email
+- Mobile
 
 Additional capability:
 
-* Add custom fields per business
-* Segment contacts based on behavior and attributes
+- Add custom fields per business
+- Segment contacts based on behavior and attributes
 
 ---
 
@@ -199,15 +199,15 @@ Additional capability:
 
 Native or API-based integrations with:
 
-* Shopify
-* WooCommerce
-* (Extensible for future integrations)
+- Shopify
+- WooCommerce
+- (Extensible for future integrations)
 
 Use cases:
 
-* Sync customers
-* Sync orders
-* Trigger automations based on eCommerce activity
+- Sync customers
+- Sync orders
+- Trigger automations based on eCommerce activity
 
 ---
 
@@ -215,17 +215,17 @@ Use cases:
 
 A built-in cloud storage for:
 
-* Logos
-* Brand banners
-* Marketing images
-* Media assets
+- Logos
+- Brand banners
+- Marketing images
+- Media assets
 
 Assets can be reused across:
 
-* Email campaigns
-* Templates
-* Websites
-* Social messaging
+- Email campaigns
+- Templates
+- Websites
+- Social messaging
 
 ---
 
@@ -233,16 +233,16 @@ Assets can be reused across:
 
 Users can:
 
-* Create campaigns
-* Choose prebuilt or custom templates
-* Edit content visually
-* Schedule or send immediately
-* Track delivery and engagement metrics
+- Create campaigns
+- Choose prebuilt or custom templates
+- Edit content visually
+- Schedule or send immediately
+- Track delivery and engagement metrics
 
 **Architecture principle:**
 
-* Platform = Campaign Brain
-* Amazon SES = Email Delivery Engine
+- Platform = Campaign Brain
+- Amazon SES = Email Delivery Engine
 
 ---
 
@@ -250,11 +250,11 @@ Users can:
 
 Features:
 
-* Create and manage multiple websites
-* Choose from prebuilt themes
-* Drag-and-drop content customization
-* Live preview and publishing
-* View website analytics inside the dashboard
+- Create and manage multiple websites
+- Choose from prebuilt themes
+- Drag-and-drop content customization
+- Live preview and publishing
+- View website analytics inside the dashboard
 
 ---
 
@@ -262,16 +262,16 @@ Features:
 
 Drag-and-drop automation system with:
 
-* Time-based triggers
-* Event-based triggers
-* Conditional logic
+- Time-based triggers
+- Event-based triggers
+- Conditional logic
 
 Example automations:
 
-* Send email when trial starts
-* Send reminder before trial ends
-* Trigger message when user deletes application
-* Follow-up emails based on user behavior
+- Send email when trial starts
+- Send reminder before trial ends
+- Trigger message when user deletes application
+- Follow-up emails based on user behavior
 
 Workflows stored as structured JSON in the backend.
 
@@ -281,11 +281,11 @@ Workflows stored as structured JSON in the backend.
 
 Users can:
 
-* Create and publish newsletters
-* Manage blog posts
-* View subscriber lists
-* Track engagement
-* Allow users to subscribe/unsubscribe
+- Create and publish newsletters
+- Manage blog posts
+- View subscriber lists
+- Track engagement
+- Allow users to subscribe/unsubscribe
 
 ---
 
@@ -293,10 +293,10 @@ Users can:
 
 Capabilities:
 
-* Test subject lines
-* Test email content variations
-* Compare engagement metrics
-* Automatic winner selection based on performance
+- Test subject lines
+- Test email content variations
+- Compare engagement metrics
+- Automatic winner selection based on performance
 
 ---
 
@@ -304,9 +304,9 @@ Capabilities:
 
 Send bulk messages to users who have previously interacted via:
 
-* WhatsApp
-* Telegram
-* (Extensible to other platforms)
+- WhatsApp
+- Telegram
+- (Extensible to other platforms)
 
 Includes audience filtering and scheduling.
 
@@ -316,9 +316,9 @@ Includes audience filtering and scheduling.
 
 Users can:
 
-* Create folders
-* Organize campaigns
-* Tag and categorize content
+- Create folders
+- Organize campaigns
+- Tag and categorize content
 
 ---
 
@@ -326,9 +326,9 @@ Users can:
 
 Integration with **Razorpay** for:
 
-* Monthly and annual plans
-* Tiered pricing
-* Secure payment processing
+- Monthly and annual plans
+- Tiered pricing
+- Secure payment processing
 
 Subscription status stored in Supabase.
 
@@ -338,18 +338,18 @@ Subscription status stored in Supabase.
 
 Includes:
 
-* Profile settings
-* Team member management
-* Role-based access control
-* Account preferences
+- Profile settings
+- Team member management
+- Role-based access control
+- Account preferences
 
 ---
 
 ### **2.17 Help & Support Blog + In-App Chat**
 
-* Built-in help center
-* Knowledge base / documentation
-* Real-time in-app chat for support
+- Built-in help center
+- Knowledge base / documentation
+- Real-time in-app chat for support
 
 ---
 
@@ -357,35 +357,35 @@ Includes:
 
 ### **Frontend**
 
-* Next.js (React) + TypeScript
-* Tailwind CSS
-* Framer Motion for animations
+- Vite + React (TypeScript optional); see Docs/Tasks/Dev/frontend-state.md
+- Tailwind CSS
+- Framer Motion for animations
 
 ### **Backend**
 
-* Supabase:
+- Supabase:
 
-  * PostgreSQL database
-  * Authentication
-  * Storage
-  * Edge Functions
-  * Realtime subscriptions
+  - PostgreSQL database
+  - Authentication
+  - Storage
+  - Edge Functions
+  - Realtime subscriptions
 
 ### **Email Delivery**
 
-* Amazon SES (Simple Email Service)
+- Amazon SES (Simple Email Service)
 
 ### **Payments**
 
-* Razorpay
+- Razorpay
 
 ### **Real-Time Communication**
 
-* Supabase Realtime / WebSockets
+- Supabase Realtime / WebSockets
 
 ### **Analytics & Visualization**
 
-* Supabase + Recharts
+- Supabase + Recharts
 
 ---
 
@@ -395,105 +395,105 @@ The platform will integrate with the following external services:
 
 ### **Email & Messaging**
 
-* **Amazon SES** — Bulk & transactional email delivery
-* **WhatsApp Business API (Meta)** — Messaging integration
-* **Telegram Bot API** — Chat and notifications
-* **Twitter/X API** — Social messaging integration
+- **Amazon SES** — Bulk & transactional email delivery
+- **WhatsApp Business API (Meta)** — Messaging integration
+- **Telegram Bot API** — Chat and notifications
+- **Twitter/X API** — Social messaging integration
 
 ### **E-commerce Integrations**
 
-* **Shopify API** — Customer and order sync
-* **WooCommerce REST API** — Store integration
+- **Shopify API** — Customer and order sync
+- **WooCommerce REST API** — Store integration
 
 ### **Payments**
 
-* **Razorpay API** — Subscription billing and payments
+- **Razorpay API** — Subscription billing and payments
 
 ### **Storage & Media**
 
-* **Supabase Storage** — Cloud-based asset management
+- **Supabase Storage** — Cloud-based asset management
 
 ### **Future-Ready (Optional/Phase 2)**
 
-* Google Analytics (website analytics enhancement)
-* Twilio (SMS support, if expanded later)
+- Google Analytics (website analytics enhancement)
+- Twilio (SMS support, if expanded later)
 
 ---
 
 ## **5. 12-Week Phased Roadmap (Proposed)**
 
-> *Delivery structured in clear milestones with iterative validation and integration stability checks.*
+> _Delivery structured in clear milestones with iterative validation and integration stability checks._
 
 ### **Phase 1 — Foundation (Weeks 1–3)**
 
-* Project architecture finalization
-* Supabase setup (Auth, DB, Storage)
-* Core dashboard UI
-* User authentication & team system
-* Basic analytics skeleton
+- Project architecture finalization
+- Supabase setup (Auth, DB, Storage)
+- Core dashboard UI
+- User authentication & team system
+- Basic analytics skeleton
 
 **Deliverables:**
 
-* Working login/signup system
-* Initial dashboard
-* Backend schema v1
+- Working login/signup system
+- Initial dashboard
+- Backend schema v1
 
 ---
 
 ### **Phase 2 — Core Systems (Weeks 4–6)**
 
-* Contacts module (CSV import, custom fields)
-* File manager (brand asset cloud)
-* Basic email campaign creation flow
-* Amazon SES integration
-* Basic analytics implementation
+- Contacts module (CSV import, custom fields)
+- File manager (brand asset cloud)
+- Basic email campaign creation flow
+- Amazon SES integration
+- Basic analytics implementation
 
 **Deliverables:**
 
-* Functional contacts system
-* Working email campaign module
-* Cloud storage active
+- Functional contacts system
+- Working email campaign module
+- Cloud storage active
 
 ---
 
 ### **Phase 3 — Builders & Inbox (Weeks 7–9)**
 
-* Custom Canva-like email editor (MVP version)
-* Unified inbox (WhatsApp, Telegram, Email, In-app chat)
-* Real-time messaging setup
-* Basic website builder framework
+- Custom Canva-like email editor (MVP version)
+- Unified inbox (WhatsApp, Telegram, Email, In-app chat)
+- Real-time messaging setup
+- Basic website builder framework
 
 **Deliverables:**
 
-* Working visual editor
-* Multi-channel inbox operational
-* First version of website builder
+- Working visual editor
+- Multi-channel inbox operational
+- First version of website builder
 
 ---
 
 ### **Phase 4 — Automation, A/B & Polish (Weeks 10–12)**
 
-* Automation workflow builder
-* A/B testing module
-* RSS/newsletter system
-* Social bulk messaging
-* Payments & subscription integration (Razorpay)
-* Final UI/UX refinements
+- Automation workflow builder
+- A/B testing module
+- RSS/newsletter system
+- Social bulk messaging
+- Payments & subscription integration (Razorpay)
+- Final UI/UX refinements
 
 **Deliverables:**
 
-* Fully functional platform v1
-* Stable integrations
-* Production-ready system
+- Fully functional platform v1
+- Stable integrations
+- Production-ready system
 
 ---
 
 ## **6. Risks, Assumptions & Dependencies**
 
-* Timely access to third-party APIs (WhatsApp, SES, Shopify, etc.)
-* Prompt client feedback on UI/UX and feature validation
-* API rate limits or policy changes may impact timelines
-* Iterations may require minor schedule adjustments
+- Timely access to third-party APIs (WhatsApp, SES, Shopify, etc.)
+- Prompt client feedback on UI/UX and feature validation
+- API rate limits or policy changes may impact timelines
+- Iterations may require minor schedule adjustments
 
 ---
 
@@ -511,48 +511,48 @@ This roadmap positions the product as a robust, scalable, and enterprise-ready C
 
 ### **8.1 Ownership & IP**
 
-* **Full source code ownership will belong to the client.**
-* ParaPixel DigiServices will **not reuse, resell, or redistribute** any part of the codebase, architecture, or proprietary components built specifically for this project.
-* ParaPixel may retain the right to showcase the project in its portfolio **only with prior written approval from the client.**
+- **Full source code ownership will belong to the client.**
+- ParaPixel DigiServices will **not reuse, resell, or redistribute** any part of the codebase, architecture, or proprietary components built specifically for this project.
+- ParaPixel may retain the right to showcase the project in its portfolio **only with prior written approval from the client.**
 
 ### **8.2 Payment Terms**
 
-* Total Project Cost: **₹2,40,000 (Indian Rupees)**
-* Payment Schedule:
+- Total Project Cost: **₹2,40,000 (Indian Rupees)**
+- Payment Schedule:
 
-  * **30%** upon project kickoff and signing of agreement
-  * **30%** upon completion of Phase 2 (Core Systems)
-  * **40%** upon final delivery **and client satisfaction/approval**
+  - **30%** upon project kickoff and signing of agreement
+  - **30%** upon completion of Phase 2 (Core Systems)
+  - **40%** upon final delivery **and client satisfaction/approval**
 
 ### **8.3 Confidentiality & NDA**
 
-* Both parties will sign a **mutual Non-Disclosure Agreement (NDA)** prior to the start of development.
-* All business logic, designs, and proprietary ideas shared by the client will remain confidential.
+- Both parties will sign a **mutual Non-Disclosure Agreement (NDA)** prior to the start of development.
+- All business logic, designs, and proprietary ideas shared by the client will remain confidential.
 
 ### **8.4 Design & Quality Standards**
 
-* The product will be built to be **pixel-perfect** based on designs provided by the client.
-* ParaPixel DigiServices will strive for **bug-free delivery** in all agreed-upon features prior to final handover.
-* Any bugs found within the agreed scope post-delivery will be addressed as part of the project warranty period (to be mutually defined).
+- The product will be built to be **pixel-perfect** based on designs provided by the client.
+- ParaPixel DigiServices will strive for **bug-free delivery** in all agreed-upon features prior to final handover.
+- Any bugs found within the agreed scope post-delivery will be addressed as part of the project warranty period (to be mutually defined).
 
 ### **8.5 Third-Party Services & Costs**
 
-* Any costs related to third-party services (e.g., Amazon SES, WhatsApp Business API, Razorpay, Shopify, hosting, etc.) **will be borne by the client.**
-* ParaPixel will assist in integration and configuration but will not be responsible for recurring third-party charges.
+- Any costs related to third-party services (e.g., Amazon SES, WhatsApp Business API, Razorpay, Shopify, hosting, etc.) **will be borne by the client.**
+- ParaPixel will assist in integration and configuration but will not be responsible for recurring third-party charges.
 
 ### **8.6 Design Handover Process**
 
-* The client will provide UI/UX designs **module-by-module or screen-by-screen**.
-* Development for each module will proceed only after final design approval for that module.
+- The client will provide UI/UX designs **module-by-module or screen-by-screen**.
+- Development for each module will proceed only after final design approval for that module.
 
 ### **8.7 Timeline & Delivery**
 
-* **Proposed timeline: 12 weeks**, structured in phased milestones.
-* Minor timeline adjustments may occur based on:
+- **Proposed timeline: 12 weeks**, structured in phased milestones.
+- Minor timeline adjustments may occur based on:
 
-  * Timely design handoffs from the client,
-  * Third-party API access and approvals,
-  * Feature validations and iteration cycles.
+  - Timely design handoffs from the client,
+  - Third-party API access and approvals,
+  - Feature validations and iteration cycles.
 
 ---
 
@@ -562,23 +562,23 @@ To finalize the technical alignment, the following inputs are requested from the
 
 1. **Preferred Development Stack:**
 
-   * Which primary development language/framework do you prefer for backend and frontend (e.g., Node.js, Python, Next.js, etc.)?
+   - Which primary development language/framework do you prefer for backend and frontend (e.g., Node.js, Python, Next.js, etc.)?
 
 2. **Infrastructure & Hosting Preference:**
 
-   * Do you have any existing cloud provider preference (AWS, Google Cloud, Vercel, etc.)?
+   - Do you have any existing cloud provider preference (AWS, Google Cloud, Vercel, etc.)?
 
 3. **Design Delivery Format:**
 
-   * Will designs be provided via Figma, Adobe XD, or another tool?
+   - Will designs be provided via Figma, Adobe XD, or another tool?
 
 4. **Third-Party Accounts:**
 
-   * Will the client create and provide access to accounts for Amazon SES, WhatsApp Business API, Razorpay, Shopify, etc.?
+   - Will the client create and provide access to accounts for Amazon SES, WhatsApp Business API, Razorpay, Shopify, etc.?
 
 5. **Post-Launch Support Expectation:**
 
-   * What level of maintenance or support is expected after Phase 4 delivery?
+   - What level of maintenance or support is expected after Phase 4 delivery?
 
 ---
 

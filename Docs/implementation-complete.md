@@ -13,7 +13,7 @@ This document describes the **previous** implementation attempt for Contacts and
 **Last Updated:** January 31, 2026  
 **Status:** Reference only — all implementation tasks reset to uncompleted.
 
-> Note: This repo contains substantial Contacts/Campaigns/Tags **service + controller** code under `apps/api/src/modules/**` and **Next.js API routes** under `apps/web/app/api/**`.
+> Note: This document refers to a **previous** implementation. The current repo uses **FastAPI** in `backend/` and a **Vite + React** frontend in `frontend/`; there are no Next.js API routes.
 > However, some database tables referenced by the code (e.g. tags + campaign recipients/targeting) are not present in the current `database/` SQL scripts or `migrations/` folder, and RLS policies for these domain tables are not yet captured in the repo.
 > Treat this document as “what the code intends/implements”, not an end-to-end production readiness guarantee.
 

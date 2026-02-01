@@ -15,11 +15,11 @@ Nanis is an all-in-one Campaign, Communication, and Growth Management SaaS platf
 5. Docs/Team/collaboration.md — how frontend and backend work together
 6. Docs/Tasks/Phases/phase-1-foundation.md (then the other phases)
 
-(Database overview and auth-specific docs will be added when schema/auth are implemented.)
+For **login/signup and backend↔frontend setup** (env vars, Supabase Auth, OAuth redirects), see [setup-checklist.md](./setup-checklist.md).
 
 ## 3) Non-negotiables
 
-- **Tech stack is locked:** Next.js + TypeScript + Tailwind + Framer Motion; FastAPI (Python) + Supabase (Postgres/Auth/Storage/Realtime); SES; Razorpay.
+- **Tech stack is locked:** Vite + React + Tailwind + Framer Motion; FastAPI (Python) + Supabase (Postgres/Auth/Storage/Realtime); SES; Razorpay.
 - **Multi-tenancy + security:** all org-owned data must be protected by RLS.
 - **Secrets:** never ship secrets to the browser; third-party keys are server-only.
 

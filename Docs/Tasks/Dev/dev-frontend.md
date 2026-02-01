@@ -1,10 +1,12 @@
-# Developer A — Frontend Focus (Next.js/TS/Tailwind)
+# Developer A — Frontend Focus (Vite/React/Tailwind)
 
 This is a suggested assignment list for a frontend-leaning developer. They can pick up a few backend tasks when unblocked.
 
+**Current state:** See `Docs/Tasks/Dev/frontend-state.md` — Vite 7 + React 19, SignUpScreen UI done (no auth/routing/API yet).
+
 ## Weeks 1–3 (Phase 1)
 
-- P1-SETUP-001: Initialize Next.js app structure
+- P1-SETUP-001: Initialize frontend app structure (Vite + React) — **done**
 - P1-AUTH-001: Auth screens (signup/login/reset)
 - P1-AUTH-002: Session handling + protected routes
 - P1-UI-001: Global layout + navigation scaffold

@@ -4,16 +4,16 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 
 ## Epic P1-A: Repo, environments, deployment skeleton
 
-### TASK: P1-SETUP-001 — Initialize Next.js app structure
+### TASK: P1-SETUP-001 — Initialize frontend app structure (Vite + React)
 
 - **Owner:** Frontend
 - **Estimate:** 1d
 - **Priority:** P0
 - **Depends on:** None
 - **Acceptance Criteria:**
-  - [ ] Next.js + TypeScript app boots locally.
-  - [ ] Tailwind configured; baseline layout renders.
-  - [ ] ESLint/formatting conventions documented.
+  - [x] Vite + React app boots locally (`frontend/`, `npm run dev`).
+  - [x] Tailwind configured; baseline layout and sign-up UI render.
+  - [x] ESLint/formatting conventions in place (see `frontend/`).
 
 ### TASK: P1-SETUP-002 — Environment configuration + secrets strategy
 
