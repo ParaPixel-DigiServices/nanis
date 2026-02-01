@@ -1,5 +1,6 @@
 """Nanis backend — FastAPI application."""
 
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -7,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import router as api_v1_router
 from app.config import get_settings
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -33,9 +36,11 @@ def create_app() -> FastAPI:
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ]
+    extra_origins = []
     if settings.allowed_origins_extra:
-        origins.extend(s.strip()
-                       for s in settings.allowed_origins_extra.split(",") if s.strip())
+        extra_origins = [
+            s.strip() for s in settings.allowed_origins_extra.split(",") if s.strip()]
+        origins.extend(extra_origins)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
@@ -45,6 +50,17 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(api_v1_router, prefix="/api/v1", tags=["v1"])
+
+    # Deployment-friendly startup log (no secrets)
+    logger.info(
+        "Nanis API config: environment=%s docs_enabled=%s cors_origins_total=%s cors_extra=%s",
+        settings.environment,
+        settings.is_development,
+        len(origins),
+        bool(extra_origins),
+    )
+    if extra_origins:
+        logger.info("CORS extra origins: %s", ", ".join(extra_origins))
 
     return app
 

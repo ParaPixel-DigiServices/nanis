@@ -70,24 +70,30 @@ const SignUpScreen = () => {
       return;
     }
     setSubmitting(true);
-    const res = await api("/onboard", {
-      method: "POST",
-      body: { name, slug: s },
-      token: session.access_token,
-    });
-    setSubmitting(false);
-    if (res.ok) {
-      await refreshOrganizations();
-      navigate("/campaigns/email", { replace: true });
-    } else {
-      const detail = res.data?.detail;
-      const msg =
-        res.error ||
-        (Array.isArray(detail)
-          ? detail.map((e) => e.msg ?? e).join(", ")
-          : detail) ||
-        "Failed to create workspace";
-      setOnboardError(msg);
+    try {
+      const res = await api("/onboard", {
+        method: "POST",
+        body: { name, slug: s },
+        token: session.access_token,
+        timeout: 35000,
+      });
+      if (res.ok) {
+        await refreshOrganizations();
+        navigate("/campaigns/email", { replace: true });
+      } else {
+        const detail = res.data?.detail;
+        const msg =
+          res.error ||
+          (Array.isArray(detail)
+            ? detail.map((e) => e.msg ?? e).join(", ")
+            : detail) ||
+          "Failed to create workspace";
+        setOnboardError(msg);
+      }
+    } catch (e) {
+      setOnboardError(e?.message || "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
