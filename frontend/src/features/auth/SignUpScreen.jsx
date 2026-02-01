@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Globe, Check, X, Loader2 } from 'lucide-react'; 
 import clsx from 'clsx'; 
+import { Link } from 'react-router-dom';
 
 // Assets
 import googleLogo from '../../assets/google.svg'; 
@@ -65,7 +66,9 @@ const SignUpScreen = () => {
                   </div>
                   <div className="w-full flex items-center justify-center gap-[4px] h-[20px] pb-1">
                       <span className="font-sans font-normal text-[14px] text-[#0F172A]">Already have an account?</span>
-                      <a href="#" className="font-sans font-medium text-[14px] text-[#335CFF] hover:underline">Sign in</a>
+                      <Link to="/login" className="font-sans font-medium text-[14px] text-[#335CFF] hover:underline">
+                        Sign in
+                      </Link>
                   </div>
               </div>
             </motion.div>
