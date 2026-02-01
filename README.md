@@ -22,3 +22,5 @@ All-in-one Campaign, Communication, and Growth Management platform ("Mailchimp o
 - **Email:** Amazon SES | **Payments:** Razorpay
 
 See [Docs/Overview/techstack-locked.md](Docs/Overview/techstack-locked.md) for full stack and [Docs/Overview/architecture-overview.md](Docs/Overview/architecture-overview.md) for architecture.
+
+**Client checklist (through Phase 2):** [Docs/Client/client-checklist-through-phase-2.md](Docs/Client/client-checklist-through-phase-2.md) — everything the client must do: Supabase, Google/Apple OAuth, AWS SES, DNS, and what to share with the developer.

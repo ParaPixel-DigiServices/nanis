@@ -115,3 +115,7 @@ After OAuth, Supabase redirects back to your **Site URL** with the session in th
 ---
 
 **Summary:** Create Supabase project → run migrations → set backend `.env` and frontend `.env` → configure Auth (email + optional OAuth) and redirect URLs → run backend and frontend → test signup → signin → onboarding → dashboard.
+
+---
+
+**Client-facing checklist (everything the client must do through Phase 2):** [Docs/Client/client-checklist-through-phase-2.md](../Client/client-checklist-through-phase-2.md) — Supabase, Google Cloud, Apple Developer, AWS/SES, DNS, production access, and what to share with the developer.
