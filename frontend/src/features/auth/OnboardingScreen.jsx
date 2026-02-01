@@ -41,7 +41,13 @@ export default function OnboardingScreen() {
       await refreshOrganizations();
       navigate("/campaigns/email", { replace: true });
     } else {
-      setError(res.error || res.data?.detail || "Failed to create workspace");
+      const msg =
+        res.error ||
+        (Array.isArray(res.data?.detail)
+          ? res.data.detail.map((e) => e.msg || e).join(", ")
+          : res.data?.detail) ||
+        "Failed to create workspace";
+      setError(msg);
     }
   };
 

@@ -1,28 +1,25 @@
 # Docs
 
-Quick entry points:
+Entry points:
 
-- **Start here:** [tasks-index.md](./tasks-index.md)
-- **Project overview:** [Overview/project-overview.md](./Overview/project-overview.md)
+- **Overview:** [Overview/project-overview.md](./Overview/project-overview.md) — vision, scope, tech, phases
 - **Architecture:** [Overview/architecture-overview.md](./Overview/architecture-overview.md)
-- **I'm Backend:** [Team/collaboration.md](./Team/collaboration.md) → [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) + [API/README.md](./API/README.md)
-- **I'm Frontend:** [Team/collaboration.md](./Team/collaboration.md) → [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) + [API/README.md](./API/README.md)
-- Contacts/Campaigns reference (Phase 2+): [implementation-complete.md](./implementation-complete.md)
+- **Tech stack:** [Overview/techstack-locked.md](./Overview/techstack-locked.md)
+- **Backend:** [Team/collaboration.md](./Team/collaboration.md) → [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) + [API/README.md](./API/README.md)
+- **Frontend:** [Team/collaboration.md](./Team/collaboration.md) → [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) + [API/README.md](./API/README.md)
+- **Setup (env, Auth, OAuth):** [Tasks/Onboarding/setup-checklist.md](./Tasks/Onboarding/setup-checklist.md)
+- **Client (Phase 2):** [Client/client-checklist-through-phase-2.md](./Client/client-checklist-through-phase-2.md) — Supabase, Google/Apple OAuth, AWS SES, what to share with dev
+- **Tasks:** [tasks-index.md](./tasks-index.md) — phases and task breakdowns
 
-## Folder structure
+## Folders
 
-- [Overview/](./Overview/) — high-level context, roadmap, decisions, [RBAC roles](./Overview/rbac-roles.md)
-- [Team/](./Team/) — how we work together (frontend + backend)
-- [API/](./API/) — API contract (backend documents; frontend consumes)
-- [Platform/](./Platform/) — routing and platform-level conventions
-- [Integrations/](./Integrations/) — external services (e.g. [SES setup](./Integrations/ses-setup.md))
-- [Deploy/](./Deploy/) — deployment and environment notes
-- [Tasks/](./Tasks/) — delivery phases + developer task breakdowns
-
-## Tasks substructure
-
-- [Tasks/Phases/](./Tasks/Phases/) — phase plans (Phase 1–4)
-- [Tasks/Dev/](./Tasks/Dev/) — role-specific task lists
-- [Tasks/Onboarding/](./Tasks/Onboarding/) — developer onboarding
-- [Tasks/Planning/](./Tasks/Planning/) — schedules + atomic breakdowns
-- [Tasks/Templates/](./Tasks/Templates/) — task templates
+| Folder        | Contents                                                  |
+| ------------- | --------------------------------------------------------- |
+| Overview/     | Project vision, architecture, tech stack, decisions, RBAC |
+| Team/         | Collaboration (frontend/backend)                          |
+| API/          | API contract (Backend owns)                               |
+| Platform/     | Routing, storage                                          |
+| Integrations/ | SES backend setup                                         |
+| Deploy/       | Deployment flow                                           |
+| Client/       | Client checklist (Phase 2)                                |
+| Tasks/        | Phases, Dev task lists, Onboarding, Templates             |

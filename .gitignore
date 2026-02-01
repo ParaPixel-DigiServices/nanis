@@ -139,5 +139,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Miscellaneous
-_ignore.bash
+_ignore.txt
 _CLIENT-SES-SETUP.md

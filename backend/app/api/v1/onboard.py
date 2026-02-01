@@ -5,7 +5,7 @@ import re
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
-from app.api.v1.dependencies import require_current_user
+from app.dependencies import require_current_user
 from app.supabase_client import get_supabase_client
 
 router = APIRouter()

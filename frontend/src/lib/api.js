@@ -44,10 +44,15 @@ export async function api(path, opts = {}) {
     }
     return { ok: true, status: res.status, data };
   } catch (err) {
+    const message = err.message || 'Network error';
+    const isNetworkError = message === 'Failed to fetch' || message === 'NetworkError when attempting to fetch resource.' || message === 'Network error';
+    const hint = isNetworkError
+      ? ` Make sure the backend is running (e.g. \`cd backend && uvicorn app.main:app --reload --port 8000\`) and VITE_API_URL in frontend .env points to it (currently: ${baseUrl}).`
+      : '';
     return {
       ok: false,
       status: 0,
-      error: err.message || 'Network error',
+      error: message + hint,
     };
   }
 }

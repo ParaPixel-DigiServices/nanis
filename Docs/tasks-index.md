@@ -1,75 +1,23 @@
-# Tasks Index (Shareable)
+# Tasks Index
 
-This folder is meant to be shared with developers so they can:
+Where to find tasks and how they’re organized.
 
-1. Read project context,
-2. Understand delivery phases,
-3. Pick up tasks with clear acceptance criteria.
+## Required reading (in order)
 
-## 0) Required reading (in order)
+1. [Overview/project-overview.md](./Overview/project-overview.md)
+2. [Overview/architecture-overview.md](./Overview/architecture-overview.md)
+3. [Overview/techstack-locked.md](./Overview/techstack-locked.md)
+4. [Team/collaboration.md](./Team/collaboration.md)
 
-- [Overview/project-overview.md](./Overview/project-overview.md)
-- [Overview/architecture-overview.md](./Overview/architecture-overview.md)
-- [Overview/techstack-locked.md](./Overview/techstack-locked.md)
-- [Overview/roadmap-delivery.md](./Overview/roadmap-delivery.md)
-- [Overview/decision-log.md](./Overview/decision-log.md)
-- [Overview/feature-roadmap.md](./Overview/feature-roadmap.md)
-- [Team/collaboration.md](./Team/collaboration.md) — how frontend and backend stay in sync
+## Task breakdowns
 
-## 1) How to use these task files
+- **Onboarding:** [Tasks/Onboarding/developer-onboarding.md](./Tasks/Onboarding/developer-onboarding.md), [setup-checklist.md](./Tasks/Onboarding/setup-checklist.md)
+- **Phases:** [Tasks/Phases/phase-1-foundation.md](./Tasks/Phases/phase-1-foundation.md), [phase-2-core-growth.md](./Tasks/Phases/phase-2-core-growth.md), [phase-3-builders-comms.md](./Tasks/Phases/phase-3-builders-comms.md), [phase-4-automation-monetization.md](./Tasks/Phases/phase-4-automation-monetization.md)
+- **By role:** [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md), [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md), [Tasks/Dev/dev-integrations.md](./Tasks/Dev/dev-integrations.md)
+- **Frontend state:** [Tasks/Dev/frontend-state.md](./Tasks/Dev/frontend-state.md)
 
-- The work is organized by **Phase (Week ranges)**, matching Docs/Overview/roadmap-delivery.md.
-- Tasks are written at “atomic” level where possible (one person can complete in ~0.5–2 days).
-- Each task includes **Acceptance Criteria**; treat them as “Definition of Done” for that task.
+## Conventions
 
-### Status convention
-
-Use one of:
-
-- `Backlog` (not scheduled)
-- `Ready` (unblocked, can be picked up)
-- `In Progress`
-- `In Review`
-- `Blocked` (state why)
-- `Done`
-
-### Task ID format
-
-`PHASE-AREA-NNN` (example: `P1-AUTH-003`).
-
-### Estimates
-
-- Use `0.5d`, `1d`, `2d` etc. Assume 6–7 focused hours per day.
-
-### Dependency convention
-
-- “Depends on” lists upstream tasks that must be complete.
-- When an external dependency exists (e.g., WhatsApp API access), the task explicitly calls it out.
-
-## 2) Task breakdown files
-
-- [Tasks/Onboarding/developer-onboarding.md](./Tasks/Onboarding/developer-onboarding.md) (start here for new devs)
-- [Tasks/Templates/task-template.md](./Tasks/Templates/task-template.md) (copy/paste format)
-- [Tasks/Planning/atomic-breakdowns.md](./Tasks/Planning/atomic-breakdowns.md) (deep breakdown into atomic tasks)
-- [Tasks/Planning/schedule-12-week.md](./Tasks/Planning/schedule-12-week.md) (suggested weekly plan + milestones)
-- [Tasks/Phases/phase-1-foundation.md](./Tasks/Phases/phase-1-foundation.md) (Weeks 1–3)
-- [Tasks/Phases/phase-2-core-growth.md](./Tasks/Phases/phase-2-core-growth.md) (Weeks 4–6)
-- [Tasks/Phases/phase-3-builders-comms.md](./Tasks/Phases/phase-3-builders-comms.md) (Weeks 7–9)
-- [Tasks/Phases/phase-4-automation-monetization.md](./Tasks/Phases/phase-4-automation-monetization.md) (Weeks 10–12)
-
-## 3) Team (2 developers)
-
-- [Tasks/Dev/dev-frontend.md](./Tasks/Dev/dev-frontend.md) — Frontend (Vite/React, UI, routing); current state: [Tasks/Dev/frontend-state.md](./Tasks/Dev/frontend-state.md)
-- [Tasks/Dev/dev-backend.md](./Tasks/Dev/dev-backend.md) — Backend (Supabase, API, RLS, Edge Functions)
-
-Integrations (SES, Razorpay, WhatsApp, etc.) are owned by Backend unless a task needs frontend work. See [Team/collaboration.md](./Team/collaboration.md) for handoff and [Tasks/Dev/dev-integrations.md](./Tasks/Dev/dev-integrations.md) for integration task reference.
-
-## 4) Recommended weekly cadence
-
-- Mon: planning + task assignment + unblock check
-- Tue–Thu: build
-- Fri: QA pass + demo + roadmap adjustment
-
-## 5) Immediate next action
-
-Start with Phase 1 tasks; they unblock everything else.
+- **Task ID:** e.g. `P1-AUTH-003`, `P2-CAMP-001`
+- **Status:** Backlog | Ready | In Progress | In Review | Blocked | Done
+- **Branch/PR:** `feat/<TASK-ID>-short-title`, PR title `<TASK-ID> — <title>`

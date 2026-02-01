@@ -1,16 +1,24 @@
-# React + Vite
+# Nanis Frontend — Vite + React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vite 7 + React 19 (JSX), Tailwind CSS, Framer Motion, React Router. Auth via Supabase; API via FastAPI (`VITE_API_URL`).
 
-Currently, two official plugins are available:
+## Quick start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+cd frontend
+npm install
+cp .env.example .env   # set VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, VITE_API_URL
+npm run dev
+```
 
-## React Compiler
+Open http://localhost:5173. See [Docs/Tasks/Onboarding/setup-checklist.md](../Docs/Tasks/Onboarding/setup-checklist.md) for env and Supabase Auth.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Structure
 
-## Expanding the ESLint configuration
+- **src/App.jsx** — Router, AuthProvider, routes (signup, signin, onboarding, protected app)
+- **src/context/AuthContext.jsx** — Session, org, signUp, signIn, signOut
+- **src/lib/supabase.js**, **api.js** — Supabase client, API client (Bearer token)
+- **src/features/auth/** — SignUpScreen, SignInScreen, OnboardingScreen
+- **src/features/app/** — AppLayout, DashboardPage
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+API contract: [Docs/API/README.md](../Docs/API/README.md).
