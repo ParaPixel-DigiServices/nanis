@@ -12,6 +12,8 @@ import appleLogo from "../../assets/apple.svg";
 import trialIcon from "../../assets/trial.svg";
 import logo from "../../assets/logo.svg";
 
+const SLUG_REGEX = /^[a-z0-9][a-z0-9-]{0,62}[a-z0-9]$|^[a-z0-9]$/;
+
 const SignUpScreen = () => {
   const [step, setStep] = useState(1);
   const [fullName, setFullName] = useState("");
@@ -23,16 +25,54 @@ const SignUpScreen = () => {
   const [authError, setAuthError] = useState("");
   const [onboardError, setOnboardError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const { signUp, signInWithOAuth, session, refreshOrganizations } = useAuth();
+  const {
+    signUp,
+    signInWithOAuth,
+    session,
+    organizations,
+    loading,
+    refreshOrganizations,
+  } = useAuth();
   const navigate = useNavigate();
+
+  // First-time OAuth (or any user with session but no org): show questionnaire (step 2) so they can't skip.
+  React.useEffect(() => {
+    if (loading) return;
+    if (session && organizations?.length > 0) {
+      navigate("/campaigns/email", { replace: true });
+      return;
+    }
+    if (
+      session &&
+      (!organizations || organizations.length === 0) &&
+      step === 1
+    ) {
+      setStep(2);
+    }
+  }, [loading, session, organizations, step, navigate]);
 
   const handleFinishOnboard = async () => {
     setOnboardError("");
     if (!session?.access_token) return;
+    const name = businessName.trim();
+    const s = slug
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "");
+    if (!name) {
+      setOnboardError("Business name is required.");
+      return;
+    }
+    if (!SLUG_REGEX.test(s)) {
+      setOnboardError(
+        "Slug must be 1–64 characters: lowercase letters, numbers, and hyphens only (cannot start or end with a hyphen)."
+      );
+      return;
+    }
     setSubmitting(true);
     const res = await api("/onboard", {
       method: "POST",
-      body: { name: businessName.trim(), slug: slug.trim().toLowerCase() },
+      body: { name, slug: s },
       token: session.access_token,
     });
     setSubmitting(false);
@@ -40,9 +80,14 @@ const SignUpScreen = () => {
       await refreshOrganizations();
       navigate("/campaigns/email", { replace: true });
     } else {
-      setOnboardError(
-        res.error || res.data?.detail || "Failed to create workspace"
-      );
+      const detail = res.data?.detail;
+      const msg =
+        res.error ||
+        (Array.isArray(detail)
+          ? detail.map((e) => e.msg ?? e).join(", ")
+          : detail) ||
+        "Failed to create workspace";
+      setOnboardError(msg);
     }
   };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function AppLayout() {
@@ -17,22 +17,9 @@ export default function AppLayout() {
     return <Navigate to="/signin" replace />;
   }
 
+  // First-time signup (e.g. OAuth): no org yet → send to /signup to complete questionnaire (business name, domain).
   if (!organizations?.length) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-dark p-4">
-        <div className="max-w-md text-center">
-          <p className="font-sans text-[14px] text-gray-700 mb-2">
-            Create a workspace to continue.
-          </p>
-          <Link
-            to="/onboarding"
-            className="font-sans text-[14px] font-medium text-[#335CFF] hover:underline"
-          >
-            Create workspace
-          </Link>
-        </div>
-      </div>
-    );
+    return <Navigate to="/signup" replace />;
   }
 
   return (

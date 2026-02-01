@@ -16,12 +16,11 @@ Actual stack and what’s implemented. Use for onboarding and planning.
 
 ## Done
 
-- **App shell:** `App.jsx` — Router, AuthProvider, public routes (`/signup`, `/signin`, `/login`, `/onboarding`), protected routes under AppLayout (`/`, `/campaigns/email`, `/dashboard`).
+- **App shell:** `App.jsx` — Router, AuthProvider, public routes (`/signup`, `/signin`, `/login`), protected routes under AppLayout (`/`, `/campaigns/email`, `/dashboard`).
 - **Auth:** Supabase client (`src/lib/supabase.js`), AuthContext (user, org, signUp, signInWithPassword, signInWithOAuth, signOut). API client with Bearer token (`src/lib/api.js`).
-- **Sign up:** SignUpScreen — step 1 calls `supabase.auth.signUp`; steps 2–3 collect business name + slug; step 4 or “Get Started” calls `POST /api/v1/onboard`, then navigates to `/campaigns/email`.
+- **Sign up:** SignUpScreen — step 1 calls `supabase.auth.signUp`; steps 2–3 collect business name + slug; step 4 or “Get Started” calls `POST /api/v1/onboard`. Same steps for email signup after step 1; then navigates to `/campaigns/email`.
 - **Sign in:** SignInScreen — email/password via `signInWithPassword`; redirect to app.
-- **Onboarding:** OnboardingScreen — for users with no org (e.g. after OAuth); create workspace via `POST /api/v1/onboard`.
-- **Protected layout:** AppLayout — loading → org check → redirect to `/signin` or `/onboarding` or render outlet.
+- **Protected layout:** AppLayout — loading → no user → redirect `/signin`; user but no org → redirect `/signup` (questionnaire there); user + org → render outlet.
 
 ## Gaps (optional / later)
 

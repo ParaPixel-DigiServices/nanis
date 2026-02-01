@@ -118,8 +118,8 @@ Goal: secure multi-tenant SaaS foundation (auth, orgs, RBAC, base UI shell, core
 - **Priority:** P0
 - **Depends on:** P1-DB-003, P1-AUTH-002
 - **Acceptance Criteria:**
-  - [ ] First login prompts “Create workspace” or “Join workspace”.
-  - [ ] Workspace creation writes correct org + membership rows.
+  - [ ] First-time users (email or OAuth) complete business name + domain (slug) questionnaire on signup; no separate “create workspace” page.
+  - [ ] Org creation via `POST /api/v1/onboard` writes correct org + membership rows; users with an org are redirected to app.
 
 ## Epic P1-D: RBAC + Team management (minimum viable)
 

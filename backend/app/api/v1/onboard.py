@@ -95,11 +95,11 @@ async def create_workspace(
             detail="slug already taken",
         )
 
-    # Create org and membership (service role bypasses RLS)
+    # Create org and membership (service role bypasses RLS).
+    # insert().execute() returns inserted row(s) by default (returning='representation').
     org_row = (
         client.table("organizations")
         .insert({"name": name, "slug": slug})
-        .select("*")
         .execute()
     )
     if not org_row.data or len(org_row.data) == 0:

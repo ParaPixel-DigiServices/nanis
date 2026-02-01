@@ -83,7 +83,7 @@ If you use “Sign in with Google” or “Sign in with Apple” in the app:
    - **Note:** Apple OAuth secret keys expire every 6 months; generate a new secret in Apple Developer and update it in Supabase before it expires, or web sign-in will stop working.
    - (Optional) **Allow users without an email** — if your use case needs it.
 
-After OAuth, Supabase redirects back to your **Site URL** with the session in the URL (fragment). The frontend Supabase client will pick it up; then the user can go to **Create workspace** (`/onboarding`) if they have no org yet.
+After OAuth, Supabase redirects back to your **Site URL** with the session in the URL (fragment). The frontend Supabase client will pick it up. If the user has no org yet, they are redirected to **/signup** to complete the questionnaire (business name, domain slug) and create their workspace.
 
 ---
 
@@ -97,9 +97,9 @@ After OAuth, Supabase redirects back to your **Site URL** with the session in th
 ## 7. Quick test flow
 
 1. **Sign up (email):** Open `/signup` → enter name, email, password → agree to terms → Sign up. You should move to step 2 (business name).
-2. **Complete onboarding:** Enter business name → Continue → enter domain slug (e.g. `mycompany`) → Continue or Get Started. You should land on `/app/dashboard`.
+2. **Complete questionnaire:** Enter business name → Continue → enter domain slug (e.g. `mycompany`) → Continue or Get Started. You should land on `/campaigns/email`.
 3. **Sign out:** Click Sign out on the dashboard.
-4. **Sign in:** Open `/signin` → same email/password → Sign in. You should land on `/app/dashboard` again.
+4. **Sign in:** Open `/signin` → same email/password → Sign in. You should land on `/campaigns/email` again.
 5. **Backend auth:** From the browser console or a REST client, call `GET http://localhost:8000/api/v1/onboard/me` with header `Authorization: Bearer <your_supabase_access_token>`. You can get the token from the frontend (e.g. `supabase.auth.getSession()`) for testing.
 
 ---
@@ -114,7 +114,7 @@ After OAuth, Supabase redirects back to your **Site URL** with the session in th
 
 ---
 
-**Summary:** Create Supabase project → run migrations → set backend `.env` and frontend `.env` → configure Auth (email + optional OAuth) and redirect URLs → run backend and frontend → test signup → signin → onboarding → dashboard.
+**Summary:** Create Supabase project → run migrations → set backend `.env` and frontend `.env` → configure Auth (email + optional OAuth) and redirect URLs → run backend and frontend → test signup → questionnaire (business name, slug) → campaigns; signin → campaigns.
 
 ---
 

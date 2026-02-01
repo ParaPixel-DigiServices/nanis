@@ -4,7 +4,6 @@ import { AuthProvider } from "./context/AuthContext";
 import SignUpScreen from "./features/auth/SignUpScreen";
 import SignInScreen from "./features/auth/SignInScreen";
 import LoginScreen from "./features/auth/LoginScreen";
-import OnboardingScreen from "./features/auth/OnboardingScreen";
 import AppLayout from "./features/app/AppLayout";
 import DashboardPage from "./features/app/DashboardPage";
 import DashboardLayout from "./layouts/DashboardLayout";
@@ -24,9 +23,8 @@ function App() {
             <Route path="/signup" element={<SignUpScreen />} />
             <Route path="/signin" element={<SignInScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-            <Route path="/onboarding" element={<OnboardingScreen />} />
 
-            {/* Protected: auth + org check, then dashboard with sidebar */}
+            {/* Protected: auth check, then dashboard with sidebar */}
             <Route path="/" element={<AppLayout />}>
               <Route element={<DashboardLayout />}>
                 <Route
