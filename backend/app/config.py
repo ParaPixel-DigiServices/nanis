@@ -29,6 +29,8 @@ class Settings(BaseSettings):
                          "staging", "production"] = "development"
     # CORS: comma-separated origins for production (e.g. https://yourapp.vercel.app)
     allowed_origins_extra: str = ""
+    # Optional CORS: regex for matching origins (e.g. ^https://.*\\.vercel\\.app$)
+    allowed_origins_regex: str = ""
 
     # Optional — Phase 2+ (SES)
     aws_access_key_id: str = ""

@@ -3,7 +3,20 @@
  * In production (Vercel), set VITE_API_URL to your backend URL (e.g. https://nanis-api.onrender.com).
  */
 
-const baseUrl = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '') || 'http://localhost:8000';
+const configured = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/$/, "");
+const defaultProd = "https://nanis-api.onrender.com";
+
+// Vercel builds are static: if VITE_API_URL is not set at build time, we would otherwise
+// fall back to localhost and onboarding will appear to "get stuck".
+const baseUrl = configured || (import.meta.env.PROD ? defaultProd : "http://localhost:8000");
+
+if (import.meta.env.PROD && !configured) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    "[Nanis] VITE_API_URL is not set for production build; defaulting to:",
+    baseUrl,
+  );
+}
 
 if (import.meta.env.DEV) {
   console.log('[Nanis] API base URL:', baseUrl);
