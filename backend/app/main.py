@@ -42,7 +42,8 @@ def create_app() -> FastAPI:
             s.strip() for s in settings.allowed_origins_extra.split(",") if s.strip()]
         origins.extend(extra_origins)
 
-    origin_regex = settings.allowed_origins_regex.strip() if settings.allowed_origins_regex else ""
+    origin_regex = settings.allowed_origins_regex.strip(
+    ) if settings.allowed_origins_regex else ""
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
