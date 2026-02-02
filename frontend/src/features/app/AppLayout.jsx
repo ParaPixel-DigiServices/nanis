@@ -7,7 +7,7 @@ export default function AppLayout() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-dark">
+      <div className="min-h-screen flex items-center justify-center">
         <p className="font-sans text-[14px] text-gray-600">Loading…</p>
       </div>
     );
@@ -22,16 +22,7 @@ export default function AppLayout() {
     return <Navigate to="/signup" replace />;
   }
 
-  return (
-    <div className="min-h-screen bg-surface-dark">
-      <header className="h-12 border-b border-surface-border bg-white flex items-center px-4">
-        <span className="font-sans font-medium text-[14px] text-brand-dark">
-          {organizations[0]?.name ?? "Workspace"}
-        </span>
-      </header>
-      <main className="p-4">
-        <Outlet />
-      </main>
-    </div>
-  );
+  // Keep auth/org gating for integration, but avoid adding any extra UI chrome.
+  // The original design/background is owned by App.jsx + DashboardLayout.
+  return <Outlet />;
 }
