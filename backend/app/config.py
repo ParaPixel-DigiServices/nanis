@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     allowed_origins_extra: str = ""
     # Optional CORS: regex for matching origins (e.g. ^https://.*\\.vercel\\.app$)
     allowed_origins_regex: str = ""
+    # TEMP/DEBUG: allow requests from any Origin (not recommended for production).
+    cors_allow_all: bool = False
 
     # Optional — Phase 2+ (SES)
     aws_access_key_id: str = ""
