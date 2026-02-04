@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Startup/shutdown: init Supabase client, etc. when needed."""
     yield
-    # Teardown if needed (e.g. close pools)
 
 
 def create_app() -> FastAPI:
@@ -59,7 +58,6 @@ def create_app() -> FastAPI:
 
     app.include_router(api_v1_router, prefix="/api/v1", tags=["v1"])
 
-    # Deployment-friendly startup log (no secrets)
     logger.info(
         "Nanis API config: environment=%s docs_enabled=%s cors_origins_total=%s cors_extra=%s",
         settings.environment,

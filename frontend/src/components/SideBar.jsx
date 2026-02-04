@@ -25,7 +25,6 @@ import clsx from "clsx";
 import logo from "../assets/logo.svg";
 import { useAuth } from "../context/AuthContext";
 
-// --- Reusable Glass Container Style ---
 const containerStyle = {
   width: "190px",
   borderRadius: "16px",
@@ -39,7 +38,6 @@ const containerStyle = {
   flexDirection: "column",
 };
 
-// --- Nav Item Component ---
 const NavItem = ({ icon: Icon, label, to, active, hasDot, count }) => (
   <NavLink
     to={to || "#"}
@@ -61,7 +59,6 @@ const NavItem = ({ icon: Icon, label, to, active, hasDot, count }) => (
     </span>
 
     <div className="ml-auto flex items-center gap-1">
-      {/* --- UPDATED: Blinking Glow Dot --- */}
       {hasDot && (
         <div className="relative flex h-2 w-2 mr-1">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>

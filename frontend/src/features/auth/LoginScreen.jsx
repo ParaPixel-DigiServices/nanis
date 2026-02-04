@@ -4,7 +4,6 @@ import { Eye, EyeOff, Globe, Check, AlertCircle, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
-// Assets
 import googleLogo from '../../assets/google.svg';
 import appleLogo from '../../assets/apple.svg';
 import logo from '../../assets/logo.svg';
@@ -25,22 +24,16 @@ const LoginPage = () => {
 
     return (
         <div className="w-full h-screen flex flex-col items-center justify-center overflow-hidden relative font-sans">
-            
-            {/* Scaling Wrapper */}
             <div className="flex flex-col items-center transform origin-center scale-100 mbp:scale-125">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
-                    // Outer Glass Card Container
                     className="w-[344px] h-[540px] rounded-[29px] pt-[4px] px-[4px] pb-[12px] flex flex-col items-center justify-between border border-white backdrop-blur-md flex-shrink-0"
                     style={{ background: 'linear-gradient(135.75deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.16) 100%)' }}
                 >
-                    {/* Inner Content Card - Height adjusted to leave room for footer text */}
                     <div className="w-[336px] h-[492px] rounded-[26px] p-[20px] border border-white flex flex-col gap-[12px] box-border" style={{ background: 'linear-gradient(135.75deg, rgba(255, 255, 255, 0.54) 0%, rgba(255, 255, 255, 0.48) 100%)' }}>
-                        
-                        {/* 1. Header (Inside Card) */}
                         <div className="flex gap-[6px] mb-2 w-full">
                             <img src={logo} alt="Nanis Logo" className="w-[32px] h-[32px]" />
                             <span className="font-brand font-semibold text-[24px] leading-[100%] tracking-[0px] text-brand-dark">
@@ -160,7 +153,6 @@ const LoginPage = () => {
     );
 };
 
-// Reused Components
 const DiamondInput = ({ value, onChange, placeholder }) => {
     const [showPassword, setShowPassword] = useState(false);
     const handleChange = (e) => {

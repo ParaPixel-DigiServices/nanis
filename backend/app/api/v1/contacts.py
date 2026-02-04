@@ -23,10 +23,6 @@ from app.supabase_client import get_supabase_client
 
 router = APIRouter()
 
-# ---------------------------------------------------------------------------
-# Contacts
-# ---------------------------------------------------------------------------
-
 
 class CreateContactBody(BaseModel):
     email: EmailStr | None = None
@@ -95,7 +91,6 @@ def list_contacts(
         .range(offset, offset + limit - 1)
     )
     if search and search.strip():
-        # Simple search: OR ilike on email, first_name, last_name
         q = q.or_(
             f"email.ilike.%{search.strip()}%,first_name.ilike.%{search.strip()}%,last_name.ilike.%{search.strip()}%")
     r = q.execute()
@@ -207,15 +202,10 @@ def delete_contact(
     return None
 
 
-# ---------------------------------------------------------------------------
-# P2-CRM-004: CSV import
-# ---------------------------------------------------------------------------
-
 CONTACT_IMPORT_FIELDS = ("email", "first_name",
                          "last_name", "mobile", "country")
 MAX_IMPORT_ROWS = 2000
 
-# Common CSV header names → our field name (case-insensitive match)
 _HEADER_ALIASES = {
     "email": ["email", "e-mail", "mail"],
     "first_name": ["first_name", "first name", "firstname", "given name"],
@@ -383,10 +373,6 @@ def import_contacts_csv(
     }
 
 
-# ---------------------------------------------------------------------------
-# Contact tags
-# ---------------------------------------------------------------------------
-
 class CreateTagBody(BaseModel):
     name: str
     color: str | None = None
@@ -494,14 +480,9 @@ def delete_contact_tag(
         .execute()
     )
     if r.data is None and (not r.data or len(r.data) == 0):
-        # delete() may return empty; check count if needed
         pass
     return None
 
-
-# ---------------------------------------------------------------------------
-# Contact tag assignments
-# ---------------------------------------------------------------------------
 
 class AssignTagBody(BaseModel):
     tag_id: UUID
@@ -523,7 +504,6 @@ def list_contact_tag_assignments(
         .eq("organization_id", str(organization_id))
         .execute()
     )
-    # Optionally join tag name/color from contact_tags
     tag_ids = [a["tag_id"] for a in (r.data or [])]
     if not tag_ids:
         return {"assignments": [], "tags": []}

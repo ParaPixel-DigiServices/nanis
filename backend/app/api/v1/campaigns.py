@@ -29,7 +29,6 @@ class UpdateCampaignBody(BaseModel):
     template_id: UUID | None = None
     subject_line: str | None = None
     scheduled_at: str | None = None
-    # draft, scheduled, paused (sent/failed are system-set)
     status: str | None = None
 
 
@@ -160,10 +159,6 @@ def update_campaign(
     return r.data[0]
 
 
-# ---------------------------------------------------------------------------
-# Target rules (one per campaign)
-# ---------------------------------------------------------------------------
-
 @router.get("/organizations/{organization_id}/campaigns/{campaign_id}/target-rules")
 def get_campaign_target_rules(
     organization_id: UUID,
@@ -183,7 +178,6 @@ def get_campaign_target_rules(
     )
     if r.data and len(r.data) > 0:
         return r.data[0]
-    # Insert default
     row = {
         "campaign_id": str(campaign_id),
         "organization_id": str(organization_id),
@@ -246,10 +240,6 @@ def upsert_campaign_target_rules(
     return ins.data[0]
 
 
-# ---------------------------------------------------------------------------
-# Recipients (list for a campaign)
-# ---------------------------------------------------------------------------
-
 @router.get("/organizations/{organization_id}/campaigns/{campaign_id}/recipients")
 def list_campaign_recipients(
     organization_id: UUID,
@@ -275,10 +265,6 @@ def list_campaign_recipients(
     r = q.execute()
     return {"recipients": r.data or [], "total": r.count or 0}
 
-
-# ---------------------------------------------------------------------------
-# P2-SES-002: Send campaign (prepare + send via SES)
-# ---------------------------------------------------------------------------
 
 @router.post("/organizations/{organization_id}/campaigns/{campaign_id}/prepare")
 def prepare_campaign(
@@ -321,10 +307,6 @@ def send_campaign(
             detail=str(e),
         )
 
-
-# ---------------------------------------------------------------------------
-# P2-AN-001: Campaign analytics (open/click aggregates)
-# ---------------------------------------------------------------------------
 
 @router.get("/organizations/{organization_id}/campaigns/{campaign_id}/analytics")
 def get_campaign_analytics(

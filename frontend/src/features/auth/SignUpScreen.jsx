@@ -6,7 +6,6 @@ import clsx from "clsx";
 import { useAuth } from "../../context/AuthContext";
 import { api } from "../../lib/api";
 
-// Assets
 import googleLogo from "../../assets/google.svg";
 import appleLogo from "../../assets/apple.svg";
 import trialIcon from "../../assets/trial.svg";
@@ -36,7 +35,6 @@ const SignUpScreen = () => {
   } = useAuth();
   const navigate = useNavigate();
 
-  // First-time OAuth (or any user with session but no org): show questionnaire (step 2) so they can't skip.
   React.useEffect(() => {
     if (loading || !orgsResolved) return;
     if (session && organizations?.length > 0) {
@@ -111,10 +109,8 @@ const SignUpScreen = () => {
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center overflow-hidden relative">
-      {/* SCALING WRAPPER */}
       <div className="flex flex-col items-center transform origin-center scale-100 mbp:scale-125">
         <AnimatePresence mode="wait">
-          {/* ================= STEP 1: SIGN UP ================= */}
           {step === 1 && (
             <motion.div
               key="step1"
@@ -125,7 +121,6 @@ const SignUpScreen = () => {
               transition={transitionSettings}
               className="flex flex-col items-center gap-[20px]"
             >
-              {/* TOP CAPSULE */}
               <div
                 className="p-[1px] rounded-[46px] w-[344px] h-[42px] flex-shrink-0"
                 style={{
@@ -163,7 +158,6 @@ const SignUpScreen = () => {
                 </div>
               </div>
 
-              {/* MAIN CARD */}
               <div
                 className="w-[344px] min-h-[524px] rounded-[29px] pt-[4px] px-[4px] pb-[12px] flex flex-col items-center justify-between border border-white backdrop-blur-md flex-shrink-0"
                 style={{
@@ -211,7 +205,6 @@ const SignUpScreen = () => {
             </motion.div>
           )}
 
-          {/* ================= STEP 2: BUSINESS NAME ================= */}
           {step === 2 && (
             <motion.div
               key="step2"
@@ -358,7 +351,6 @@ const SignUpScreen = () => {
             </motion.div>
           )}
 
-          {/* ================= STEP 4: WELCOME VIDEO ================= */}
           {step === 4 && (
             <motion.div
               key="step4"
@@ -367,14 +359,12 @@ const SignUpScreen = () => {
               animate="center"
               exit="exit"
               transition={transitionSettings}
-              // Main Container: 344x430
               className="w-[344px] h-[430px] rounded-[26px] p-[12px] border border-white flex flex-col gap-[16px] box-border"
               style={{
                 background:
                   "linear-gradient(135.75deg, rgba(255, 255, 255, 0.54) 0%, rgba(255, 255, 255, 0.48) 100%)",
               }}
             >
-              {/* Logo Row */}
               <div className="flex items-center gap-[4px]">
                 <img
                   src={logo}
@@ -386,7 +376,6 @@ const SignUpScreen = () => {
                 </span>
               </div>
 
-              {/* Video Container (320x244, Radius 12px) */}
               <div className="w-[320px] h-[244px] rounded-[12px] overflow-hidden bg-black flex-shrink-0 relative">
                 <video
                   src="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
@@ -396,15 +385,12 @@ const SignUpScreen = () => {
                   muted
                   playsInline
                 />
-                {/* Optional: Overlay/Play Button Placeholder could go here */}
               </div>
 
-              {/* Welcome Text */}
               <h2 className="font-sans font-medium text-[22px] leading-[120%] tracking-[-0.01em] text-[#0F172A] w-[320px]">
                 Welcome to MailApp! We’re glad to have you with us.
               </h2>
 
-              {/* Get Started Button */}
               {onboardError && (
                 <p className="font-sans text-[12px] text-red-600">
                   {onboardError}
@@ -428,7 +414,6 @@ const SignUpScreen = () => {
         </AnimatePresence>
       </div>
 
-      {/* FOOTER BUTTON */}
       <div
         className="absolute bottom-[30px] left-1/2 transform -translate-x-1/2 w-[190px] h-[36px] p-[1px] rounded-[16px]"
         style={{
@@ -453,9 +438,6 @@ const SignUpScreen = () => {
     </div>
   );
 };
-
-// ... [StepOneForm, DiamondInput, DomainInput, CustomCheckbox components remain unchanged] ...
-// Re-paste them if you need the full single file context.
 
 const StepOneForm = ({
   setStep,
@@ -513,16 +495,12 @@ const StepOneForm = ({
       return;
     }
 
-    // Supabase can return a `user` with an empty `identities` array when the email is already registered
-    // (to reduce account enumeration). In that case, don't advance to onboarding.
     const identities = data?.user?.identities;
     if (Array.isArray(identities) && identities.length === 0) {
       setAuthError("This email is already in use. Please sign in instead.");
       return;
     }
 
-    // If email confirmations are enabled, Supabase may return a user but no session.
-    // Onboarding requires an access token, so keep the user on step 1.
     if (!data?.session) {
       setAuthError(
         "Check your email to confirm your account, then sign in to continue.",

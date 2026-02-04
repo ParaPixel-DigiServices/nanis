@@ -1,13 +1,9 @@
 import React from 'react';
 import { Search, Bell, Filter, Plus, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
-// Replace with your actual asset path
 import boxIcon from '../assets/box.svg'; 
 
 const EmailCampaigns = () => {
-  
-  // --- STYLES ---
-
   const headerTitleStyle = {
     fontFamily: '"Inter Display", sans-serif',
     fontWeight: 600,
@@ -23,7 +19,6 @@ const EmailCampaigns = () => {
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
   };
 
-  // Sorting Bar: Glass effect ONLY on the bar itself, not the whole page
   const sortingContainerStyle = {
     width: '407px',
     height: '34px',
@@ -79,7 +74,6 @@ const EmailCampaigns = () => {
   };
 
   return (
-    // ROOT CONTAINER: Transparent (No BG)
     <div 
       className="flex flex-col w-full h-full font-sans overflow-hidden bg-transparent"
       style={{

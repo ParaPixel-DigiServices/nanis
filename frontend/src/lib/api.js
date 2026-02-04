@@ -6,8 +6,6 @@
 const configured = (import.meta.env.VITE_API_URL ?? "").trim().replace(/\/$/, "");
 const defaultProd = "https://nanis-api.onrender.com";
 
-// Vercel builds are static: if VITE_API_URL is not set at build time, we would otherwise
-// fall back to localhost and onboarding will appear to "get stuck".
 const baseUrl = configured || (import.meta.env.PROD ? defaultProd : "http://localhost:8000");
 
 if (import.meta.env.PROD && !configured) {

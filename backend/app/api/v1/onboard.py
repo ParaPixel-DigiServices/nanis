@@ -40,7 +40,6 @@ async def get_me_and_organizations(
         .execute()
     )
     org_list = list(orgs.data or [])
-    # Attach role to each org
     by_id = {m["organization_id"]: m["role"] for m in (members.data or [])}
     for o in org_list:
         o["role"] = by_id.get(o["id"], "member")
@@ -61,7 +60,6 @@ async def create_workspace(
             detail="slug must be lowercase alphanumeric and hyphens, 1–64 chars",
         )
     client = get_supabase_client()
-    # Check if user already has an org (idempotent: return first org)
     members = (
         client.table("organization_members")
         .select("organization_id")
@@ -81,7 +79,6 @@ async def create_workspace(
         if org.data:
             return {"organization": org.data[0], "already_exists": True}
 
-    # Check slug uniqueness
     existing = (
         client.table("organizations")
         .select("id")
@@ -95,8 +92,6 @@ async def create_workspace(
             detail="slug already taken",
         )
 
-    # Create org and membership (service role bypasses RLS).
-    # insert().execute() returns inserted row(s) by default (returning='representation').
     org_row = (
         client.table("organizations")
         .insert({"name": name, "slug": slug})

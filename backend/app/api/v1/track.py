@@ -11,7 +11,6 @@ from app.tracking import verify_tracking_token
 
 router = APIRouter()
 
-# 1x1 transparent GIF (minimal)
 TRACKING_PIXEL_GIF = (
     b"GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00"
     b"\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
@@ -26,7 +25,6 @@ def track_open(r: str = Query(..., alias="r")):
         return Response(content=TRACKING_PIXEL_GIF, media_type="image/gif")
     client = get_supabase_client()
     now_iso = datetime.now(timezone.utc).isoformat()
-    # Update campaign_recipients.opened_at (only if not already set)
     r_row = (
         client.table("campaign_recipients")
         .select("id, campaign_id, organization_id, opened_at")

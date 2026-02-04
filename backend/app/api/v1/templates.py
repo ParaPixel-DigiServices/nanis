@@ -37,7 +37,6 @@ def list_templates(
     """List templates: org's user-created + optionally admin-provided (organization_id IS NULL)."""
     ensure_org_member(organization_id, user_id)
     client = get_supabase_client()
-    # User-created: organization_id = org
     q = (
         client.table("templates")
         .select("id, organization_id, name, admin_provided, subject_line, created_at, updated_at", count="exact")
@@ -83,7 +82,6 @@ def get_template(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Template not found")
     row = r.data[0]
-    # RLS allows: org_id = org OR org_id IS NULL (admin). So if row.organization_id is set, must match.
     if row.get("organization_id") and str(row["organization_id"]) != str(organization_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Template not found")

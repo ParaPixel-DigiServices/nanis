@@ -8,8 +8,6 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [organizations, setOrganizations] = useState([]);
-  // `loading` means: initial auth bootstrap in progress.
-  // `orgsResolved` means: we've finished attempting to load org membership for the current session.
   const [loading, setLoading] = useState(true);
   const [orgsResolved, setOrgsResolved] = useState(false);
 

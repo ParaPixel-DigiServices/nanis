@@ -10,7 +10,6 @@ from app.ses_client import send_email
 from app.supabase_client import get_supabase_client
 from app.tracking import create_tracking_token, wrap_links_for_tracking
 
-# Default: 1 send per second (SES sandbox). Increase after production access.
 DEFAULT_RATE_PER_SEC = 1.0
 
 
@@ -23,7 +22,6 @@ def _render_vars(text: str, contact: dict) -> str:
         if val is None:
             val = ""
         result = result.replace("{{" + key + "}}", str(val))
-    # Strip any remaining {{...}}
     result = re.sub(r"\{\{[^}]+\}\}", "", result)
     return result
 
@@ -37,7 +35,6 @@ def resolve_recipients(campaign_id: UUID, organization_id: UUID) -> list[dict]:
     org_id = str(organization_id)
     camp_id = str(campaign_id)
 
-    # Load campaign and target_rules
     r_camp = (
         client.table("campaigns")
         .select("id, template_id, subject_line")
@@ -65,7 +62,6 @@ def resolve_recipients(campaign_id: UUID, organization_id: UUID) -> list[dict]:
     include_tags = rules.get("include_tags") or []
     exclude_tags = rules.get("exclude_tags") or []
 
-    # Base contacts: org, has email, not deleted
     q = (
         client.table("contacts")
         .select("id, email, first_name, last_name, country")
@@ -88,7 +84,6 @@ def resolve_recipients(campaign_id: UUID, organization_id: UUID) -> list[dict]:
         contacts = [c for c in contacts if not (
             c.get("country") or "").strip().lower() in exclude_set]
 
-    # Include tags: keep only contacts that have at least one tag in include_tags
     if include_tags:
         tag_names = [t.strip() for t in include_tags if t]
         if tag_names:
@@ -146,7 +141,6 @@ def resolve_recipients(campaign_id: UUID, organization_id: UUID) -> list[dict]:
         bounced_ids = {b["contact_id"] for b in (r_bounced.data or [])}
         contacts = [c for c in contacts if c["id"] not in bounced_ids]
 
-    # Normalize keys for template (first_name, last_name, email, country)
     out = []
     for c in contacts:
         out.append({
@@ -192,7 +186,6 @@ def send_campaign_batch(
     org_id = str(organization_id)
     camp_id = str(campaign_id)
 
-    # Load campaign and template
     r_camp = (
         client.table("campaigns")
         .select("id, template_id, subject_line, status")
@@ -225,7 +218,6 @@ def send_campaign_batch(
     subject = (campaign.get("subject_line") or template.get(
         "subject_line") or "Campaign").strip()
 
-    # Ensure recipients are prepared
     r_pending = (
         client.table("campaign_recipients")
         .select("id, contact_id")
@@ -249,7 +241,6 @@ def send_campaign_batch(
     if not pending:
         return {"sent": 0, "failed": 0, "errors": [], "message": "No recipients to send"}
 
-    # Mark campaign as sending
     client.table("campaigns").update({"status": "sending"}).eq(
         "id", camp_id).eq("organization_id", org_id).execute()
 
@@ -311,7 +302,6 @@ def send_campaign_batch(
         if delay > 0:
             time.sleep(delay)
 
-    # Update campaign status
     new_status = "failed" if failed > 0 and sent == 0 else "sent"
     client.table("campaigns").update({
         "status": new_status,
@@ -320,10 +310,6 @@ def send_campaign_batch(
 
     return {"sent": sent, "failed": failed, "errors": errors[:100]}
 
-
-# ---------------------------------------------------------------------------
-# P2-SES-003: Scheduling worker — process campaigns due now
-# ---------------------------------------------------------------------------
 
 def process_scheduled_campaigns(
     max_campaigns: int = 5,
@@ -360,7 +346,6 @@ def process_scheduled_campaigns(
                 "result": result,
             })
         except Exception:
-            # One retry for transient failures
             try:
                 time.sleep(2)
                 result = send_campaign_batch(

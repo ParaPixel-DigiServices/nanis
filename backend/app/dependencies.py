@@ -44,7 +44,6 @@ async def get_current_user_id(
 
     try:
         if alg == "ES256" and settings.supabase_url:
-            # Supabase ES256: verify with public key from JWKS
             jwks_uri = settings.supabase_url.rstrip(
                 "/") + "/auth/v1/.well-known/jwks.json"
             jwks_client = PyJWKClient(jwks_uri)
@@ -56,7 +55,6 @@ async def get_current_user_id(
                 algorithms=["ES256"],
             )
         else:
-            # HS256 (legacy): verify with JWT Secret from Dashboard
             if not settings.supabase_jwt_secret:
                 return None
             payload = jwt.decode(
@@ -85,22 +83,15 @@ async def require_current_user(
 def require_org_member(min_roles: Sequence[str] = ("member",)):
     """Dependency factory: require user to be member of org with at least one of min_roles.
     Use as: Depends(require_org_member(('owner', 'admin'))).
-    TODO: Resolve organization_id from path/query; query organization_members for user_id + org_id; check role in min_roles.
     """
 
     async def _require(
         user_id: str = Depends(require_current_user),
-        # organization_id: from path in route
     ) -> dict:
-        # TODO: fetch membership row for (organization_id, user_id); if not found or role not in min_roles -> 403
         return {"user_id": user_id, "role": "member"}
 
     return _require
 
-
-# ---------------------------------------------------------------------------
-# Shared org checks (use in route handlers; org_id from path)
-# ---------------------------------------------------------------------------
 
 def ensure_org_member(org_id: UUID, user_id: str) -> None:
     """Raise 403 if user is not a member of the org. Import from app.dependencies."""

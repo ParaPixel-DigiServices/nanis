@@ -19,14 +19,12 @@ import re
 import sys
 from pathlib import Path
 
-# Add backend root so app.config is importable
 backend_root = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(backend_root))
 
-# Load .env from backend root (so script works from repo root or backend/)
 load_dotenv(backend_root / ".env")
 if not os.getenv("SUPABASE_URL") and not os.getenv("NEXT_PUBLIC_SUPABASE_URL"):
-    load_dotenv(backend_root.parent / ".env")  # repo root .env
+    load_dotenv(backend_root.parent / ".env")
 
 
 def slugify(name: str) -> str:
@@ -72,7 +70,6 @@ def main() -> int:
     user_id: str | None = args.user_id
 
     if args.email:
-        # Resolve user_id from email via Admin API (list_users + filter)
         try:
             resp = client.auth.admin.list_users()
             users = getattr(resp, "users", None) or getattr(
@@ -104,7 +101,6 @@ def main() -> int:
 
     org_slug = args.slug or slugify(args.org_name)
 
-    # Insert organization
     org_res = client.table("organizations").insert({
         "name": args.org_name,
         "slug": org_slug,
@@ -119,7 +115,6 @@ def main() -> int:
     org_id = org_res.data[0]["id"]
     print(f"Created organization: {args.org_name} ({org_slug}) id={org_id}")
 
-    # Insert membership (user as owner)
     mem_res = client.table("organization_members").insert({
         "organization_id": org_id,
         "user_id": user_id,
