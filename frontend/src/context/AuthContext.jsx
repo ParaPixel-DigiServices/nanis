@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase";
 import { api } from "../lib/api";
 
@@ -7,40 +8,36 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
-  const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [orgsResolved, setOrgsResolved] = useState(false);
+  const queryClient = useQueryClient();
 
-  const refreshOrganizations = async (token) => {
-    if (!token) {
-      setOrganizations([]);
-      return;
-    }
-    const res = await api("/onboard/me", { token });
-    if (res.ok && Array.isArray(res.data?.organizations)) {
-      setOrganizations(res.data.organizations);
-    } else {
-      setOrganizations([]);
-    }
-  };
+  const { data: organizations = [], isLoading: orgsLoading } = useQuery({
+    queryKey: ["organizations", session?.access_token],
+    queryFn: async () => {
+      if (!session?.access_token) return [];
+      const res = await api("/onboard/me", { token: session.access_token });
+      if (res.ok && Array.isArray(res.data?.organizations)) {
+        return res.data.organizations;
+      }
+      return [];
+    },
+    enabled: !!session?.access_token,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  const orgsResolved = !orgsLoading;
 
   useEffect(() => {
     setLoading(true);
-    setOrgsResolved(false);
 
     supabase.auth
       .getSession()
       .then(({ data: { session: s } }) => {
         setSession(s);
         setUser(s?.user ?? null);
-        if (s?.access_token) {
-          return refreshOrganizations(s.access_token);
-        }
-        setOrganizations([]);
-        return null;
       })
       .finally(() => {
-        setOrgsResolved(true);
         setLoading(false);
       });
 
@@ -49,19 +46,13 @@ export function AuthProvider({ children }) {
     } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
-      setOrgsResolved(false);
-      if (s?.access_token) {
-        refreshOrganizations(s.access_token).finally(() =>
-          setOrgsResolved(true),
-        );
-      } else {
-        setOrganizations([]);
-        setOrgsResolved(true);
+      if (!s?.access_token) {
+        queryClient.setQueryData(["organizations", s?.access_token], []);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [queryClient]);
 
   const value = {
     session,
@@ -69,8 +60,13 @@ export function AuthProvider({ children }) {
     organizations,
     loading,
     orgsResolved,
-    refreshOrganizations: () =>
-      session?.access_token && refreshOrganizations(session.access_token),
+    refreshOrganizations: () => {
+      if (session?.access_token) {
+        queryClient.invalidateQueries({
+          queryKey: ["organizations", session.access_token],
+        });
+      }
+    },
     signUp: (email, password, options = {}) =>
       supabase.auth.signUp({ email, password, options }),
     signInWithPassword: (email, password) =>
