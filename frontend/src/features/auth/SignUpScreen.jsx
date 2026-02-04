@@ -31,13 +31,14 @@ const SignUpScreen = () => {
     session,
     organizations,
     loading,
+    orgsResolved,
     refreshOrganizations,
   } = useAuth();
   const navigate = useNavigate();
 
   // First-time OAuth (or any user with session but no org): show questionnaire (step 2) so they can't skip.
   React.useEffect(() => {
-    if (loading) return;
+    if (loading || !orgsResolved) return;
     if (session && organizations?.length > 0) {
       navigate("/campaigns/email", { replace: true });
       return;
@@ -49,7 +50,7 @@ const SignUpScreen = () => {
     ) {
       setStep(2);
     }
-  }, [loading, session, organizations, step, navigate]);
+  }, [loading, orgsResolved, session, organizations, step, navigate]);
 
   const handleFinishOnboard = async () => {
     setOnboardError("");
@@ -65,7 +66,7 @@ const SignUpScreen = () => {
     }
     if (!SLUG_REGEX.test(s)) {
       setOnboardError(
-        "Slug must be 1–64 characters: lowercase letters, numbers, and hyphens only (cannot start or end with a hyphen)."
+        "Slug must be 1–64 characters: lowercase letters, numbers, and hyphens only (cannot start or end with a hyphen).",
       );
       return;
     }
@@ -164,14 +165,14 @@ const SignUpScreen = () => {
 
               {/* MAIN CARD */}
               <div
-                className="w-[344px] h-[524px] rounded-[29px] pt-[4px] px-[4px] pb-[12px] flex flex-col items-center justify-between border border-white backdrop-blur-md flex-shrink-0"
+                className="w-[344px] min-h-[524px] rounded-[29px] pt-[4px] px-[4px] pb-[12px] flex flex-col items-center justify-between border border-white backdrop-blur-md flex-shrink-0"
                 style={{
                   background:
                     "linear-gradient(135.75deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.16) 100%)",
                 }}
               >
                 <div
-                  className="w-[336px] h-[476px] rounded-[26px] p-[12px] border border-white flex flex-col gap-[12px] box-border"
+                  className="w-[336px] min-h-[476px] rounded-[26px] p-[12px] border border-white flex flex-col gap-[12px] box-border"
                   style={{
                     background:
                       "linear-gradient(135.75deg, rgba(255, 255, 255, 0.54) 0%, rgba(255, 255, 255, 0.48) 100%)",
@@ -511,8 +512,25 @@ const StepOneForm = ({
       setAuthError(error.message || "Sign up failed.");
       return;
     }
-    if (data?.session) setStep(2);
-    else if (data?.user && !data.session) setStep(2); // email confirmation required
+
+    // Supabase can return a `user` with an empty `identities` array when the email is already registered
+    // (to reduce account enumeration). In that case, don't advance to onboarding.
+    const identities = data?.user?.identities;
+    if (Array.isArray(identities) && identities.length === 0) {
+      setAuthError("This email is already in use. Please sign in instead.");
+      return;
+    }
+
+    // If email confirmations are enabled, Supabase may return a user but no session.
+    // Onboarding requires an access token, so keep the user on step 1.
+    if (!data?.session) {
+      setAuthError(
+        "Check your email to confirm your account, then sign in to continue.",
+      );
+      return;
+    }
+
+    setStep(2);
   };
 
   return (
@@ -657,7 +675,7 @@ const DiamondInput = ({ value, onChange, placeholder }) => {
         placeholder={placeholder}
         className={clsx(
           "flex-1 h-full text-[13px] outline-none bg-transparent placeholder:text-gray-400 font-sans",
-          !showPassword && "tracking-widest"
+          !showPassword && "tracking-widest",
         )}
       />
       <button
@@ -701,7 +719,7 @@ const DomainInput = ({ value = "", onChange }) => {
           placeholder="yourname"
           className={clsx(
             "w-1/2 h-full text-[13px] outline-none bg-transparent placeholder:text-gray-400 font-sans",
-            status === "error" ? "text-red-500" : "text-[#0F172A]"
+            status === "error" ? "text-red-500" : "text-[#0F172A]",
           )}
         />
         <span className="text-[13px] text-[#0F172A] font-sans font-medium whitespace-nowrap pl-1">
@@ -743,13 +761,13 @@ const ValidationPill = ({ text, isValid }) => (
       "px-[8px] py-[4px] border rounded-full flex items-center justify-center h-[23px] transition-all duration-300",
       isValid
         ? "bg-[#34C759]/10 border-[#34C759]"
-        : "bg-surface-dark border-surface-border"
+        : "bg-surface-dark border-surface-border",
     )}
   >
     <span
       className={clsx(
         "font-sans font-medium text-[10px] leading-none whitespace-nowrap transition-colors duration-300",
-        isValid ? "text-[#34C759]" : "text-gray-500"
+        isValid ? "text-[#34C759]" : "text-gray-500",
       )}
     >
       {text}

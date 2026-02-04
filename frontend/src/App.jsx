@@ -22,7 +22,7 @@ function App() {
             {/* Auth routes */}
             <Route path="/signup" element={<SignUpScreen />} />
             <Route path="/signin" element={<SignInScreen />} />
-            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/login" element={<Navigate to="/signin" replace />} />
 
             {/* Protected: auth check, then dashboard with sidebar */}
             <Route path="/" element={<AppLayout />}>
@@ -36,7 +36,7 @@ function App() {
               </Route>
             </Route>
 
-            <Route path="*" element={<Navigate to="/signup" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </BrowserRouter>

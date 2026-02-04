@@ -22,7 +22,7 @@ export default function SignInScreen() {
     setSubmitting(true);
     const { data, error: err } = await signInWithPassword(
       email.trim(),
-      password
+      password,
     );
     setSubmitting(false);
     if (err) {
@@ -30,7 +30,7 @@ export default function SignInScreen() {
       return;
     }
     if (data?.session) {
-      navigate("/campaigns/email", { replace: true });
+      navigate("/", { replace: true });
     }
   };
 

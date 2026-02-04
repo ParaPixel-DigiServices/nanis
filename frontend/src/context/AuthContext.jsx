@@ -8,7 +8,10 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [organizations, setOrganizations] = useState([]);
+  // `loading` means: initial auth bootstrap in progress.
+  // `orgsResolved` means: we've finished attempting to load org membership for the current session.
   const [loading, setLoading] = useState(true);
+  const [orgsResolved, setOrgsResolved] = useState(false);
 
   const refreshOrganizations = async (token) => {
     if (!token) {
@@ -24,26 +27,38 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.access_token) {
-        refreshOrganizations(s.access_token).finally(() => setLoading(false));
-      } else {
+    setLoading(true);
+    setOrgsResolved(false);
+
+    supabase.auth
+      .getSession()
+      .then(({ data: { session: s } }) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+        if (s?.access_token) {
+          return refreshOrganizations(s.access_token);
+        }
         setOrganizations([]);
+        return null;
+      })
+      .finally(() => {
+        setOrgsResolved(true);
         setLoading(false);
-      }
-    });
+      });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
+      setOrgsResolved(false);
       if (s?.access_token) {
-        refreshOrganizations(s.access_token);
+        refreshOrganizations(s.access_token).finally(() =>
+          setOrgsResolved(true),
+        );
       } else {
         setOrganizations([]);
+        setOrgsResolved(true);
       }
     });
 
@@ -55,6 +70,7 @@ export function AuthProvider({ children }) {
     user,
     organizations,
     loading,
+    orgsResolved,
     refreshOrganizations: () =>
       session?.access_token && refreshOrganizations(session.access_token),
     signUp: (email, password, options = {}) =>

@@ -20,9 +20,10 @@ import {
   Crown,
   ChevronDown,
 } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import logo from "../assets/logo.svg";
+import { useAuth } from "../context/AuthContext";
 
 // --- Reusable Glass Container Style ---
 const containerStyle = {
@@ -78,6 +79,17 @@ const NavItem = ({ icon: Icon, label, to, active, hasDot, count }) => (
 );
 
 const Sidebar = () => {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleTempSignOut = async () => {
+    try {
+      await signOut();
+    } finally {
+      navigate("/signin", { replace: true });
+    }
+  };
+
   return (
     <aside
       className="flex flex-col h-screen overflow-y-auto overflow-x-hidden no-scrollbar flex-shrink-0 z-20 border-r border-white/20"
@@ -272,9 +284,18 @@ const Sidebar = () => {
       </div>
 
       {/* 6. SETTINGS CONTAINER */}
-      <div style={{ ...containerStyle, height: "68px", padding: "4px" }}>
+      <div style={{ ...containerStyle, height: "auto", padding: "4px" }}>
         <NavItem icon={Settings} label="Settings" />
         <NavItem icon={HelpCircle} label="Help & Support" />
+
+        <button
+          type="button"
+          onClick={handleTempSignOut}
+          className="flex items-center justify-center w-full h-[28px] px-2 rounded-lg text-[11px] font-bold text-red-700 hover:bg-white/40 transition-colors"
+          style={{ fontFamily: '"Inter Display", sans-serif' }}
+        >
+          TMP SIGN OUT BUTTON
+        </button>
       </div>
     </aside>
   );
